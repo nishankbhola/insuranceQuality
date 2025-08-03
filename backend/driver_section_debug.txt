@@ -1,0 +1,143 @@
+Driver: Jonathan Malcolm
+Section: 
+07/09/1991
+Birth Date
+Single
+Marital Status
+Male
+Gender
+Insured
+Relationship to Applicant
+No
+Driver Training
+ 
+Driver Training
+Date
+No
+Out of Province / Country Driver
+G2
+Licence Class
+ 
+Date G
+12/28/2022
+Date G2
+08/29/2008
+Date G1
+M02504091910709
+Licence Number
+ON
+Licence Province
+ 
+Occupation
+03/22/2024
+Date Insured
+Wawanesa Mutual
+Current Carrier
+05/03/2024
+Date with
+Company
+ 
+Brokerage Insured
+ 
+Date
+Owner/Principal
+No
+Applicant lives with Parents
+ 
+Student Away at School (km)
+No
+Retired
+ 
+Other Licence
+Class
+ 
+Other Licence
+Date
+Prohibited Use of Hand-Held Device
+Description
+12/02/2024
+Date
+ 
+km/h
+Minor
+Severity
+Other - Administrative
+Description
+12/02/2024
+Date
+2
+Duration months
+02/27/2025
+Re-Instate Date
+Vieira & Associates Insurance Brokers Ltd
+55 Horner Ave, Suite 201
+Etobicoke, ON M8Z 4X6
+Phone: (416)531-1146    Fax: (416)531-1148
+Email: info@vieirainsurance.com
+Website: www.vieirainsurance.com
+Prepared 03/21/2025 by Nishank Bhola
+Applied Ref. # RWS 972329647, CWS 336208052,
+RBWS 416835145
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
+Mobile: (416)414-5626
+92 Pritchard Ave
+Toronto, ON M6N 1T3
+john.malcolm91@gmail.com
+Company
+12 Months
+Aviva - Aviva Journey
+11,098
+JEVCO
+11,106
+Aviva
+12,315
+CAA Insurance Company (Future Member)
+12,327
+CAA MyPace
+12,591
+CAA Insurance Company
+12,975
+Wawanesa Drive Change
+13,569
+Echelon
+13,665
+Wawanesa Mutual
+15,050
+Coachman
+15,408
+Facility Association
+16,488
+Definity Insurance Company
+0
+Dominion of Canada
+0
+Dominion of Canada - IntelliDrive
+0
+Dominion of Canada - Single Pay and DPD
+0
+Intact Insurance
+0
+Intact Insurance - my Drive
+0
+SGI CANADA
+0
+Summary
+Jonathan Bryan Malcolm
+1 
+Extracted dates - G: 12/28/2022, G2: 12/28/2022, G1: 08/29/2008
+
+=== DETAILED DEBUG ===
+Testing all date patterns:
+Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['12/28/2022', '08/29/2008']
+Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['12/28/2022', '08/29/2008']
+Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: ['12/28/2022']
+Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: ['12/28/2022']
+Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: ['08/29/2008']
+Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: ['08/29/2008']
+
+All date patterns found:
+All dates: ['07/09/1991', '12/28/2022', '08/29/2008', '03/22/2024', '05/03/2024', '12/02/2024', '12/02/2024', '02/27/2025', '03/21/2025']
+
+Looking for 'Date G1' specifically:
+Date G1 context: 'Date G1'

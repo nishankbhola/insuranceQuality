@@ -1,0 +1,89 @@
+MVR Abstracts
+Tuesday, March 11, 2025 09:50 AM
+Province
+Licence
+Release Date
+Messages
+ON
+M02504091910709
+11-03-2025
+Receipt Number : 577594331
+Totals:   1
+Abstracts:   1
+Errors:   0
+ONTARIO Driving Record
+***Number of Convictions: 2 ***
+Licence Number:
+M0250-40919-10709
+Expiry Date:
+28/12/2027
+Name:
+MALCOLM,JONATHAN,BRYAN
+Birth Date:
+09/07/1991
+Gender:
+M
+Height:
+183 CM
+Address:
+92 PRITCHARD AVE
+TORONTO, ON
+M6N 1T3
+Reference:
+ 
+ 
+Comment:
+ 
+ 
+Demerit Points: 00
+Class: G2**
+Conditions: */N
+Status:
+LICENCED
+Issue Date:
+29/08/2008
+Requested By:
+Bhola, Nishank
+User ID:
+nishankb@vieirainsurance.com
+Requested On:
+11-03-2025
+Reply Date:
+11-03-2025
+Print Date:
+11-03-2025
+Reprint Date:
+11-03-2025
+                
+DATE
+CONVICTIONS, DISCHARGES AND OTHER ACTIONS
+02/12/2024
+SHALL NOT DRV HOLDING OR USING A HAND-HELD COM DEV
+OFFENCE DATE 2024/11/28
+27/02/2025
+REINST - SUSP. EXPIRED OR RESCINDED
+SUSPENSION NO. 4132726
+16/12/2024
+SUSPENDED UNTIL FEB. 27, 2025,
+DEMERIT POINTS - NOVICE ESCALATING SUSPENSION.
+SUSPENSION NO. 4132726
+SEARCH SUCCESSFUL - ABSTRACT FOUND
+*** END OF REPORT / FIN DU RAPPORT ***
+Licence Number
+ReplyDt
+BirDt
+ExpDt
+Class
+Pt
+M0250-40919-10709
+11-03-2025
+09/07/1991
+28/12/2027
+G2**
+00
+*** END OF REPORT / FIN DU RAPPORT ***
+Receipt Number : 577594331
+*** END OF REPORT ***
+© CGI Inc.
+Use of this site signifies your agreement to the terms of use.
+L’utilisation de ce site indique que vous acceptez les termes d’utilisation.
