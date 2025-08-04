@@ -1,179 +1,207 @@
-Its is a quality control web application
-The purpose of the application is to compare MVR reports and dash reports with the quote report
+Cursor Agent Context
 
-this is how application should work
+This is a quality control web application for reviewing insurance quotes.
 
-for example there are 2 drivers and 2 vehicles in the quote
-so there will be 1 MVR and 1 dash report for every driver totaling in = 2 MVR'S and 2 Dash reports  and 1 quote
+The goal of this app is to check whether the broker has properly created the quote by comparing it with actual MVR and Dash data.
 
-other example is 3 driver 2 vehicle
-so there will be 3 MVR's and 3 Dash reports for every driver but only one quote 
+Documents Uploaded Per Case
 
-each driver has its own MVR and dash report
+1 quote PDF (created manually by broker)
 
-the date formats of MVR is in format : dd/mm/yyyy
-date format of dash report is : yyyy/mm/dd
-quote report date format is : mm/dd/yyyy
+1 MVR report per driver
 
-so you need to be very careful with dates while comparing otherwise the report and application will fail
+1 Dash report per driver
 
----------------------------------
+Example: If a policy has 3 drivers → expect 7 documents
+(1 quote + 3 MVRs + 3 Dash reports)
 
-so here is the rule for MVR
+Extractors Used
 
-extract all the g1,g2 and g date from MVR and Quote
+quote_extractor.py → pulls info from quote PDF
 
-which i think is implemented correctly 
+mvr_extractor.py → pulls info from MVR report
 
-this is the objective of the application
+dash_extractor.py → pulls info from Dash report
 
-if the DD/MM of the MVR's - Expiry Date and Birth Date match
-the issue date = g1_date
-g2 date = g1_date + 1 year
-g date = g2_date + 1 year
+MVR Report Contains
 
-if the DD/MM of the MVR's - Expiry Date and Birth Date do not match
-then g1 date = Expiry Date - 5 years 
-g2 date is = g1 date + 1 year
-g date is = g2 date + 1 year
+Full name
 
-the above rule applies to the MVR 
+Driver's Licence Number (DLN)
 
-and then we take the quotes g1,g2 and g dates from the above calculation
-and compare it in the compare engine with the quotes g1, g2 and g dates which was extracted 
+Birth date
 
-if the class is G2 there is no need to compare the G date as its not required the  driver did not get g license
+Issue date
 
-just for info
+Expiry date
 
-the driver first gets the G1
-then it gets g2 
-and then g
+Licence class (e.g. G, G2)
 
-but some drivers just drive with g2,
+Address
 
-it can be determined in the MVR with the class  
+Convictions (e.g. speeding)
 
-Also each driver has its own MVR and Dash report
+MVR does not contain insurance history or claims.
 
-A quote can have multiple drivers and multiple vehicles
+Dash Report Contains
 
-make sure the dates are extracted properly for each driver
- 
-and validated properly for each driver in the compare engine
+Insurance policy history
 
-and the most important part is the front end displays it properly and create a very professional report that can be downloaded with percentage given out of 100% if it fails or passes 
+Claim history
 
+First-party driver info
 
---------------------------------------------------------------------------------------------------------------
-so here is the rule for Dash report
+At-fault percentages
 
-this is what you must know about the dash report and how to compare with the quote report 
+Cancellation and expiry reasons
 
+Dash does not contain convictions.
 
- date_insured from the quote should match start_date of the first insurance policy extracted from dash report
+Quote Contains
 
-now for the claims in the dash extracted data if at_fault_percentage > 0
-then check if that first_party_driver is = to name of (policy holder name)
+Driver info (name, DLN, birthdate)
 
- then check if date extracted from the quote matches the date extracted from the dash report if yes pass the test if not return critical fail
+Licence dates (G1, G2, G)
 
+Convictions and claims (declared by broker)
 
-the above is vaild for all claims if the  at_fault_percentage <= 0 then skip this claim move to the next one 
+date_insured (when driver first got insurance)
 
+Vehicle and coverage details
 
--------------------------------------------------------------------
+Validation Rules – MVR
 
-This is a quality control web application.
+Match driver using full name + DLN
 
-The purpose of the application is to compare MVR reports and Dash reports with the Quote report.
+Normalize MVR date format: dd/mm/yyyy
 
-This is how the application should work:
+If birth date and expiry date have same day/month:
 
-Each quote can have multiple drivers and multiple vehicles. For every driver, there should be exactly one MVR and one Dash report.
+G1 = issue date
 
-Examples:
+G2 = G1 + 1 year
 
-If the quote has 2 drivers and 2 vehicles: expect 2 MVRs, 2 Dash reports, and 1 quote.
+G = G2 + 1 year
 
-If the quote has 3 drivers and 2 vehicles: expect 3 MVRs, 3 Dash reports, and 1 quote.
+If birth date and expiry date do not match:
 
-Each driver has their own MVR and Dash report.
+G1 = expiry date - 5 years
 
-Be extremely careful with date formats. Each document uses a different format:
+G2 = G1 + 1 year
 
-MVR uses dd/mm/yyyy
+G = G2 + 1 year
 
-Dash report uses yyyy/mm/dd
+Compare G1, G2, G with those listed in quote
 
-Quote uses mm/dd/yyyy
+If licence class is G2 → skip G date comparison
 
-Failure to normalize these formats before comparing will break the application.
+Check if any convictions in MVR are declared in quote
 
------ MVR Validation Rules -----
+If any conviction is missing → mark as critical fail
 
-From the MVR and Quote, extract G1, G2, and G dates.
+Validation Rules – Dash
 
-This logic is assumed to be implemented.
+Normalize Dash date format: yyyy/mm/dd
 
-Based on the MVR:
+Find first insurance policy ever held
 
-If the Birth Date and Expiry Date (DD/MM) match:
+Compare its start date with date_insured in quote
 
-G1 date = MVR Issue Date
+If mismatch → fail
 
-G2 date = G1 date + 1 year
+Check for gaps between policy end and next policy start
 
-G date = G2 date + 1 year
+If gap exists → report it and include reason (e.g. cancelled by insured)
 
-If the Birth Date and Expiry Date (DD/MM) do not match:
+For claims:
 
-G1 date = Expiry Date - 5 years
+If at-fault > 0 and driver matches:
 
-G2 date = G1 date + 1 year
+Check if claim is declared in quote
 
-G date = G2 date + 1 year
+If missing → critical fail
 
-These derived dates (G1, G2, G) must be compared to the dates extracted from the Quote.
+If at-fault = 0 → skip
 
-If the license class is G2 (found in MVR), skip the comparison for G date. This is because the driver has not yet received their G license.
+Validation Rules – Quote
 
-Note: Drivers progress from G1 → G2 → G. Some drivers only have a G2. Use the class from MVR to determine this.
+Normalize quote date format: mm/dd/yyyy
 
-Validate and extract dates for each driver individually.
+Match each driver to corresponding MVR and Dash
 
-Ensure these comparisons are done cleanly and accurately in the compare engine.
+Compare all extracted data against what is declared
 
------ Dash Report Validation Rules -----
+Any missing info = fail
 
-For Dash reports, follow this logic:
+Any missing conviction or at-fault claim = critical fail
 
-Compare date_insured from the Quote with the start_date of the first insurance policy in the Dash report. If they match, it passes. If not, it fails.
+Frontend Output
 
-For all claims in the Dash data:
+Show results per driver
 
-If at_fault_percentage > 0:
+Separate MVR and Dash sections
 
-Check if first_party_driver equals the policyholder name (from the Quote).
+Labels: Pass / Warning / Critical Fail
 
-Then, check if the claim date from the Quote matches the date in the Dash report.
+Show reasons for each failure
 
-If they match, it passes. If not, mark it as a critical fail.
+Show match percentage (0–100%)
 
-If at_fault_percentage <= 0, skip the claim and move to the next one.
+Allow professional PDF report download
 
------ Frontend Reporting -----
+Example – Yang Palmo
 
-The frontend must:
+DLN: P0311-78928-76026
 
-Display validation results for each driver clearly
+Birthdate: 26/10/1987
 
-Separate results for MVR and Dash validations
+MVR issue date: 06/03/2008
 
-Label issues as: Pass, Warning, or Critical Fail
+MVR expiry date: 26/10/2029
 
-Provide an overall result as a percentage out of 100%
+Licence class: G
 
-Allow the user to download a clean, professional PDF report
+Licence progression (calculated from MVR):
 
-Make sure each driver’s data is processed and reported individually. No mismatches in indexing or order between MVR, Dash, and Quote should occur.
+G1 = 06/03/2008
+
+G2 = 06/03/2009
+
+G = 06/03/2010
+
+From quote:
+
+G1 = 03/06/2008 → close match
+
+G2 = 05/05/2009 → incorrect
+
+G = 10/04/2010 → incorrect
+
+MVR conviction:
+
+Speeding on 06/08/2024
+
+Not declared in quote → critical fail
+
+Dash insurance history:
+
+First policy started: 2015-09-04
+
+Quote says date_insured: 09/04/2010 → mismatch → fail
+
+Dash gap detected:
+
+Policy ended: 2025-01-11
+
+Next policy started: 2025-05-23
+
+Gap exists → must be flagged
+
+Reason: Cancelled – insured’s request
+
+Dash claims:
+
+At-fault claim on 2024-12-08 involving Yang Palmo
+
+Not disclosed in quote → critical fail
+

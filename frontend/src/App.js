@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import FileUpload from './components/FileUpload';
 import ValidationReport from './components/ValidationReport';
-import VectorQA from './components/VectorQA';
 import QuoteComparison from './components/QuoteComparison';
 import Header from './components/Header';
-import { Shield, FileText, CheckCircle, AlertTriangle, XCircle, Brain } from 'lucide-react';
+import { Shield, FileText, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
 
 function App() {
   const [activeTab, setActiveTab] = useState('validation');
@@ -106,10 +105,6 @@ function App() {
     </>
   );
 
-  const renderQATab = () => (
-    <VectorQA />
-  );
-
   const renderComparisonTab = () => (
     <QuoteComparison />
   );
@@ -118,8 +113,6 @@ function App() {
     switch (activeTab) {
       case 'validation':
         return renderValidationTab();
-      case 'qa':
-        return renderQATab();
       case 'comparison':
         return renderComparisonTab();
       default:

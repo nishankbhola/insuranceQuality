@@ -674,41 +674,63 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         }
         
         policies = dash.get("policies", [])
-        active_policies = [p for p in policies if "Active" in p.get("status", "")]
         
-        if not active_policies:
-            validation["critical_errors"].append("No active policy found in DASH")
+        if not policies:
+            validation["critical_errors"].append("No policies found in DASH")
             return validation
         
-        validation["matches"].append(f"Found {len(active_policies)} active policy(ies) in DASH")
+        # Business rule: Find first insurance policy ever held (not just active)
+        # Sort by start_date to get the oldest policy
+        sorted_policies = sorted(policies, key=lambda x: x.get("start_date", ""))
+        first_policy = sorted_policies[0]
+        first_policy_start = first_policy.get("start_date", "")
+        
+        validation["matches"].append(f"Found {len(policies)} total policies in DASH")
+        validation["matches"].append(f"First policy ever held: {first_policy_start} ({first_policy.get('company', 'Unknown')})")
         
         # Business rule: Compare date_insured from Quote with first policy start_date from DASH
         quote_date_insured = ""
         if quote.get("drivers"):
             quote_date_insured = quote["drivers"][0].get("date_insured", "")
         
-        if quote_date_insured and active_policies:
-            # Sort by start_date to get oldest (first) policy
-            sorted_policies = sorted(active_policies, key=lambda x: x.get("start_date", ""))
-            first_policy_start = sorted_policies[0].get("start_date", "")
-            
+        if quote_date_insured and first_policy_start:
             if self._dates_match(quote_date_insured, first_policy_start, "quote", "dash"):
                 validation["matches"].append(f"Date insured ({quote_date_insured}) matches first policy start date ({first_policy_start})")
             else:
                 validation["critical_errors"].append(f"Date insured ({quote_date_insured}) doesn't match first policy start date ({first_policy_start})")
         
-        # Additional check: Current carrier matching (existing logic)
-        quote_current_carrier = ""
-        if quote.get("drivers"):
-            quote_current_carrier = quote["drivers"][0].get("current_carrier", "")
+        # Business rule: Check for gaps between policy end and next policy start
+        policy_gaps = dash.get("policy_gaps", [])
+        if policy_gaps:
+            for gap in policy_gaps:
+                gap_days = gap.get("gap_days", 0)
+                previous_end = gap.get("previous_policy_end", "")
+                next_start = gap.get("next_policy_start", "")
+                cancellation_reason = gap.get("cancellation_reason", "Unknown")
+                
+                validation["warnings"].append(
+                    f"Policy gap detected: {gap_days} days between {previous_end} and {next_start}. "
+                    f"Reason: {cancellation_reason}"
+                )
+        else:
+            validation["matches"].append("No policy gaps detected")
         
-        if quote_current_carrier:
-            for policy in active_policies:
-                if self._similar(quote_current_carrier, policy.get("company", "")):
-                    validation["matches"].append("Current carrier matches DASH policy")
-                    break
-            else:
-                validation["warnings"].append("Current carrier in quote doesn't match DASH policies")
+        # Additional check: Current carrier matching (existing logic)
+        active_policies = [p for p in policies if "Active" in p.get("status", "")]
+        if active_policies:
+            validation["matches"].append(f"Found {len(active_policies)} active policy(ies)")
+            
+            quote_current_carrier = ""
+            if quote.get("drivers"):
+                quote_current_carrier = quote["drivers"][0].get("current_carrier", "")
+            
+            if quote_current_carrier:
+                for policy in active_policies:
+                    if self._similar(quote_current_carrier, policy.get("company", "")):
+                        validation["matches"].append("Current carrier matches DASH policy")
+                        break
+                else:
+                    validation["warnings"].append("Current carrier in quote doesn't match DASH policies")
         
         return validation
 
@@ -742,21 +764,50 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             dash_claim_date = dash_claim.get("date", "")
             first_party_driver = dash_claim.get("first_party_driver", "")
             
-            if at_fault_percentage > 0:
-                # Check if first_party_driver equals policyholder name
-                if first_party_driver == policyholder_name:
-                    # Check if claim date matches any quote claim
-                    quote_claim_dates = [claim.get("date", "") for claim in quote_claims]
-                    
-                    if dash_claim_date in quote_claim_dates:
-                        validation["matches"].append(f"Claim {claim_number} validated (at-fault: {at_fault_percentage}%)")
-                    else:
-                        validation["critical_errors"].append(f"Claim {claim_number} date mismatch - DASH: {dash_claim_date}, Quote: {quote_claim_dates}")
-                else:
-                    validation["warnings"].append(f"Claim {claim_number} - different driver ({first_party_driver} vs {policyholder_name})")
-            else:
-                # Skip claims with 0% at-fault as per business rules
+            # Business rule: If at-fault = 0 → skip
+            if at_fault_percentage == 0:
                 validation["matches"].append(f"Claim {claim_number} skipped (0% at-fault)")
+                continue
+            
+            # Business rule: If at-fault > 0 and driver matches
+            if at_fault_percentage > 0:
+                # Enhanced driver matching - check if the claim involves the policyholder
+                driver_matches = False
+                
+                # Check if first_party_driver equals policyholder name (exact match)
+                if first_party_driver and policyholder_name:
+                    if (self._similar(first_party_driver, policyholder_name) or 
+                        self._names_contain_same_parts(first_party_driver, policyholder_name)):
+                        driver_matches = True
+                
+                # If no first_party_driver info, assume it's the policyholder (common case)
+                if not first_party_driver:
+                    driver_matches = True
+                
+                if driver_matches:
+                    # Check if claim is declared in quote
+                    claim_found_in_quote = False
+                    
+                    # Look for matching claim date in quote claims
+                    if dash_claim_date:
+                        for quote_claim in quote_claims:
+                            quote_claim_date = quote_claim.get("date", "")
+                            if self._dates_match(dash_claim_date, quote_claim_date, "dash", "quote"):
+                                claim_found_in_quote = True
+                                validation["matches"].append(
+                                    f"Claim {claim_number} validated (at-fault: {at_fault_percentage}%, date: {dash_claim_date})"
+                                )
+                                break
+                    
+                    if not claim_found_in_quote:
+                        validation["critical_errors"].append(
+                            f"At-fault claim {claim_number} ({at_fault_percentage}%) on {dash_claim_date} "
+                            f"involving {first_party_driver or policyholder_name} not declared in quote"
+                        )
+                else:
+                    validation["warnings"].append(
+                        f"Claim {claim_number} - different driver ({first_party_driver} vs {policyholder_name})"
+                    )
         
         return validation
 

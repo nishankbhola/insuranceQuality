@@ -4,9 +4,8 @@ Etobicoke, ON M8Z 4X6
 Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Home: (416)685-9434
-676 LANSDOWNE AVENUE
-TORONTO, ON M6H 3Y8
+47 Vanevery Street
+Etobicoke, ON M8V 1Y5
 Policy Information
  
 Property Policy Type
@@ -30,11 +29,11 @@ Term Length
 Applicant Information
  
 Salutation
-Nancy
+Yang
 First Name
  
 Middle
-Freitas
+Palmo
 Last Name
  
 Suffix
@@ -49,35 +48,37 @@ Middle
 Last Name
  
 Suffix
-Nancy Freitas
+Yang Palmo
 Drivers
 Coverages
-Vehicle 1 of 1 | Private Passenger - 2015 HONDA CIVIC LX 4DR (025100)
+User Initiated Discounts and Surcharges
+Vehicle 1 of 1 | Private Passenger - 2007 BMW X3 3.0si 4DR AWD (907100)
 Private Passenger
 Vehicle Type
-2HGFB2F44FH049170
+WBXPC93417WF00481
 VIN
-4 Door Sedan/Hard Top
+SUV - Small and Medium (Hard
+Top)
 Body Style
 Gasoline
 Fuel Type
 No
 Hybrid
-Pleasure
+Business
 Primary Use
-6000
+15000
 Annual km
-0
+5000
 Business km
-0
+10
 Daily km
-TORONTO M6H3Y8
+ETOBICOKE M8V1Y5
 Garaging Location
 No
 Single Vehicle MVD
 No
 Leased
-4
+6
 Cylinders
  
 Anti-Theft - Device Type
@@ -88,46 +89,51 @@ Anti-Theft - Engraving
 Used
 Purchase
 Condition
-02/01/2020
+05/22/2025
 Purchase Date
-0
+ 
 km at Purchase
-21234
+53954
 List Price New
-15000
+10000
 Purchase Price
 No
 Winter Tires
  
 Parking at Night
-Nancy Freitas (Prn)
-Matthew F Silva (Occ)
-Bodily Injury (2,000,000)
+Yang Palmo (Prn)
 Bodily Injury (2,000,000)
 Property Damage (2,000,000)
-Property Damage (2,000,000)
-Direct Compensation (-1)
 Direct Compensation (0)
 Accident Benefits (Standard)
-Accident Benefits (Standard)
-All Perils (-1)
-All Perils (500)
-Uninsured Automobile
+All Perils (1,000)
 Uninsured Automobile
 #20 Loss of Use (3,000)
 #27 Liab to Unowned Veh. (50,000)
 #44 Family Protection (2,000,000)
 Accident Waiver
-Minor Conviction Protection
+Yang Palmo
+Driver
+CAA Insurance Company
+Company
+Family Discount (Discount)
+Description
+Prepared 05/22/2025 by Nishank Bhola
+Effective Date: 05/22/2025
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
 Claims
-Driver 1 of 2 | Nancy Freitas
-06/12/1978
+Convictions
+Lapses
+Disclaimer: Coverages shown reflect user entry. For details on the coverages quoted please refer to the Carrier Detail printout.
+Driver 1 of 1 | Yang Palmo
+10/26/1987
 Birth Date
 Single
 Marital Status
 Female
 Gender
-Insured
+Applicant
 Relationship to Applicant
 No
 Driver Training
@@ -138,125 +144,34 @@ No
 Out of Province / Country Driver
 G
 Licence Class
-11/27/2002
+10/04/2010
 Date G
-11/27/2001
+05/05/2009
 Date G2
-11/27/2000
+03/06/2008
 Date G1
-F73305777785612
+P03117892876026
 Licence Number
 ON
 Licence Province
  
 Occupation
-05/02/2006
+None
+Membership Plan 1 Description
+ 
+Membership Date
+ 
+Membership Number
+09/04/2010
 Date Insured
-Wawanesa Mutual
+ 
 Current Carrier
-05/02/2006
+ 
 Date with
 Company
-04/07/2015
+10/19/2022
 Brokerage Insured
-05/02/2006
-Date
-Owner/Principal
-No
-Applicant lives with Parents
- 
-Student Away at School (km)
-No
-Retired
- 
-Other Licence
-Class
- 
-Other Licence
-Date
-Liability & Collision
-Description
-04/27/2020
-Date
-No
-Charge
-2015 HONDA CIVIC LX 4DR
-Vehicle Involved
- 
- 
-TP/BI$
-9940
-TP/PD$
- 
-AB$
- 
-Coll$
- 
-Other PD$
-Liability & Collision
-Description
-08/15/2020
-Date
-No
-Charge
-2015 HONDA CIVIC LX 4DR
-Vehicle Involved
- 
- 
-TP/BI$
-58471
-TP/PD$
- 
-AB$
- 
-Coll$
- 
-Other PD$
-Prepared 04/24/2025 by Nishank Bhola
-Effective Date: 05/02/2025
-Provided by Applied Rating Services®,
-© 2025 Applied Systems® Canada Inc.
-Disclaimer: Coverages shown reflect user entry. For details on the coverages quoted please refer to the Carrier Detail printout.
-Driver 2 of 2 | Matthew F Silva
-10/23/2002
-Birth Date
-Single
-Marital Status
-Male
-Gender
-Child
-Relationship to Applicant
-Yes
-Driver Training
-09/22/2020
-Driver Training
-Date
-No
-Out of Province / Country Driver
-G2
-Licence Class
- 
-Date G
-08/04/2022
-Date G2
-09/22/2020
-Date G1
-S44035293021023
-Licence Number
-ON
-Licence Province
- 
-Occupation
-08/04/2022
-Date Insured
-Wawanesa Mutual
-Current Carrier
-08/04/2022
-Date with
-Company
-08/04/2022
-Brokerage Insured
- 
+09/04/2010
 Date
 Owner/Principal
 Yes
@@ -271,200 +186,196 @@ Class
  
 Other Licence
 Date
+Non-responsible Collision
+Description
+12/08/2024
+Date
+No
+Charge
+2007 BMW X3 3.0si 4DR AWD
+Vehicle Involved
+ 
+ 
+TP/BI$
+ 
+TP/PD$
+ 
+AB$
+10132
+Coll$
+ 
+Other PD$
+Speeding
+Description
+08/06/2024
+Date
+15
+km/h
+Minor
+Severity
+No Vehicle Hence No Insurance Required
+Description
+01/11/2025
+Date
+4
+Duration months
+05/22/2025
+Re-Instate Date
 Vieira & Associates Insurance Brokers Ltd
 55 Horner Ave, Suite 201
 Etobicoke, ON M8Z 4X6
 Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Prepared 04/24/2025 by Nishank Bhola
-Applied Ref. # RWS 983232053, CWS 339036048,
-RBWS 423938044
+Prepared 05/22/2025 by Nishank Bhola
+Applied Ref. # RWS 992601892, CWS 341446648,
+RBWS 429763433
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
-Home: (416)685-9434
-676 LANSDOWNE AVENUE
-TORONTO, ON M6H 3Y8
+47 Vanevery Street
+Etobicoke, ON M8V 1Y5
 Company
 12 Months
-CAA MyPace
-3,626
-Wawanesa Drive Change
-3,630
 CAA Insurance Company (Future Member)
-3,858
-Definity Insurance Company
-3,888
-Wawanesa Mutual
-3,998
-CAA Insurance Company
-4,060
+4,019
 Aviva - Aviva Journey
-4,133
+4,023
+CAA Insurance Company
+4,072
 Aviva
-4,392
-Dominion of Canada - Single Pay and DPD
-5,130
+4,444
 SGI CANADA
-5,163
+4,553
+Wawanesa Drive Change
+5,008
 Intact Insurance - my Drive
-5,713
-Intact Insurance
-6,306
-Dominion of Canada - IntelliDrive
-6,382
-Dominion of Canada
-6,545
+5,131
 Facility Association
-8,311
+5,521
+Wawanesa Mutual
+5,535
+Intact Insurance
+5,666
+Definity Insurance Company
+6,048
+Dominion of Canada - Single Pay and DPD
+7,423
+Dominion of Canada - IntelliDrive
+9,234
+Dominion of Canada
+9,472
 Echelon
-9,720
+9,483
+CAA MyPace
+0
 Coachman
 0
 JEVCO
 0
 Summary
-Nancy Freitas
-1 Vehicle, 2 Drivers  |  Effective Date: 05/02/2025
+Yang Palmo
+1 Vehicle, 1 Driver  |  Effective Date: 05/22/2025
 Vieira & Associates Insurance Brokers Ltd
 55 Horner Ave, Suite 201
 Etobicoke, ON M8Z 4X6
 Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Definity Insurance Company
-6684  |  New Business  |  Effective Date: 05/02/2025
-Home: (416)685-9434
-676 LANSDOWNE AVENUE
-TORONTO, ON M6H 3Y8
+Prepared 05/22/2025 by Nishank Bhola
+Applied Ref. # RBWS 429763433
+* User Initiated Discounts and Surcharges
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
+CAA Insurance Company
+1234  |  New Business  |  Effective Date: 05/22/2025
+47 Vanevery Street
+Etobicoke, ON M8V 1Y5
 Vehicles
 TOTALS
-Private Passenger - 2015 HONDA CIVIC LX 4DR  (025100)
-$3,888
+Private Passenger - 2007 BMW X3 3.0si 4DR AWD  (907100)
+$4,072
 Annual Premium
-$3,888.00
+$4,072.00
 0% Tax Applied
 $0.00
 Total Premium
-$3,888.00
+$4,072.00
 Totals
-■ Here is your quote number: Q17455036991722002
-■ Account match not found.
-■ https://extranet.id.economical.com/gwpcweb/BrokerQuote.do?
-JobNumber=%2BLeAbvM8%2BvqaS54hoMCkvT2%2FgQTLoo0Iy3cufm%2FZMcs%3D
-■ 2015 HONDA CIVIC LX 4DR : To confirm eligibility, all modifications must be declared in Guidewire prior to binding
-■ 2015 HONDA CIVIC LX 4DR : Vehicles with prior Unrepaired Damage may be ineligible. Please confirm eligibility in Guidewire.
-MSG
-RB
+04/2025
 Effective Date
+8
 Book
-TORONTO M6H 3Y8 / Territory 147
+ETOBICOKE M8V 1Y5 / Territory 
 Territory
-RB
+10/2024
 VRG eff. date
-31
+32
 DCPD
-36
+37
 AB
-31
+32
 Coll
-18
+27
 Comp
 Rates
 MSG
-■ Third Party Liability - Direct Compensation: Coverage added as an additional driver exists.
-■ All Perils: Coverage added as an additional driver exists.
-■ Third Party Liability - Bodily Injury: Coverage added as an additional driver exists.
-■ Third Party Liability - Bodily Injury: Coverage added as an additional driver exists.
-■ Accident Benefits: Coverage added as an additional driver exists.
-■ Uninsured Automobile: Coverage added as an additional driver exists.
-■ Minor Conviction Protection: Coverage added as an additional driver exists.
-■ Accident Rating Waiver: Accident waiver is included if driver is eligible for 6, 8 or 9 driving record.
-■ Transportation Replacement has been selected as 60 days.
-■ Legal Liability for Damage to Non-Owned Automobile has been selected as 30 days
+■ Territories: TP 47, DC 48, AB 50, COL 49 , CMP 48
 DIS
-● Conviction Free included - Prn
-● Smart Move included - Prn
-Nancy Freitas
-Policy
-1 of 1  |  2015 HONDA CIVIC LX 4DR  (025100)
-$3,888.00
-Prepared 04/24/2025 by Nishank Bhola
-Applied Ref. # RBWS 423938044
-Provided by Applied Rating Services®,
-© 2025 Applied Systems® Canada Inc.
+● * Family Discount = 5% - Prn
+SUR
+▲ Minor Convictions = 10% - Prn
 Operator
 PRIN.
-OCC 1
 TOTALS
 Class/Liability/Collision
-/9/9
-/3/3
+07/11/11
 Bodily Injury
 2 M
-486
-685
-1,171
+628
+628
 Property Damage
 2 M
- 
- 
-0
+32
+32
 Direct Compensation
 0
-393
-216
-609
+972
+972
 Accident Benefits
-714
-400
-1,114
+1,340
+1,340
 All Perils
-500
-447
-313
-760
+1,000
+840
+840
 Uninsured Automobile
-17
-17
-34
+39
+39
 #20 Loss of Use
 3,000
-95
- 
-95
+63
+63
 #27 Liab to Unowned Veh.
 50K
-40
- 
-40
+36
+36
 #44 Family Protection
 2 M
-25
- 
-25
-Accident Waiver
- 
- 
-0
-Minor Conviction Protection
-40
- 
-40
-Service Fee
- 
- 
-0
+37
+37
+Forgive & Forget
+85
+85
 Annual Premium
-$2,257
-$1,631
-$3,888
+$4,072
+$4,072
 0% Tax Applied
 $0.00
 $0.00
-$0.00
 Total Premium
-$2,257.00
-$1,631.00
-$3,888.00
+$4,072.00
+$4,072.00
 Breakdown
+Yang Palmo
+1 of 1  |  2007 BMW X3 3.0si 4DR AWD  (907100)
+$4,072.00

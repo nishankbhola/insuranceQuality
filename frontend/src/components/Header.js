@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, FileText, Brain, GitCompare } from 'lucide-react';
+import { Shield, FileText, GitCompare } from 'lucide-react';
 
 function Header({ activeTab, onTabChange }) {
   const tabs = [
@@ -8,12 +8,6 @@ function Header({ activeTab, onTabChange }) {
       label: 'Document Validation',
       icon: FileText,
       description: 'Validate insurance documents'
-    },
-    {
-      id: 'qa',
-      label: 'AI Document Assistant',
-      icon: Brain,
-      description: 'Ask questions about documents'
     },
     {
       id: 'comparison',

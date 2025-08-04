@@ -578,44 +578,105 @@ function ValidationReport({ data }) {
                     <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Status</div>
                   </div>
                   
-                  {/* Policy Status Check */}
+                  {/* First Policy Validation */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700">Policy Status</div>
-                    <div className="px-4 py-3 text-gray-600">Active/Cancelled verification</div>
+                    <div className="px-4 py-3 text-gray-700">First Policy Ever Held</div>
+                    <div className="px-4 py-3 text-gray-600">
+                      {driver.dash_validation.matches.find(m => m.includes('First policy ever held'))?.split(': ')[1] || 'N/A'}
+                    </div>
                     <div className="px-4 py-3">
-                      {driver.dash_validation.matches.some(m => m.includes('active policy')) ? (
-                        <div className="flex items-center text-green-600">
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Active Found
-                        </div>
-                      ) : (
-                        <div className="flex items-center text-red-600">
-                          <XCircle className="w-4 h-4 mr-1" />
-                          No Active Policy
-                        </div>
-                      )}
+                      {driver.dash_validation.matches.some(m => m.includes('First policy ever held')) ? 
+                        getSeverityBadge('match') : getSeverityBadge('critical')}
+                    </div>
+                  </div>
+
+                  {/* Date Insured vs First Policy */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-200">
+                    <div className="px-4 py-3 text-gray-700">Date Insured vs First Policy</div>
+                    <div className="px-4 py-3 text-gray-600">
+                      {driver.dash_validation.matches.find(m => m.includes('Date insured'))?.split('(')[1]?.split(')')[0] || 
+                       driver.dash_validation.critical_errors.find(e => e.includes('Date insured'))?.split('(')[1]?.split(')')[0] || 'N/A'}
+                    </div>
+                    <div className="px-4 py-3">
+                      {driver.dash_validation.matches.some(m => m.includes('Date insured')) ? 
+                        getSeverityBadge('match') : getSeverityBadge('critical')}
+                    </div>
+                  </div>
+
+                  {/* Policy Gaps Check */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-200">
+                    <div className="px-4 py-3 text-gray-700">Policy Gaps</div>
+                    <div className="px-4 py-3 text-gray-600">
+                      {driver.dash_validation.matches.some(m => m.includes('No policy gaps detected')) ? 
+                        'No gaps detected' : 
+                        driver.dash_validation.warnings.filter(w => w.includes('Policy gap detected')).length + ' gap(s) found'}
+                    </div>
+                    <div className="px-4 py-3">
+                      {driver.dash_validation.matches.some(m => m.includes('No policy gaps detected')) ? 
+                        getSeverityBadge('match') : getSeverityBadge('warning')}
+                    </div>
+                  </div>
+
+                  {/* Active Policy Status Check */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-200">
+                    <div className="px-4 py-3 text-gray-700">Active Policy Status</div>
+                    <div className="px-4 py-3 text-gray-600">
+                      {driver.dash_validation.matches.find(m => m.includes('active policy'))?.split('Found ')[1] || 'N/A'}
+                    </div>
+                    <div className="px-4 py-3">
+                      {driver.dash_validation.matches.some(m => m.includes('active policy')) ? 
+                        getSeverityBadge('match') : getSeverityBadge('critical')}
                     </div>
                   </div>
 
                   {/* Claims History Check */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-200">
                     <div className="px-4 py-3 text-gray-700">Claims History</div>
-                    <div className="px-4 py-3 text-gray-600">Claims count and details</div>
+                    <div className="px-4 py-3 text-gray-600">
+                      {driver.dash_validation.matches.find(m => m.includes('Found') && m.includes('claim'))?.split('Found ')[1] || 'N/A'}
+                    </div>
                     <div className="px-4 py-3">
-                      {driver.dash_validation.warnings.some(w => w.includes('claim')) ? (
-                        <div className="flex items-center text-orange-600">
-                          <AlertTriangle className="w-4 h-4 mr-1" />
-                          Claims Found
-                        </div>
-                      ) : (
-                        <div className="flex items-center text-green-600">
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          No Claims
-                        </div>
-                      )}
+                      {driver.dash_validation.matches.some(m => m.includes('Found') && m.includes('claim')) ? 
+                        getSeverityBadge('match') : getSeverityBadge('critical')}
                     </div>
                   </div>
                 </div>
+
+                {/* Policy Gaps Details */}
+                {driver.dash_validation.warnings.filter(w => w.includes('Policy gap detected')).length > 0 && (
+                  <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h6 className="font-semibold text-yellow-800 mb-2">Policy Gaps Detected:</h6>
+                    {driver.dash_validation.warnings
+                      .filter(w => w.includes('Policy gap detected'))
+                      .map((warning, index) => (
+                        <div key={index} className="text-sm text-yellow-700 mb-1">
+                          • {warning.replace('Policy gap detected: ', '')}
+                        </div>
+                      ))}
+                  </div>
+                )}
+
+                {/* Claims Details */}
+                {(driver.dash_validation.matches.some(m => m.includes('Claim') && m.includes('validated')) ||
+                  driver.dash_validation.critical_errors.some(e => e.includes('At-fault claim'))) && (
+                  <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h6 className="font-semibold text-blue-800 mb-2">Claims Validation Details:</h6>
+                    {driver.dash_validation.matches
+                      .filter(m => m.includes('Claim') && (m.includes('validated') || m.includes('skipped')))
+                      .map((match, index) => (
+                        <div key={index} className="text-sm text-blue-700 mb-1">
+                          ✅ {match.replace('Claim ', 'Claim #').replace(' validated', ' - Validated').replace(' skipped', ' - Skipped')}
+                        </div>
+                      ))}
+                    {driver.dash_validation.critical_errors
+                      .filter(e => e.includes('At-fault claim'))
+                      .map((error, index) => (
+                        <div key={index} className="text-sm text-red-700 mb-1">
+                          ❌ {error.replace('At-fault claim ', 'Claim #').replace(' not declared in quote', ' - Not declared in quote')}
+                        </div>
+                      ))}
+                  </div>
+                )}
               </div>
 
               {/* Issues and Warnings Summary */}

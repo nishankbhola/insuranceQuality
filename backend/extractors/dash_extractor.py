@@ -27,7 +27,8 @@ def extract_dash_data(path):
         "gender": None,
         "marital_status": None,
         "policies": [],
-        "claims": []
+        "claims": [],
+        "policy_gaps": []  # New field for tracking policy gaps
     }
 
     # DLN (Driver License Number) - handle with or without spaces/dashes
@@ -84,15 +85,15 @@ def extract_dash_data(path):
             result["marital_status"] = marital_match.group(1).strip()
             break
 
-    # Policies - Updated pattern to match the actual format
+    # Policies - Updated pattern to match the actual format and extract cancellation reasons
     policies_section = re.search(r'Policies\s*.*?\n(.*?)(?=Claims|Previous Inquiries)', text, re.DOTALL)
     if policies_section:
         policy_text = policies_section.group(1)
         
-        # Pattern for: #1 2024-05-03 to 2025-05-03 The Wawanesa Mutual Insurance Company *OVERLAP* Active
+        # Enhanced pattern to capture cancellation reasons
         policy_patterns = [
-            r'#(\d+)\s+(\d{4}-\d{2}-\d{2})\s+to\s+(\d{4}-\d{2}-\d{2})\s+([^*]+?)(?:\s*\*[^*]*\*)?\s+(Active|Inactive|Expired)',
-            r'#(\d+)\s+(\d{4}-\d{2}-\d{2})\s+to\s+(\d{4}-\d{2}-\d{2})\s+(.+?)\s+(Active|Inactive|Expired)'
+            r'#(\d+)\s+(\d{4}-\d{2}-\d{2})\s+to\s+(\d{4}-\d{2}-\d{2})\s+([^*]+?)(?:\s*\*[^*]*\*)?\s+(Active|Inactive|Expired|Cancelled[^-\n]*(?:-\s*[^-\n]*)?)',
+            r'#(\d+)\s+(\d{4}-\d{2}-\d{2})\s+to\s+(\d{4}-\d{2}-\d{2})\s+(.+?)\s+(Active|Inactive|Expired|Cancelled[^-\n]*(?:-\s*[^-\n]*)?)'
         ]
         
         for pattern in policy_patterns:
@@ -101,14 +102,29 @@ def extract_dash_data(path):
                 for policy_num, start_date, end_date, company, status in policy_matches:
                     # Clean company name
                     company_clean = re.sub(r'\s*\*[^*]*\*\s*', '', company).strip()
+                    
+                    # Extract cancellation reason if present
+                    cancellation_reason = None
+                    if 'Cancelled' in status:
+                        # Look for the reason after "Cancelled"
+                        reason_match = re.search(r'Cancelled[^-\n]*-\s*([^-\n]+)', status)
+                        if reason_match:
+                            cancellation_reason = reason_match.group(1).strip()
+                        else:
+                            cancellation_reason = "Cancelled"
+                    
                     result["policies"].append({
                         "policy_number": policy_num,
                         "start_date": start_date,
                         "end_date": end_date,
                         "company": company_clean,
-                        "status": status
+                        "status": status.strip(),
+                        "cancellation_reason": cancellation_reason
                     })
                 break
+        
+        # Detect policy gaps
+        result["policy_gaps"] = _detect_policy_gaps(result["policies"])
 
     # Claims - Enhanced pattern with additional fields
     claims_section = re.search(r'Claims\s*\n(.*?)(?=Previous Inquiries|Policy #|Page)', text, re.DOTALL)
@@ -181,11 +197,59 @@ def extract_dash_data(path):
     # Additional extraction for detailed policy information if needed
     _extract_detailed_policies(text, result)
     
+    # Detect policy gaps after all policies are extracted
+    result["policy_gaps"] = _detect_policy_gaps(result["policies"])
+    
     # Save debug info
     with open("dash_result.json", "w") as f:
         json.dump(result, f, indent=4)
 
     return result
+
+
+def _detect_policy_gaps(policies):
+    """
+    Detect gaps between policy end dates and next policy start dates
+    """
+    gaps = []
+    
+    if len(policies) < 2:
+        return gaps
+    
+    # Sort policies by start date (oldest first)
+    sorted_policies = sorted(policies, key=lambda x: x.get("start_date", ""))
+    
+    for i in range(len(sorted_policies) - 1):
+        current_policy = sorted_policies[i]
+        next_policy = sorted_policies[i + 1]
+        
+        current_end = current_policy.get("end_date")
+        next_start = next_policy.get("start_date")
+        
+        if current_end and next_start:
+            try:
+                # Parse dates
+                from datetime import datetime
+                end_date = datetime.strptime(current_end, "%Y-%m-%d")
+                start_date = datetime.strptime(next_start, "%Y-%m-%d")
+                
+                # Check for gap (more than 1 day difference)
+                gap_days = (start_date - end_date).days
+                if gap_days > 1:
+                    gap_info = {
+                        "gap_days": gap_days,
+                        "previous_policy_end": current_end,
+                        "next_policy_start": next_start,
+                        "previous_policy_company": current_policy.get("company"),
+                        "next_policy_company": next_policy.get("company"),
+                        "cancellation_reason": current_policy.get("cancellation_reason")
+                    }
+                    gaps.append(gap_info)
+            except ValueError:
+                # Skip if date parsing fails
+                continue
+    
+    return gaps
 
 
 def _extract_claim_details(text, claim_number):

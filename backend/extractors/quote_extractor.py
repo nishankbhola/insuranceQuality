@@ -2,7 +2,7 @@ import fitz  # PyMuPDF
 import re
 import json
 
-def extract_quote_data(path):
+def extract_quote_data(path, mvr_data_list=None):
     # Use PyMuPDF instead of pdfplumber
     doc = fitz.open(path)
     
@@ -135,7 +135,36 @@ def extract_quote_data(path):
                 vehicle_info["vin"] = vin
                 result["vehicles"].append(vehicle_info)
 
-    # Convictions - Much more specific extraction
+    # INTEGRATE MVR CONVICTIONS - This is the key fix!
+    if mvr_data_list:
+        for mvr_data in mvr_data_list:
+            if mvr_data and mvr_data.get("convictions"):
+                for conviction in mvr_data["convictions"]:
+                    # Convert MVR date format (dd/mm/yyyy) to quote format (mm/dd/yyyy)
+                    mvr_date = conviction.get("offence_date")
+                    if mvr_date:
+                        # Parse dd/mm/yyyy and convert to mm/dd/yyyy
+                        try:
+                            day, month, year = mvr_date.split('/')
+                            quote_date = f"{month}/{day}/{year}"
+                            
+                            # Add conviction with converted date format
+                            result["convictions"].append({
+                                "description": conviction.get("description", ""),
+                                "date": quote_date,
+                                "source": "MVR",
+                                "driver_license": mvr_data.get("licence_number")
+                            })
+                        except:
+                            # If date conversion fails, use original date
+                            result["convictions"].append({
+                                "description": conviction.get("description", ""),
+                                "date": mvr_date,
+                                "source": "MVR",
+                                "driver_license": mvr_data.get("licence_number")
+                            })
+
+    # Convictions - Much more specific extraction from quote PDF itself
     # Look for actual conviction patterns in dedicated sections
     conviction_section_patterns = [
         r"Convictions?\s*:?\s*(.*?)(?=Suspensions?|Coverage|Vehicle|Driver|Effective|$)",
@@ -165,7 +194,8 @@ def extract_quote_data(path):
                             re.match(r'\d{2}/\d{2}/\d{4}', date)):
                             result["convictions"].append({
                                 "description": desc.strip(),
-                                "date": date
+                                "date": date,
+                                "source": "Quote"
                             })
     
     # Remove duplicate convictions
@@ -181,7 +211,10 @@ def extract_quote_data(path):
     # Enhanced Convictions and Suspensions Extraction
     # Look for the specific structure found in the PDF
     convictions_and_suspensions = _extract_convictions_and_suspensions(text)
-    result["convictions"] = convictions_and_suspensions["convictions"]
+    # Merge with existing convictions (don't overwrite MVR convictions)
+    for conv in convictions_and_suspensions["convictions"]:
+        conv["source"] = "Quote"
+        result["convictions"].append(conv)
     result["suspensions"] = convictions_and_suspensions["suspensions"]
 
     # Claims Extraction - Look for claims information in the PDF
