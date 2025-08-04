@@ -7,7 +7,6 @@ from extractors.mvr_extractor import extract_mvr_data
 from extractors.dash_extractor import extract_dash_data
 from extractors.quote_extractor import extract_quote_data
 from validator.compare_engine import validate_quote
-from vector_qa_service import qa_service
 from quote_comparison_service import compare_quote_with_pdf
 
 UPLOAD_FOLDER = 'uploads'
@@ -74,81 +73,6 @@ def upload_files():
         "validation_report": validation_report
     })
 
-@app.route('/upload-pdf-for-qa', methods=['POST'])
-def upload_pdf_for_qa():
-    """Upload a PDF for vector-based question answering"""
-    if 'file' not in request.files:
-        return jsonify({"error": "No file provided"}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error": "No file selected"}), 400
-    
-    if not allowed_file(file.filename):
-        return jsonify({"error": "Only PDF files are allowed"}), 400
-    
-    try:
-        # Save the file temporarily
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-        
-        # Process the PDF with vector embeddings
-        session_id = qa_service.process_pdf(file_path)
-        
-        # Get session info
-        session_info = qa_service.get_session_info(session_id)
-        
-        return jsonify({
-            "session_id": session_id,
-            "file_name": session_info['file_name'],
-            "chunk_count": session_info['chunk_count'],
-            "message": "PDF processed successfully and ready for questions"
-        })
-        
-    except Exception as e:
-        print(f"Error processing PDF for QA: {e}")
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/ask-question', methods=['POST'])
-def ask_question():
-    """Ask a question about a processed PDF"""
-    data = request.get_json()
-    
-    if not data or 'session_id' not in data or 'question' not in data:
-        return jsonify({"error": "Missing session_id or question"}), 400
-    
-    session_id = data['session_id']
-    question = data['question']
-    
-    try:
-        result = qa_service.ask_question(session_id, question)
-        return jsonify(result)
-        
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 404
-    except Exception as e:
-        print(f"Error asking question: {e}")
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/session-info/<session_id>', methods=['GET'])
-def get_session_info(session_id):
-    """Get information about a session"""
-    try:
-        session_info = qa_service.get_session_info(session_id)
-        return jsonify(session_info)
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 404
-
-@app.route('/cleanup-session/<session_id>', methods=['DELETE'])
-def cleanup_session(session_id):
-    """Clean up a session and its vector store"""
-    try:
-        qa_service.cleanup_session(session_id)
-        return jsonify({"message": f"Session {session_id} cleaned up successfully"})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 @app.route('/compare-quote', methods=['POST'])
 def compare_quote():
     """Compare uploaded PDF with quote_result.json data"""
@@ -197,5 +121,17 @@ def debug_extraction():
     
     return jsonify(debug_results)
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint"""
+    return jsonify({"status": "healthy", "message": "Quote comparison service is running"})
+
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    print("Starting Quote Comparison Server...")
+    print("Available endpoints:")
+    print("  - POST /upload (for document validation)")
+    print("  - POST /compare-quote (for PDF comparison)")
+    print("  - POST /debug (for debugging)")
+    print("  - GET /health (health check)")
+    print("\nServer starting on http://localhost:8000")
+    app.run(debug=True, port=8000) 
