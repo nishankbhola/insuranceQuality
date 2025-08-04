@@ -24,16 +24,46 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         """
         Main validation function that compares MVR, DASH, and Quote data
         """
-        # Handle the new data structure with "extracted" wrapper
-        if "extracted" in data:
-            quotes = data["extracted"].get("quotes", [])
-            mvrs = data["extracted"].get("mvrs", [])
-            dashes = data["extracted"].get("dashes", [])
-        else:
-            # Legacy structure
-            quotes = data.get("quotes", [])
-            mvrs = data.get("mvrs", [])
-            dashes = data.get("dashes", [])
+        try:
+            # Handle the new data structure with "extracted" wrapper
+            if "extracted" in data:
+                quotes = data["extracted"].get("quotes", [])
+                mvrs = data["extracted"].get("mvrs", [])
+                dashes = data["extracted"].get("dashes", [])
+            else:
+                # Legacy structure
+                quotes = data.get("quotes", [])
+                mvrs = data.get("mvrs", [])
+                dashes = data.get("dashes", [])
+            
+            # Validate input data
+            if not quotes:
+                return {
+                    "summary": {
+                        "total_drivers": 0,
+                        "validated_drivers": 0,
+                        "issues_found": 0,
+                        "critical_errors": 1,
+                        "warnings": 0
+                    },
+                    "drivers": [],
+                    "error": "No quote data found"
+                }
+            
+            print(f"Validating {len(quotes)} quotes with {len(mvrs)} MVRs and {len(dashes)} DASH reports")
+        except Exception as e:
+            print(f"Error in validate_quote: {e}")
+            return {
+                "summary": {
+                    "total_drivers": 0,
+                    "validated_drivers": 0,
+                    "issues_found": 1,
+                    "critical_errors": 1,
+                    "warnings": 0
+                },
+                "drivers": [],
+                "error": f"Data validation error: {str(e)}"
+            }
         
         # Initialize report
         self.report = {
@@ -71,87 +101,122 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         """
         Validate a single driver against MVR and DASH data with enhanced rules
         """
-        driver_report = {
-            "driver_name": driver.get("full_name"),
-            "driver_license": driver.get("licence_number"),
-            "validation_status": "PASS",
-            "critical_errors": [],
-            "warnings": [],
-            "matches": [],
-            "mvr_validation": {
-                "status": "NOT_FOUND",
+        try:
+            # Validate input parameters
+            if not driver:
+                return {
+                    "driver_name": "Unknown",
+                    "driver_license": "Unknown",
+                    "validation_status": "FAIL",
+                    "critical_errors": ["Driver data is missing or invalid"],
+                    "warnings": [],
+                    "matches": [],
+                    "mvr_validation": {"status": "ERROR", "critical_errors": ["Driver data missing"], "warnings": [], "matches": []},
+                    "dash_validation": {"status": "ERROR", "critical_errors": ["Driver data missing"], "warnings": [], "matches": []},
+                    "license_progression_validation": {"status": "ERROR", "critical_errors": ["Driver data missing"], "warnings": [], "matches": []},
+                    "convictions_validation": {"status": "ERROR", "critical_errors": ["Driver data missing"], "warnings": [], "matches": []}
+                }
+            
+            driver_report = {
+                "driver_name": driver.get("full_name"),
+                "driver_license": driver.get("licence_number"),
+                "validation_status": "PASS",
                 "critical_errors": [],
                 "warnings": [],
-                "matches": []
-            },
-            "dash_validation": {
-                "status": "NOT_FOUND", 
-                "critical_errors": [],
-                "warnings": [],
-                "matches": []
-            },
-            "license_progression_validation": {
-                "status": "NOT_FOUND",
-                "critical_errors": [],
-                "warnings": [],
-                "matches": []
-            },
-            "convictions_validation": {
-                "status": "NOT_FOUND",
-                "critical_errors": [],
-                "warnings": [],
-                "matches": []
+                "matches": [],
+                "mvr_validation": {
+                    "status": "NOT_FOUND",
+                    "critical_errors": [],
+                    "warnings": [],
+                    "matches": []
+                },
+                "dash_validation": {
+                    "status": "NOT_FOUND", 
+                    "critical_errors": [],
+                    "warnings": [],
+                    "matches": []
+                },
+                "license_progression_validation": {
+                    "status": "NOT_FOUND",
+                    "critical_errors": [],
+                    "warnings": [],
+                    "matches": []
+                },
+                "convictions_validation": {
+                    "status": "NOT_FOUND",
+                    "critical_errors": [],
+                    "warnings": [],
+                    "matches": []
+                }
             }
-        }
 
-        # Normalize license numbers for comparison
-        quote_license = driver.get("licence_number", "").replace("-", "")
-        
-        # Find matching MVR and DASH records
-        matched_mvr = self._find_matching_mvr(quote_license, mvrs)
-        matched_dash = self._find_matching_dash(quote_license, dashes)
-        
-        # Enhanced MVR validation with new rules
-        if matched_mvr:
-            mvr_validation = self._validate_mvr_data_enhanced(driver, matched_mvr, quote)
-            driver_report["mvr_validation"] = mvr_validation
-            driver_report["critical_errors"].extend(mvr_validation["critical_errors"])
-            driver_report["warnings"].extend(mvr_validation["warnings"])
-            driver_report["matches"].extend(mvr_validation["matches"])
+            # Normalize license numbers for comparison
+            quote_license_raw = driver.get("licence_number", "")
+            quote_license = quote_license_raw.replace("-", "") if quote_license_raw else ""
             
-        # Enhanced license progression validation
-        if matched_mvr:
-            license_validation = self._validate_license_progression_enhanced(driver, matched_mvr)
-            driver_report["license_progression_validation"] = license_validation
-            driver_report["critical_errors"].extend(license_validation["critical_errors"])
-            driver_report["warnings"].extend(license_validation["warnings"])
-            driver_report["matches"].extend(license_validation["matches"])
+            # Find matching MVR and DASH records
+            matched_mvr = self._find_matching_mvr(quote_license, mvrs)
+            matched_dash = self._find_matching_dash(quote_license, dashes)
             
-        # Enhanced convictions validation
-        if matched_mvr:
-            convictions_validation = self._validate_convictions_enhanced(driver, matched_mvr, quote)
-            driver_report["convictions_validation"] = convictions_validation
-            driver_report["critical_errors"].extend(convictions_validation["critical_errors"])
-            driver_report["warnings"].extend(convictions_validation["warnings"])
-            driver_report["matches"].extend(convictions_validation["matches"])
+            # Enhanced MVR validation with new rules
+            if matched_mvr:
+                mvr_validation = self._validate_mvr_data_enhanced(driver, matched_mvr, quote)
+                driver_report["mvr_validation"] = mvr_validation
+                driver_report["critical_errors"].extend(mvr_validation["critical_errors"])
+                driver_report["warnings"].extend(mvr_validation["warnings"])
+                driver_report["matches"].extend(mvr_validation["matches"])
+                
+            # Enhanced license progression validation
+            if matched_mvr:
+                license_validation = self._validate_license_progression_enhanced(driver, matched_mvr)
+                driver_report["license_progression_validation"] = license_validation
+                driver_report["critical_errors"].extend(license_validation["critical_errors"])
+                driver_report["warnings"].extend(license_validation["warnings"])
+                driver_report["matches"].extend(license_validation["matches"])
+                
+            # Enhanced convictions validation
+            if matched_mvr:
+                convictions_validation = self._validate_convictions_enhanced(driver, matched_mvr, quote)
+                driver_report["convictions_validation"] = convictions_validation
+                driver_report["critical_errors"].extend(convictions_validation["critical_errors"])
+                driver_report["warnings"].extend(convictions_validation["warnings"])
+                driver_report["matches"].extend(convictions_validation["matches"])
+                
+            # Validate DASH data  
+            if matched_dash:
+                dash_validation = self._validate_dash_data(driver, matched_dash, quote)
+                driver_report["dash_validation"] = dash_validation
+                driver_report["critical_errors"].extend(dash_validation.get("critical_errors", []))
+                driver_report["warnings"].extend(dash_validation.get("warnings", []))
+                driver_report["matches"].extend(dash_validation.get("matches", []))
             
-        # Validate DASH data  
-        if matched_dash:
-            dash_validation = self._validate_dash_data(driver, matched_dash, quote)
-            driver_report["dash_validation"] = dash_validation
-            driver_report["critical_errors"].extend(dash_validation.get("critical_errors", []))
-            driver_report["warnings"].extend(dash_validation.get("warnings", []))
-            driver_report["matches"].extend(dash_validation.get("matches", []))
-        
-        # Determine overall validation status
-        driver_report["validation_status"] = self._determine_overall_status_enhanced(driver_report)
-        
-        return driver_report
+            # Determine overall validation status
+            driver_report["validation_status"] = self._determine_overall_status_enhanced(driver_report)
+            
+            return driver_report
+            
+        except Exception as e:
+            print(f"Error validating driver {driver.get('full_name', 'Unknown')}: {e}")
+            return {
+                "driver_name": driver.get("full_name", "Unknown") if driver else "Unknown",
+                "driver_license": driver.get("licence_number", "Unknown") if driver else "Unknown",
+                "validation_status": "FAIL",
+                "critical_errors": [f"Validation error: {str(e)}"],
+                "warnings": [],
+                "matches": [],
+                "mvr_validation": {"status": "ERROR", "critical_errors": [f"Validation error: {str(e)}"], "warnings": [], "matches": []},
+                "dash_validation": {"status": "ERROR", "critical_errors": [f"Validation error: {str(e)}"], "warnings": [], "matches": []},
+                "license_progression_validation": {"status": "ERROR", "critical_errors": [f"Validation error: {str(e)}"], "warnings": [], "matches": []},
+                "convictions_validation": {"status": "ERROR", "critical_errors": [f"Validation error: {str(e)}"], "warnings": [], "matches": []}
+            }
 
     def _find_matching_mvr(self, quote_license, mvrs):
         """Find matching MVR record by license number"""
         for mvr in mvrs:
-            mvr_license = mvr.get("licence_number", "").replace("-", "")
+            mvr_license_raw = mvr.get("licence_number")
+            if mvr_license_raw is None:
+                continue
+            mvr_license = mvr_license_raw.replace("-", "")
             if mvr_license == quote_license:
                 return mvr
         return None
@@ -159,7 +224,10 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
     def _find_matching_dash(self, quote_license, dashes):
         """Find matching DASH record by license number"""
         for dash in dashes:
-            dash_license = dash.get("dln", "").replace("-", "")
+            dash_license_raw = dash.get("dln")
+            if dash_license_raw is None:
+                continue
+            dash_license = dash_license_raw.replace("-", "")
             if dash_license == quote_license:
                 return dash
         return None
@@ -176,8 +244,10 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         }
         
         # Critical field comparisons: license_number, name, address
-        quote_license = driver.get("licence_number", "").replace("-", "")
-        mvr_license = mvr.get("licence_number", "").replace("-", "")
+        quote_license_raw = driver.get("licence_number", "")
+        quote_license = quote_license_raw.replace("-", "") if quote_license_raw else ""
+        mvr_license_raw = mvr.get("licence_number", "")
+        mvr_license = mvr_license_raw.replace("-", "") if mvr_license_raw else ""
         
         if quote_license and mvr_license:
             if quote_license == mvr_license:
@@ -235,7 +305,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         mvr_dob = mvr.get("birth_date", "")
         
         if quote_dob and mvr_dob:
-            if self._dates_match(quote_dob, mvr_dob):
+            if self._dates_match(quote_dob, mvr_dob, "quote", "mvr"):
                 validation["matches"].append("Date of birth matches between Quote and MVR")
             else:
                 validation["critical_errors"].append("Date of birth mismatch between Quote and MVR")
@@ -266,6 +336,9 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
     def _validate_license_progression_enhanced(self, driver, mvr):
         """
         Enhanced license progression validation with G1/G2/G date logic
+        Implements the business rules:
+        - If DD/MM of MVR expiry date and birth date match: g1_date = issue_date, g2_date = g1_date + 1 year, g_date = g2_date + 1 year
+        - If DD/MM don't match: g1_date = expiry_date - 5 years, g2_date = g1_date + 1 year, g_date = g2_date + 1 year
         """
         validation = {
             "status": "PASS",
@@ -274,65 +347,145 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             "matches": []
         }
         
-        # Extract dates from MVR
-        mvr_expiry_date = mvr.get("expiry_date", "")
-        mvr_birth_date = mvr.get("birth_date", "")
-        mvr_issue_date = mvr.get("issue_date", "")
-        
         # Extract dates from Quote driver
-        quote_expiry_date = driver.get("expiry_date", "")
-        quote_birth_date = driver.get("birth_date", "")
         quote_g1_date = driver.get("date_g1", "")
         quote_g2_date = driver.get("date_g2", "")
         quote_g_date = driver.get("date_g", "")
         license_class = driver.get("licence_class", "")
         
-        # Calculate expected G1/G2/G dates based on conditions
-        calculated_dates = self._calculate_license_dates(
-            mvr_expiry_date, mvr_birth_date, mvr_issue_date
-        )
+        # Extract dates from MVR
+        mvr_expiry_date = mvr.get("expiry_date", "")
+        mvr_birth_date = mvr.get("birth_date", "")
+        mvr_issue_date = mvr.get("issue_date", "")
+        
+        # Debug: Print the comparison details
+        print(f"DEBUG: License progression validation:")
+        print(f"  MVR expiry: {mvr_expiry_date}")
+        print(f"  MVR birth: {mvr_birth_date}")
+        print(f"  MVR issue: {mvr_issue_date}")
+        print(f"  Quote G1: {quote_g1_date}")
+        print(f"  Quote G2: {quote_g2_date}")
+        print(f"  Quote G: {quote_g_date}")
+        
+        # Calculate expected G1/G2/G dates from MVR data using business rules
+        calculated_dates = self._calculate_license_dates_from_mvr(mvr_expiry_date, mvr_birth_date, mvr_issue_date)
         
         if calculated_dates:
-            g1_date, g2_date, g_date = calculated_dates
+            calculated_g1, calculated_g2, calculated_g = calculated_dates
+            print(f"  Calculated G1: {calculated_g1}")
+            print(f"  Calculated G2: {calculated_g2}")
+            print(f"  Calculated G: {calculated_g}")
             
-            # Debug: Print the comparison details
-            print(f"DEBUG: License progression validation:")
-            print(f"  MVR expiry: {mvr_expiry_date}")
-            print(f"  MVR birth: {mvr_birth_date}")
-            print(f"  MVR issue: {mvr_issue_date}")
-            print(f"  Quote G1: {quote_g1_date}")
-            print(f"  Quote G2: {quote_g2_date}")
-            print(f"  Quote G: {quote_g_date}")
-            print(f"  Calculated G1: {g1_date}")
-            print(f"  Calculated G2: {g2_date}")
-            print(f"  Calculated G: {g_date}")
-            
-            # Compare calculated vs quoted dates
-            if quote_g1_date and self._dates_match(quote_g1_date, g1_date):
-                validation["matches"].append(f"G1 date matches calculated progression: {g1_date}")
-            else:
-                validation["critical_errors"].append(f"G1 date mismatch - Expected: {g1_date}, Quote: {quote_g1_date}")
-                validation["status"] = "FAIL"
-            
-            if quote_g2_date and self._dates_match(quote_g2_date, g2_date):
-                validation["matches"].append(f"G2 date matches calculated progression: {g2_date}")
-            else:
-                validation["critical_errors"].append(f"G2 date mismatch - Expected: {g2_date}, Quote: {quote_g2_date}")
-                validation["status"] = "FAIL"
-            
-            # Skip G date validation if license_class is G2
-            if license_class != "G2":
-                if quote_g_date and self._dates_match(quote_g_date, g_date):
-                    validation["matches"].append(f"G date matches calculated progression: {g_date}")
+            # Compare calculated dates with quote dates
+            if quote_g1_date:
+                if self._dates_match(calculated_g1, quote_g1_date, "quote", "quote"):
+                    validation["matches"].append(f"G1 date matches: Quote ({quote_g1_date}) = Calculated ({calculated_g1})")
                 else:
-                    validation["critical_errors"].append(f"G date mismatch - Expected: {g_date}, Quote: {quote_g_date}")
+                    validation["critical_errors"].append(f"G1 date mismatch: Quote ({quote_g1_date}) ≠ Calculated ({calculated_g1})")
                     validation["status"] = "FAIL"
             else:
-                validation["matches"].append("G date validation skipped (G2 license class)")
+                validation["critical_errors"].append(f"Quote missing G1 date, expected: {calculated_g1}")
+                validation["status"] = "FAIL"
+            
+            if quote_g2_date:
+                if self._dates_match(calculated_g2, quote_g2_date, "quote", "quote"):
+                    validation["matches"].append(f"G2 date matches: Quote ({quote_g2_date}) = Calculated ({calculated_g2})")
+                else:
+                    validation["critical_errors"].append(f"G2 date mismatch: Quote ({quote_g2_date}) ≠ Calculated ({calculated_g2})")
+                    validation["status"] = "FAIL"
+            else:
+                validation["critical_errors"].append(f"Quote missing G2 date, expected: {calculated_g2}")
+                validation["status"] = "FAIL"
+            
+            if quote_g_date:
+                if self._dates_match(calculated_g, quote_g_date, "quote", "quote"):
+                    validation["matches"].append(f"G date matches: Quote ({quote_g_date}) = Calculated ({calculated_g})")
+                else:
+                    validation["critical_errors"].append(f"G date mismatch: Quote ({quote_g_date}) ≠ Calculated ({calculated_g})")
+                    validation["status"] = "FAIL"
+            else:
+                validation["critical_errors"].append(f"Quote missing G date, expected: {calculated_g}")
+                validation["status"] = "FAIL"
         else:
-            validation["warnings"].append("Unable to calculate license progression dates - missing MVR data")
+            validation["critical_errors"].append("Could not calculate expected license dates from MVR data")
+            validation["status"] = "FAIL"
+        
+        # Validate that the progression makes sense (additional check)
+        if quote_g1_date and quote_g2_date:
+            if not self._is_date_before(quote_g1_date, quote_g2_date, "quote", "quote"):
+                validation["critical_errors"].append(f"G1 date ({quote_g1_date}) should be before G2 date ({quote_g2_date})")
+                validation["status"] = "FAIL"
+        
+        if quote_g2_date and quote_g_date:
+            if not self._is_date_before(quote_g2_date, quote_g_date, "quote", "quote"):
+                validation["critical_errors"].append(f"G2 date ({quote_g2_date}) should be before G date ({quote_g_date})")
+                validation["status"] = "FAIL"
         
         return validation
+    
+    def _is_date_before(self, date1_str, date2_str, source1_type=None, source2_type=None):
+        """
+        Check if date1 is before date2
+        source1_type, source2_type: 'mvr', 'dash', 'quote', or None for auto-detection
+        """
+        try:
+            # Normalize both dates to YYYY-MM-DD format
+            norm_date1 = self._normalize_date(date1_str, source1_type)
+            norm_date2 = self._normalize_date(date2_str, source2_type)
+            
+            if norm_date1 and norm_date2:
+                return norm_date1 < norm_date2
+        except Exception as e:
+            print(f"DEBUG: Date comparison failed: {date1_str} vs {date2_str}: {e}")
+        return False
+
+    def _calculate_license_dates_from_mvr(self, expiry_date, birth_date, issue_date):
+        """
+        Calculate G1/G2/G dates from MVR data using business rules:
+        - If DD/MM of expiry_date and birth_date match: g1_date = issue_date, g2_date = g1_date + 1 year, g_date = g2_date + 1 year
+        - If DD/MM don't match: g1_date = expiry_date - 5 years, g2_date = g1_date + 1 year, g_date = g2_date + 1 year
+        """
+        if not expiry_date or not birth_date or not issue_date:
+            return None
+        
+        try:
+            # Parse dates with correct source types (MVR format: DD/MM/YYYY)
+            expiry = self._parse_date(expiry_date, "mvr")
+            birth = self._parse_date(birth_date, "mvr")
+            issue = self._parse_date(issue_date, "mvr")
+            
+            if not all([expiry, birth, issue]):
+                return None
+            
+            # Check if DD/MM of expiry_date and birth_date match
+            expiry_dd_mm = (expiry.day, expiry.month)
+            birth_dd_mm = (birth.day, birth.month)
+            
+            print(f"DEBUG: Comparing DD/MM - Expiry: {expiry_dd_mm}, Birth: {birth_dd_mm}")
+            
+            if expiry_dd_mm == birth_dd_mm:
+                # If DD/MM match: g1_date = issue_date, g2_date = g1_date + 1 year, g_date = g2_date + 1 year
+                print("DEBUG: DD/MM match - using issue_date as G1")
+                g1_date = issue
+                g2_date = issue + relativedelta(years=1)
+                g_date = g2_date + relativedelta(years=1)
+            else:
+                # If DD/MM don't match: g1_date = expiry_date - 5 years, g2_date = g1_date + 1 year, g_date = g2_date + 1 year
+                print("DEBUG: DD/MM don't match - using expiry_date - 5 years as G1")
+                g1_date = expiry - relativedelta(years=5)
+                g2_date = g1_date + relativedelta(years=1)
+                g_date = g2_date + relativedelta(years=1)
+            
+            # Return dates in Quote format (MM/DD/YYYY)
+            return (
+                g1_date.strftime("%m/%d/%Y"),
+                g2_date.strftime("%m/%d/%Y"),
+                g_date.strftime("%m/%d/%Y")
+            )
+            
+        except Exception as e:
+            print(f"DEBUG: Error calculating license dates: {e}")
+            return None
 
     def _calculate_license_dates(self, expiry_date, birth_date, issue_date):
         """
@@ -342,10 +495,10 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             return None
         
         try:
-            # Parse dates
-            expiry = self._parse_date(expiry_date)
-            birth = self._parse_date(birth_date)
-            issue = self._parse_date(issue_date)
+            # Parse dates with correct source types
+            expiry = self._parse_date(expiry_date, "mvr")
+            birth = self._parse_date(birth_date, "mvr")
+            issue = self._parse_date(issue_date, "mvr")
             
             if not all([expiry, birth, issue]):
                 return None
@@ -408,7 +561,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
                 quote_description = quote_conv.get("description", "")
                 
                 # Check if dates and descriptions match
-                if (self._dates_match(mvr_date, quote_date) and 
+                if (self._dates_match(mvr_date, quote_date, "mvr", "quote") and 
                     self._conviction_descriptions_match(mvr_description, quote_description)):
                     validation["matches"].append(f"Conviction matched: {mvr_date} - {mvr_description}")
                     found_match = True
@@ -428,7 +581,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
                 mvr_date = mvr_conv.get("offence_date", "")
                 mvr_description = mvr_conv.get("description", "")
                 
-                if (self._dates_match(quote_date, mvr_date) and 
+                if (self._dates_match(quote_date, mvr_date, "quote", "mvr") and 
                     self._conviction_descriptions_match(quote_description, mvr_description)):
                     found_in_mvr = True
                     break
@@ -454,7 +607,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         dash_dob = dash.get("date_of_birth", "")
         
         if quote_dob and dash_dob:
-            if self._dates_match(quote_dob, dash_dob):
+            if self._dates_match(quote_dob, dash_dob, "quote", "dash"):
                 validation["matches"].append("Date of birth matches between Quote and DASH")
             else:
                 validation["critical_errors"].append("Date of birth mismatch between Quote and DASH")
@@ -481,8 +634,10 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
                 validation["warnings"].append("Gender mismatch between Quote and DASH")
         
         # License number validation
-        quote_license = driver.get("licence_number", "").replace("-", "")
-        dash_license = dash.get("dln", "").replace("-", "")
+        quote_license_raw = driver.get("licence_number", "")
+        quote_license = quote_license_raw.replace("-", "") if quote_license_raw else ""
+        dash_license_raw = dash.get("dln", "")
+        dash_license = dash_license_raw.replace("-", "") if dash_license_raw else ""
         
         if quote_license and dash_license:
             if quote_license == dash_license:
@@ -510,7 +665,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
 
     def _validate_policies(self, dash, quote):
         """
-        Validate policy information between DASH and quote
+        Validate policy information between DASH and quote according to business rules
         """
         validation = {
             "critical_errors": [],
@@ -521,26 +676,45 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         policies = dash.get("policies", [])
         active_policies = [p for p in policies if "Active" in p.get("status", "")]
         
-        if active_policies:
-            validation["matches"].append(f"Found {len(active_policies)} active policy(ies) in DASH")
-            
-            # Check if current carrier matches
-            quote_current_carrier = quote.get("drivers", [{}])[0].get("current_carrier", "")
-            if quote_current_carrier:
-                for policy in active_policies:
-                    if self._similar(quote_current_carrier, policy.get("company", "")):
-                        validation["matches"].append("Current carrier matches DASH policy")
-                        break
-                else:
-                    validation["warnings"].append("Current carrier in quote doesn't match DASH policies")
-        else:
+        if not active_policies:
             validation["critical_errors"].append("No active policy found in DASH")
+            return validation
+        
+        validation["matches"].append(f"Found {len(active_policies)} active policy(ies) in DASH")
+        
+        # Business rule: Compare date_insured from Quote with first policy start_date from DASH
+        quote_date_insured = ""
+        if quote.get("drivers"):
+            quote_date_insured = quote["drivers"][0].get("date_insured", "")
+        
+        if quote_date_insured and active_policies:
+            # Sort by start_date to get oldest (first) policy
+            sorted_policies = sorted(active_policies, key=lambda x: x.get("start_date", ""))
+            first_policy_start = sorted_policies[0].get("start_date", "")
+            
+            if self._dates_match(quote_date_insured, first_policy_start, "quote", "dash"):
+                validation["matches"].append(f"Date insured ({quote_date_insured}) matches first policy start date ({first_policy_start})")
+            else:
+                validation["critical_errors"].append(f"Date insured ({quote_date_insured}) doesn't match first policy start date ({first_policy_start})")
+        
+        # Additional check: Current carrier matching (existing logic)
+        quote_current_carrier = ""
+        if quote.get("drivers"):
+            quote_current_carrier = quote["drivers"][0].get("current_carrier", "")
+        
+        if quote_current_carrier:
+            for policy in active_policies:
+                if self._similar(quote_current_carrier, policy.get("company", "")):
+                    validation["matches"].append("Current carrier matches DASH policy")
+                    break
+            else:
+                validation["warnings"].append("Current carrier in quote doesn't match DASH policies")
         
         return validation
 
     def _validate_claims(self, dash, quote):
         """
-        Validate claims information between DASH and quote
+        Validate claims information between DASH and quote according to business rules
         """
         validation = {
             "critical_errors": [],
@@ -548,19 +722,41 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             "matches": []
         }
         
-        claims = dash.get("claims", [])
+        dash_claims = dash.get("claims", [])
+        quote_claims = quote.get("claims", [])
         
-        if claims:
-            validation["warnings"].append(f"DASH shows {len(claims)} claim(s) - verify quote includes all claims")
-            
-            # List claims for verification
-            for claim in claims:
-                claim_date = claim.get("date", "")
-                claim_amount = claim.get("total_loss", "")
-                claim_status = claim.get("claim_status", "")
-                validation["warnings"].append(f"DASH claim: {claim_date} - ${claim_amount} - {claim_status}")
-        else:
+        # Get policyholder name from quote
+        policyholder_name = ""
+        if quote.get("drivers"):
+            policyholder_name = quote["drivers"][0].get("full_name", "")
+        
+        if not dash_claims:
             validation["matches"].append("No claims found in DASH")
+            return validation
+        
+        validation["matches"].append(f"Found {len(dash_claims)} claim(s) in DASH")
+        
+        for dash_claim in dash_claims:
+            at_fault_percentage = dash_claim.get("at_fault_percentage", 0)
+            claim_number = dash_claim.get("claim_number", "Unknown")
+            dash_claim_date = dash_claim.get("date", "")
+            first_party_driver = dash_claim.get("first_party_driver", "")
+            
+            if at_fault_percentage > 0:
+                # Check if first_party_driver equals policyholder name
+                if first_party_driver == policyholder_name:
+                    # Check if claim date matches any quote claim
+                    quote_claim_dates = [claim.get("date", "") for claim in quote_claims]
+                    
+                    if dash_claim_date in quote_claim_dates:
+                        validation["matches"].append(f"Claim {claim_number} validated (at-fault: {at_fault_percentage}%)")
+                    else:
+                        validation["critical_errors"].append(f"Claim {claim_number} date mismatch - DASH: {dash_claim_date}, Quote: {quote_claim_dates}")
+                else:
+                    validation["warnings"].append(f"Claim {claim_number} - different driver ({first_party_driver} vs {policyholder_name})")
+            else:
+                # Skip claims with 0% at-fault as per business rules
+                validation["matches"].append(f"Claim {claim_number} skipped (0% at-fault)")
         
         return validation
 
@@ -568,9 +764,14 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         """
         Check if two names contain the same key parts (first and last name)
         """
+        if not name1 or not name2:
+            return False
+        
         # Split names into parts first, then clean each part
-        parts1 = [part.strip().upper() for part in name1.replace(",", " ").split() if len(part.strip()) > 2]
-        parts2 = [part.strip().upper() for part in name2.replace(",", " ").split() if len(part.strip()) > 2]
+        name1_clean = name1.replace(",", " ") if name1 else ""
+        name2_clean = name2.replace(",", " ") if name2 else ""
+        parts1 = [part.strip().upper() for part in name1_clean.split() if len(part.strip()) > 2]
+        parts2 = [part.strip().upper() for part in name2_clean.split() if len(part.strip()) > 2]
         
         # Check if they share key name parts
         for part1 in parts1:
@@ -581,69 +782,177 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         # Also check if the names are similar overall
         return self._similar(name1, name2)
 
-    def _dates_match(self, date1, date2):
+    def _dates_match(self, date1, date2, source1_type=None, source2_type=None):
         """
         Compare dates in different formats
+        source1_type, source2_type: 'mvr', 'dash', 'quote', or None for auto-detection
         """
         try:
             # Normalize both dates to YYYY-MM-DD format
-            norm_date1 = self._normalize_date(date1)
-            norm_date2 = self._normalize_date(date2)
+            norm_date1 = self._normalize_date(date1, source1_type)
+            norm_date2 = self._normalize_date(date2, source2_type)
             
             return norm_date1 == norm_date2
         except:
             return False
 
-    def _parse_date(self, date_str):
+    def _parse_date(self, date_str, source_type=None):
         """
         Parse date string to datetime object
+        source_type: 'mvr', 'dash', 'quote', or None for auto-detection
+        
+        Date formats by source:
+        - MVR: dd/mm/yyyy
+        - Dash: yyyy/mm/dd  
+        - Quote: mm/dd/yyyy
         """
         if not date_str:
             return None
             
         try:
-            # Try different date formats in order of likelihood
-            formats = [
-                "%m/%d/%Y",    # MM/DD/YYYY (most common)
-                "%d/%m/%Y",    # DD/MM/YYYY (European format)
-                "%Y-%m-%d",    # YYYY-MM-DD (ISO format)
-                "%m/%d/%y",    # MM/DD/YY (2-digit year)
-                "%d/%m/%y"     # DD/MM/YY (2-digit year)
-            ]
+            # Handle different date formats based on source type
+            if "/" in date_str:
+                parts = date_str.split("/")
+                if len(parts) == 3:
+                    if source_type == "mvr":
+                        # MVR dates are in DD/MM/YYYY format
+                        return datetime.strptime(date_str, "%d/%m/%Y")
+                    elif source_type == "dash":
+                        # DASH dates are in YYYY/MM/DD format
+                        return datetime.strptime(date_str, "%Y/%m/%d")
+                    elif source_type == "quote":
+                        # Quote dates are in MM/DD/YYYY format
+                        return datetime.strptime(date_str, "%m/%d/%Y")
+                    else:
+                        # Auto-detection: try different formats in order of likelihood
+                        # First try to determine format based on the values
+                        day, month, year = parts
+                        
+                        # If first part is 4 digits, it's likely YYYY/MM/DD (dash format)
+                        if len(day) == 4 and day.isdigit():
+                            try:
+                                return datetime.strptime(date_str, "%Y/%m/%d")
+                            except ValueError:
+                                pass
+                        
+                        # If second part is > 12, it's likely DD/MM/YYYY (mvr format)
+                        if month.isdigit() and int(month) > 12:
+                            try:
+                                return datetime.strptime(date_str, "%d/%m/%Y")
+                            except ValueError:
+                                pass
+                        
+                        # If first part is <= 12, it's likely MM/DD/YYYY (quote format)
+                        if day.isdigit() and int(day) <= 12:
+                            try:
+                                return datetime.strptime(date_str, "%m/%d/%Y")
+                            except ValueError:
+                                pass
+                        
+                        # Fallback: try different formats in order of likelihood
+                        formats = [
+                            "%m/%d/%Y",    # MM/DD/YYYY (quote format)
+                            "%d/%m/%Y",    # DD/MM/YYYY (MVR format)
+                            "%Y/%m/%d",    # YYYY/MM/DD (DASH format)
+                            "%Y-%m-%d",    # YYYY-MM-DD (ISO format)
+                            "%m/%d/%y",    # MM/DD/YY (2-digit year)
+                            "%d/%m/%y",    # DD/MM/YY (2-digit year)
+                            "%y/%m/%d"     # YY/MM/DD (2-digit year)
+                        ]
+                        
+                        for fmt in formats:
+                            try:
+                                return datetime.strptime(date_str, fmt)
+                            except ValueError:
+                                continue
             
-            for fmt in formats:
-                try:
-                    return datetime.strptime(date_str, fmt)
-                except ValueError:
-                    continue
+            elif "-" in date_str:
+                # Already in YYYY-MM-DD format
+                return datetime.strptime(date_str, "%Y-%m-%d")
             
             return None
         except Exception as e:
+            print(f"DEBUG: Date parsing failed for '{date_str}' from {source_type}: {e}")
             return None
 
-    def _normalize_date(self, date_str):
+    def _normalize_date(self, date_str, source_type=None):
         """
         Normalize date strings to YYYY-MM-DD format for comparison
+        source_type: 'mvr', 'dash', 'quote', or None for auto-detection
+        
+        Date formats by source:
+        - MVR: dd/mm/yyyy
+        - Dash: yyyy/mm/dd  
+        - Quote: mm/dd/yyyy
         """
         if not date_str:
             return None
             
-        # Handle different date formats
+        # Handle different date formats based on source type
         if "/" in date_str:
             parts = date_str.split("/")
             if len(parts) == 3:
-                # Try both MM/DD/YYYY and DD/MM/YYYY formats
                 try:
-                    # Try MM/DD/YYYY first (if first part <= 12)
-                    if int(parts[0]) <= 12 and int(parts[1]) <= 31:
-                        return f"{parts[2]}-{parts[0].zfill(2)}-{parts[1].zfill(2)}"
-                    # Try DD/MM/YYYY (if first part > 12, it's likely day)
-                    elif int(parts[0]) > 12 and int(parts[1]) <= 12:
-                        return f"{parts[2]}-{parts[1].zfill(2)}-{parts[0].zfill(2)}"
-                    # If both could be valid, try MM/DD/YYYY first
+                    if source_type == "mvr":
+                        # MVR dates are in DD/MM/YYYY format
+                        dt = datetime.strptime(date_str, "%d/%m/%Y")
+                        return dt.strftime("%Y-%m-%d")
+                    elif source_type == "dash":
+                        # DASH dates are in YYYY/MM/DD format
+                        dt = datetime.strptime(date_str, "%Y/%m/%d")
+                        return dt.strftime("%Y-%m-%d")
+                    elif source_type == "quote":
+                        # Quote dates are in MM/DD/YYYY format
+                        dt = datetime.strptime(date_str, "%m/%d/%Y")
+                        return dt.strftime("%Y-%m-%d")
                     else:
-                        return f"{parts[2]}-{parts[0].zfill(2)}-{parts[1].zfill(2)}"
-                except:
+                        # Auto-detection: try different formats in order of likelihood
+                        # First try to determine format based on the values
+                        day, month, year = parts
+                        
+                        # If first part is 4 digits, it's likely YYYY/MM/DD (dash format)
+                        if len(day) == 4 and day.isdigit():
+                            try:
+                                dt = datetime.strptime(date_str, "%Y/%m/%d")
+                                return dt.strftime("%Y-%m-%d")
+                            except ValueError:
+                                pass
+                        
+                        # If second part is > 12, it's likely DD/MM/YYYY (mvr format)
+                        if month.isdigit() and int(month) > 12:
+                            try:
+                                dt = datetime.strptime(date_str, "%d/%m/%Y")
+                                return dt.strftime("%Y-%m-%d")
+                            except ValueError:
+                                pass
+                        
+                        # If first part is <= 12, it's likely MM/DD/YYYY (quote format)
+                        if day.isdigit() and int(day) <= 12:
+                            try:
+                                dt = datetime.strptime(date_str, "%m/%d/%Y")
+                                return dt.strftime("%Y-%m-%d")
+                            except ValueError:
+                                pass
+                        
+                        # Fallback: try different formats in order of likelihood
+                        formats = [
+                            ("%m/%d/%Y", "quote"),    # MM/DD/YYYY (most common)
+                            ("%d/%m/%Y", "mvr"),      # DD/MM/YYYY (MVR format)
+                            ("%Y/%m/%d", "dash"),     # YYYY/MM/DD (DASH format)
+                            ("%m/%d/%y", "quote"),    # MM/DD/YY (2-digit year)
+                            ("%d/%m/%y", "mvr"),      # DD/MM/YY (2-digit year)
+                            ("%y/%m/%d", "dash"),     # YY/MM/DD (2-digit year)
+                        ]
+                        
+                        for fmt, fmt_type in formats:
+                            try:
+                                dt = datetime.strptime(date_str, fmt)
+                                return dt.strftime("%Y-%m-%d")
+                            except ValueError:
+                                continue
+                    
+                except Exception as e:
+                    print(f"DEBUG: Date normalization failed for '{date_str}' from {source_type}: {e}")
                     pass
         elif "-" in date_str:
             return date_str  # Already in YYYY-MM-DD format
@@ -851,10 +1160,34 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         """
         Determine overall validation status for a driver with enhanced logic
         """
-        # Count critical errors and warnings
+        # Count critical errors and warnings from all validation sections
         total_critical_errors = len(driver_report.get("critical_errors", []))
         total_warnings = len(driver_report.get("warnings", []))
         total_matches = len(driver_report.get("matches", []))
+        
+        # Also check individual validation sections
+        mvr_validation = driver_report.get("mvr_validation", {})
+        dash_validation = driver_report.get("dash_validation", {})
+        license_validation = driver_report.get("license_progression_validation", {})
+        convictions_validation = driver_report.get("convictions_validation", {})
+        
+        # Add critical errors from individual sections
+        total_critical_errors += len(mvr_validation.get("critical_errors", []))
+        total_critical_errors += len(dash_validation.get("critical_errors", []))
+        total_critical_errors += len(license_validation.get("critical_errors", []))
+        total_critical_errors += len(convictions_validation.get("critical_errors", []))
+        
+        # Add warnings from individual sections
+        total_warnings += len(mvr_validation.get("warnings", []))
+        total_warnings += len(dash_validation.get("warnings", []))
+        total_warnings += len(license_validation.get("warnings", []))
+        total_warnings += len(convictions_validation.get("warnings", []))
+        
+        # Add matches from individual sections
+        total_matches += len(mvr_validation.get("matches", []))
+        total_matches += len(dash_validation.get("matches", []))
+        total_matches += len(license_validation.get("matches", []))
+        total_matches += len(convictions_validation.get("matches", []))
         
         # If there are any critical errors, status is FAIL
         if total_critical_errors > 0:

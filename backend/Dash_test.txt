@@ -1,266 +1,607 @@
 DRIVER REPORT
-Malcolm Jonathan
+Yang Palmo
  
  
-DLN: M0250-40919-10709 Ontario
-Date of Birth: 1991-07-09
-Report Date: 2025-03-11 10:12:38 EDT
+DLN: P0311-78928-76026 Ontario
+Date of Birth: 1987-10-26
+Report Date: 2025-08-03 20:22:45 EDT
 Requestor: Nishank Bhola
 Company: Vieira & Associates Insurance Brokers Ltd.
 Comment: Not available
-Last Data Update: 2025-01-03
-Number of Years of Data: 9
-Address: 92 Pritchard Ave Toronto ON M6N1T3
-Number of Claims in Last 6 Years: 3
+Last Data Update: 2025-06-05
+Number of Years of Data: 25
+Address: 47 VANEVERY RANG,ETOBICOKE,ON M8V1Y5
+Number of Claims in Last 6 Years: 2
 Number of Policies at this Address: Not available
 Number of At-Fault Claims in Last 6 Years: 0
-Gender: Male
+Gender: Female
 Number of Comprehensive Losses in Last 6 Years: 0
 Marital Status: Not married
-Number of DCPD Claims in Last 6 Years: 0
-Years Licensed: 0
+Number of DCPD Claims in Last 6 Years: 1
+Years Licensed: 16
 Years of Continuous Insurance: 0
  
 Years Claims Free: 0
  
-Driver Training: No
+Driver Training: NA
  
 Policies
 Note: Information related to commercial policies may be incomplete.
 #1
-2024-05-03 to 2025-05-03
+2025-05-23 to 2026-05-23
+CAA Insurance Company
+ 
+Active
+ 
+ 
+ 
+*POSSIBLE GAP*
+ 
+#2
+2022-10-19 to 2025-01-11
+CAA Insurance Company
+*OVERLAP*   
+Cancelled - insured's request
+#3
+2020-09-24 to 2023-09-24
+Aviva Insurance Company of Canada
+*OVERLAP*   
+Expired
+#4
+2019-09-24 to 2020-09-24
 The Wawanesa Mutual Insurance Company
 *OVERLAP*   
-Active
-#2
-2024-03-22 to 2025-03-22
-AVIVA General Insurance Company
+Expired
+#5
+2019-09-04 to 2020-03-04
+Pafco Insurance Company
 *OVERLAP*   
-Active
+Expired
+#6
+2015-12-22 to 2016-09-04
+The Dominion of Canada General Insurance
+Company
+*OVERLAP*   
+Expired
+#7
+2015-09-04 to 2019-09-04
+The Dominion of Canada General Insurance
+Company
+*OVERLAP*   
+Expired
 Claims
 #1
-Date of Loss 2024-07-27
-The Wawanesa Mutual Insurance Company
+Date of Loss 2024-12-08
+CAA Insurance Company
  
-At-Fault : 100%
+At-Fault : 0%
 #2
-Date of Loss 2024-07-27
-The Wawanesa Mutual Insurance Company
- 
+Date of Loss 2024-12-08
+Intact Insurance Company
+*THIRD PARTY*   
 At-Fault : 100%
 #3
-Date of Loss 2024-07-12
-The Wawanesa Mutual Insurance Company
+Date of Loss 2018-09-17
+The Dominion of Canada General Insurance
+Company
+ 
+At-Fault : 100%
+#4
+Date of Loss 2018-09-17
+The Dominion of Canada General Insurance
+Company
+ 
+At-Fault : 100%
+#5
+Date of Loss 2018-04-14
+The Dominion of Canada General Insurance
+Company
+ 
+At-Fault : 100%
+#6
+Date of Loss 2017-10-10
+The Dominion of Canada General Insurance
+Company
  
 At-Fault : 100%
 Previous Inquiries
-2025-03-04   The Wawanesa Group
-Page 1 of 6
+2025-05-08   Vieira & Associates Insurance Brokers Ltd.
+Page 1 of 14
 Policy #1
-2024-05-03 to 2025-05-03
-The Wawanesa Mutual Insurance Company
-*OVERLAP* 
+2025-05-23 to 2026-05-23
+CAA Insurance Company
 Active
-Policy #: 28776670
-Effective Date: 2020-05-03
-Policyholder Name: HUSBANDS COLIN
-Expiry Date: 2025-05-03
-Policyholder Address: 92 PRITCHARD AVE YORK ON M6N1T3
-Cancellation Date: N/A
-Number of Reported Operators: 3
-Number of Private Passenger Vehicles: 4
-Operator: HUSBANDS COLIN
-DLN: H9426-13464-60209 Ontario
-Relationship to Policyholder: NA
-Year of Birth: 1946
-Vehicle #2: Principal Operator
-Vehicle #4: Principal Operator
-Start of the Earliest Term: 2020-05-03
-End of the Latest Term: 2025-05-03
-Operator: MALCOLM-HUSBANDS JOAN
-DLN: M0250-40256-15311 Ontario
-Relationship to Policyholder: NA
-Year of Birth: 1961
-Vehicle #1: Principal Operator
-Vehicle #3: Principal Operator
-Start of the Earliest Term: 2020-05-03
-End of the Latest Term: 2025-05-03
-Operator: Malcolm Jonathan
-DLN: M0250-40919-10709 Ontario
-Relationship to Policyholder: Child
-Year of Birth: 1991
-Vehicle #3: Occasional Operator
-Start of the Earliest Term: 2024-05-03
-End of the Latest Term: 2025-05-03
-Vehicle #1: 2015  SUBARU - FORESTER 2.5i WAGON AWD -
-JF2SJCHC5FH499475
-Coverage: AB, AP, TP-BI, DCPD, TP-PD
-Vehicle Code: 102705
-Commuting Distance (One-Way / Annual): 9km / 7000km
-Vehicle Location: M6N
-Business Use: 0%
-Vehicle Use: Commute
-Branding: None
-Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
-Gross Vehicle Weight: Not available
-Driving Record: 6
- 
-Vehicle #2: 2012  INFINITI - EX35 4DR AWD - JN1AJ0HRXCM451912
-Coverage: AB, TP-BI, DCPD, TP-PD
-Vehicle Code: 148400
-Commuting Distance (One-Way / Annual): 0km / 9000km
-Vehicle Location: M6N
-Business Use: 0%
-Vehicle Use: Pleasure
-Branding: None
-Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
-Gross Vehicle Weight: Not available
-Driving Record: 7
- 
-Vehicle #3: 2011  CHEVROLET - EQUINOX LT 4DR 2WD -
-2CNALDEC8B6463032
-Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
-Vehicle Code: 587601
-Commuting Distance (One-Way / Annual): 9km / 7000km
-Vehicle Location: M6N
-Business Use: 0%
-Vehicle Use: Commute
-Branding: None
-Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
-Gross Vehicle Weight: Not available
-Driving Record: 6
- 
-Vehicle #4: 2009  CHEVROLET - UPLANDER LS - 1GNDU23109D116334
-Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
-Vehicle Code: 577201
-Commuting Distance (One-Way / Annual): 0km / 9000km
-Vehicle Location: M6N
-Business Use: 0%
-Vehicle Use: Pleasure
-Branding: None
-Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
-Gross Vehicle Weight: Not available
-Driving Record: 7
-Page 2 of 6
-Policy #2
-2024-03-22 to 2025-03-22
-AVIVA General Insurance Company
-*OVERLAP* 
-Active
-Policy #: W1329150
-Effective Date: 2024-03-22
-Policyholder Name: Jonathan Malcolm
-Expiry Date: 2025-03-22
-Policyholder Address: 92 Pritchard Ave Toronto ON M6N1T3
+Policy #: A001203552
+Effective Date: 2025-05-23
+Policyholder Name: Yang Palmo
+Expiry Date: 2026-05-23
+Policyholder Address: 47 VANEVERY RANG,ETOBICOKE,ON M8V1Y5
 Cancellation Date: N/A
 Number of Reported Operators: 1
 Number of Private Passenger Vehicles: 1
-Operator: Malcolm Jonathan
-DLN: M0250-40919-10709 Ontario
-Relationship to Policyholder: Self
-Year of Birth: 1991
+Operator: Yang Palmo
+DLN: P0311-78928-76026 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1987
 Vehicle #1: Principal Operator
-Start of the Earliest Term: 2024-03-22
-End of the Latest Term: 2025-03-22
-Vehicle #1: 2017  MAZDA - MAZDA6 GT 4DR - JM1GL1W50H1147715
+Start of the Earliest Term: 2025-05-23
+End of the Latest Term: 2026-05-23
+Vehicle #1: 2007  BMW - X3 3.0si 4DR AWD - WBXPC93417WF00481
 Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
-Vehicle Code: 771901
-Commuting Distance (One-Way / Annual): 10km / 8000km
-Vehicle Location: M6N
-Business Use: 0%
-Vehicle Use: Commute
+Vehicle Code: 907100
+Commuting Distance (One-Way / Annual): 10km / 15000km
+Vehicle Location: M8V
+Business Use: 33%
+Vehicle Use: Business
 Branding: None
-Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Type of Use / Vehicle Class: 07 / Private Passenger Vehicle
 Gross Vehicle Weight: Not available
-Driving Record: 0
-Page 3 of 6
-Claim #1
-Date of Loss 2024-07-27
-The Wawanesa Mutual Insurance Company
-At-Fault : 100%
-Policyholder Name: HUSBANDS COLIN
-Coverage: CL
-Policyholder Address: 92 PRITCHARD AVE YORK ON M6N1T3
-Date Reported: 2024-08-12
-Policy #: 28776670
-Claim Status: Closed
-Claim #: 00700000125343500000
-Total Loss: $7,306.00
-Total Expense: $190.00
- 
-KOL20 - Collision: $7,306.00 (Loss); $190.00 (Expense);
-Vehicle: 2011 CHEVROLET - EQUINOX LT 4DR 2WD - 2CNALDEC8B6463032
+Driving Record: 7
+Page 2 of 14
+Policy #2
+2022-10-19 to 2025-01-11
+CAA Insurance Company
+*OVERLAP* 
+Cancelled - insured's request
+Policy #: A000821646
+Effective Date: 2022-10-19
+Policyholder Name: Yang Palmo
+Expiry Date: 2025-10-19
+Policyholder Address: 47 VANEVERY RANG,ETOBICOKE,ON M8V1Y5
+Cancellation Date: 2025-01-11
+Number of Reported Operators: 1
+Number of Private Passenger Vehicles: 1
+Operator: Yang Palmo
+DLN: P0311-78928-76026 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1987
+Vehicle #1: Principal Operator
+Start of the Earliest Term: 2022-10-19
+End of the Latest Term: 2025-01-11
+Vehicle #1: 2010  AUDI - A4 2.0T QUATTRO 4DR - WAUFFCFL9AN050781
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Use: Pleasure
+Commuting Distance (One-Way / Annual): 0km / 5000km
+Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 7
+Page 3 of 14
+Policy #3
+2020-09-24 to 2023-09-24
+Aviva Insurance Company of Canada
+*OVERLAP* 
+Expired
+Policy #: 96774121437
+Effective Date: 2020-09-24
+Policyholder Name: THINLEY WANGDUE
+Expiry Date: 2023-09-24
+Policyholder Address: 47 VANEVERY ST ETOBICOKE ON M8V1Y5
+Cancellation Date: N/A
+Number of Reported Operators: 2
+Number of Private Passenger Vehicles: 2
+Operator: Yang Palmo
+DLN: P0311-78928-76026 Ontario
+Relationship to Policyholder: Child
+Year of Birth: 1987
+Vehicle #2: Principal Operator
+Start of the Earliest Term: 2020-09-24
+End of the Latest Term: 2023-09-24
+Operator: Pema Rabgha
+DLN: R0012-62209-60616 Ontario
+Relationship to Policyholder: Child
+Year of Birth: 1996
+Vehicle #1: Principal Operator
+Start of the Earliest Term: 2020-09-24
+End of the Latest Term: 2023-09-24
+Vehicle #1: 2012  HONDA - CR-V LX 4DR AWD - 2HKRM4H37CH111833
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 8km / 8000km
 Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
-Vehicle Loss: Total
-First Party Driver: HUSBANDS COLIN
-First Party Driver DLN: H9426-13464-60209 Ontario
-First Party Driver Date of Birth: 1946-02-09
-First Party Driver Listed on Policy: Yes
-First Party Driver Excluded: Not available
-First Party Driver At-Fault: 100%
-Third Party Driver: ******
-Third Party Driver DLN: ******
-Third Party Driver Insurer Name: TD General Insurance Company
-Third Party Driver Policy #: 00142010002
-Third Party Driver At-Fault: Not available
-Page 4 of 6
-Claim #2
-Date of Loss 2024-07-27
+Business Use: 0%
+Driving Record: 7
+ 
+Vehicle #2: 2010  AUDI - A4 2.0T QUATTRO 4DR - WAUFFCFL9AN050781
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 5km / 5000km
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 7
+Page 4 of 14
+Policy #4
+2019-09-24 to 2020-09-24
 The Wawanesa Mutual Insurance Company
-At-Fault : 100%
-Policyholder Name: HUSBANDS COLIN
+*OVERLAP* 
+Expired
+Policy #: ANC6649461
+Effective Date: 2019-09-24
+Policyholder Name: THINLEY WANGDUE
+Expiry Date: 2020-09-24
+Policyholder Address: 47 VANEVERY STETOBICOKE ON M8V1Y5
+Cancellation Date: N/A
+Number of Reported Operators: 2
+Number of Private Passenger Vehicles: 1
+Operator: Yang Palmo
+DLN: P0311-78928-76026 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1987
+Vehicle #1: Principal Operator
+Start of the Earliest Term: 2019-09-24
+End of the Latest Term: 2020-09-24
+Operator: Pema Rabgha
+DLN: R0012-62209-60616 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1996
+Vehicle #1: Occasional Operator
+Start of the Earliest Term: 2019-09-24
+End of the Latest Term: 2020-09-24
+Vehicle #1: 2012  HONDA - CR-V LX 4DR AWD - 2HKRM4H37CH111833
+Coverage: AB, AP, TP-BI, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 10km / 12000km
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 4
+Page 5 of 14
+Policy #5
+2019-09-04 to 2020-03-04
+Pafco Insurance Company
+*OVERLAP* 
+Expired
+Policy #: 558774524
+Effective Date: 2019-09-04
+Policyholder Name: WANGDUE,THINLEY
+Expiry Date: 2021-03-04
+Policyholder Address: 47 VANEVERY ST, , TORONTO ON M8V1Y5
+Cancellation Date: N/A
+Number of Reported Operators: 2
+Number of Private Passenger Vehicles: 2
+Operator: Thinley Wangdue
+DLN: W0421-74005-61003 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1956
+Vehicle #2: Principal Operator
+Start of the Earliest Term: 2019-09-04
+End of the Latest Term: 2021-03-04
+Operator: Yang Palmo
+DLN: P0311-78928-76026 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1987
+Vehicle #1: Principal Operator
+Start of the Earliest Term: 2019-09-04
+End of the Latest Term: 2020-03-04
+Vehicle #1: 2012  HONDA - CR-V LX 4DR AWD - 2HKRM4H37CH111833
 Coverage: CL
-Policyholder Address: 92 PRITCHARD AVE YORK ON M6N1T3
-Date Reported: 2024-12-11
-Policy #: 28776670
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 10km / 12000km
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 2
+ 
+Vehicle #2: 2008  HONDA - CIVIC LX 4DR / CIVIC LX-SR 4DR -
+2HGFA16538H101574
+Coverage: AB, TP-BI, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 16km / 16000km
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 0
+Page 6 of 14
+Policy #6
+2015-12-22 to 2016-09-04
+The Dominion of Canada General Insurance
+Company
+*OVERLAP* 
+Expired
+Policy #: PP1541604
+Effective Date: 2010-09-04
+Policyholder Name: THINLEY WANGDUE
+Expiry Date: 2016-09-04
+Policyholder Address: 47 VANEVERY ST. ETOBICOKE, ON M8V1Y5
+Cancellation Date: N/A
+Number of Reported Operators: 2
+Number of Private Passenger Vehicles: 2
+Operator: Thinley Wangdue
+DLN: W0421-74005-61003 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1956
+Start of the Earliest Term: 2010-09-04
+End of the Latest Term: 2016-09-04
+Operator: Yang Palmo
+DLN: P0311-78928-76026 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1987
+Start of the Earliest Term: 2015-12-22
+End of the Latest Term: 2016-09-04
+Vehicle #1: 2005  FORD - FOCUS ZX4 S 4DR / FOCUS ZX4 SE 4DR / FOCUS
+ZX4 SES 4DR - 1FAFP34N95W234080
+Coverage: AB, AP, TP-BI, CL, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 16km / 16000km
+Type of Use / Vehicle Class: 03 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 7
+ 
+Vehicle #2: 2004  MITSUBISHI - LANCER ES 4DR - JA3AJ26E94U605857
+Coverage: AB, TP-BI, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 16km / 16000km
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 1
+Page 7 of 14
+Policy #7
+2015-09-04 to 2019-09-04
+The Dominion of Canada General Insurance
+Company
+*OVERLAP* 
+Expired
+Policy #: APP1541604
+Effective Date: 2010-09-04
+Policyholder Name: Thinley Wangdue
+Expiry Date: 2019-09-04
+Policyholder Address: 47 Vanevery St,Etobicoke,ON M8V1Y5
+Cancellation Date: N/A
+Number of Reported Operators: 4
+Number of Private Passenger Vehicles: 4
+Operator: Thinley Wangdue
+DLN: W0421-74005-61003 Ontario
+Relationship to Policyholder: Self
+Year of Birth: 1956
+Vehicle #1: Principal Operator
+Vehicle #3: Principal Operator
+Start of the Earliest Term: 2010-09-04
+End of the Latest Term: 2019-09-04
+Operator: NAMGYAL, TSERING
+DLN: N0352-75207-91013 Ontario
+Relationship to Policyholder: Child
+Year of Birth: 1979
+Vehicle #4: Principal Operator
+Start of the Earliest Term: 2016-09-04
+End of the Latest Term: 2019-09-04
+Operator: Yang Palmo
+DLN: P0311-78928-76026 Ontario
+Relationship to Policyholder: Child
+Year of Birth: 1987
+Vehicle #1: Occasional Operator
+Vehicle #3: Occasional Operator
+Start of the Earliest Term: 2015-09-04
+End of the Latest Term: 2019-09-04
+Operator: Pema Rabgha
+DLN: R0012-62209-60616 Ontario
+Relationship to Policyholder: Child
+Year of Birth: 1996
+Vehicle #2: Principal Operator
+Vehicle #4: Principal Operator
+Start of the Earliest Term: 2014-09-04
+End of the Latest Term: 2019-09-04
+Vehicle #1: 2013  FORD - FUSION SE 4DR - 3FA6P0H90DR129585
+Coverage: AB, AP, TP-BI, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 16km / 16000km
+Type of Use / Vehicle Class: 03 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 0
+ 
+Vehicle #2: 2012  HONDA - CR-V LX 4DR AWD - 2HKRM4H37CH111833
+Coverage: AB, AP, TP-BI, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 10km / 12000km
+Type of Use / Vehicle Class: 12 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 3
+ 
+Vehicle #3: 2008  HONDA - CIVIC LX 4DR / CIVIC LX-SR 4DR -
+2HGFA16538H101574
+Coverage: AB, AP, TP-BI, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 16km / 16000km
+Type of Use / Vehicle Class: 03 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 0
+ 
+Vehicle #4: 1998  HONDA - CR-V LX 4DR AWD - JHLRD1847WC805593
+Coverage: AB, TP-BI, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 10km / 12000km
+Type of Use / Vehicle Class: 12 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 3
+Page 8 of 14
+Claim #1
+Date of Loss 2024-12-08
+CAA Insurance Company
+At-Fault : 0%
+Policyholder Name: Yang Palmo
+Coverage: AB, CL, DCPD
+Policyholder Address: 47 VANEVERY RANG,ETOBICOKE,ON M8V1Y5
+Date Reported: 2024-12-31
+Policy #: A000821646
 Claim Status: Closed
-Claim #: 00700000126162900000
-Total Loss: $5,636.00
+Claim #: A000821646-01
+Total Loss: $8,764.00
 Total Expense: $0.00
  
-KOL20 - Collision: $5,636.00 (Loss); $0.00 (Expense);
-Vehicle: 2011 CHEVROLET - EQUINOX LT 4DR 2WD - 2CNALDEC8B6463032
-Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
-Vehicle Loss: Partial
-First Party Driver: HUSBANDS COLIN
-First Party Driver DLN: H9426-13464-60209 Ontario
-First Party Driver Date of Birth: 1946-02-09
+KOL16 - Other Property Damage to insured vehicle: $7,848.00 (Loss); $0.00 (Expense);
+KOL18 - Loss of use: $916.00 (Loss); $0.00 (Expense);
+KOL41 - Medical, excluding rehabilitation and extended care: $0.00 (Loss); $0.00 (Expense);
+KOL20 - Collision: $0.00 (Loss); $0.00 (Expense);
+KOL86 - Costs of examinations: $0.00 (Loss); $0.00 (Expense);
+Vehicle: 2010 AUDI - A4 2.0T QUATTRO 4DR - WAUFFCFL9AN050781
+Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
+Vehicle Loss: Total
+First Party Driver: Yang Palmo
+First Party Driver DLN: P0311-78928-76026 Ontario
+First Party Driver Date of Birth: 1987-10-26
 First Party Driver Listed on Policy: Yes
-First Party Driver Excluded: Not available
-First Party Driver At-Fault: 100%
+First Party Driver Excluded: No
+First Party Driver At-Fault: 0%
 Third Party Driver: ******
 Third Party Driver DLN: ******
 Third Party Driver Insurer Name: Not available
 Third Party Driver Policy #: 00000000000000000000
 Third Party Driver At-Fault: Not available
-Page 5 of 6
-Claim #3
-Date of Loss 2024-07-12
-The Wawanesa Mutual Insurance Company
+Page 9 of 14
+Claim #2
+Date of Loss 2024-12-08
+Intact Insurance Company
+*THIRD PARTY* 
 At-Fault : 100%
-Policyholder Name: HUSBANDS COLIN
-Coverage: CL
-Policyholder Address: 92 PRITCHARD AVE YORK ON M6N1T3
-Date Reported: 2024-07-31
-Policy #: 28776670
+Policyholder Name: ******
+Coverage: DCPD
+Policyholder Address: ******
+Date Reported: 2024-12-11
+Policy #: P6KK32JU375
 Claim Status: Closed
-Claim #: 00700000125188700000
-Total Loss: $2,994.00
-Total Expense: $72.00
+Claim #: ******
+Total Loss: $10,771.00
+Total Expense: $0.00
  
-KOL20 - Collision: $2,994.00 (Loss); $72.00 (Expense);
-Vehicle: 2009 CHEVROLET - UPLANDER LS - 1GNDU23109D116334
-Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
+KOL16 - Other Property Damage to insured vehicle: $10,132.00 (Loss); $0.00 (Expense);
+KOL18 - Loss of use: $639.00 (Loss); $0.00 (Expense);
+Vehicle: ******
+Type of Use / Vehicle Class: ******
+Vehicle Loss: ******
+First Party Driver: ******
+First Party Driver DLN: ******
+First Party Driver Date of Birth: ******
+First Party Driver Listed on Policy: ******
+First Party Driver Excluded: ******
+First Party Driver At-Fault: 0%
+Third Party Driver: Yang Palmo
+Third Party Driver DLN: P0311-78928-76026 Ontario
+Third Party Driver Insurer Name: CAA Insurance Company
+Third Party Driver Policy #: A000821646
+Third Party Driver At-Fault: 100%
+Page 10 of 14
+Claim #3
+Date of Loss 2018-09-17
+The Dominion of Canada General Insurance
+Company
+At-Fault : 100%
+Policyholder Name: THINLEY WANGDUE
+Coverage: AB, AP, TP-BI
+Policyholder Address: 47 Vanevery St,Etobicoke,ON M8V1Y5
+Date Reported: 2018-09-19
+Policy #: APP1541604
+Claim Status: Closed
+Claim #: PP1541604
+Total Loss: $0.00
+Total Expense: $0.00
+ 
+KOL06 - Bodily Injury, WITHIN PROVINCE, by any other third party: $0.00 (Loss); $0.00 (Expense);
+KOL20 - Collision: $0.00 (Loss); $0.00 (Expense);
+KOL41 - Medical, excluding rehabilitation and extended care: $0.00 (Loss); $0.00 (Expense);
+KOL86 - Costs of examinations: $0.00 (Loss); $0.00 (Expense);
+Vehicle: 2013 FORD - FUSION SE 4DR - 3FA6P0H90DR129585
+Type of Use / Vehicle Class: 03 / Private Passenger Vehicle
 Vehicle Loss: Total
-First Party Driver: HUSBANDS COLIN
-First Party Driver DLN: H9426-13464-60209 Ontario
-First Party Driver Date of Birth: 1946-02-09
+First Party Driver: Thinley Wangdue
+First Party Driver DLN: W0421-74005-61003 Ontario
+First Party Driver Date of Birth: 1956-10-03
+First Party Driver Listed on Policy: Yes
+First Party Driver Excluded: No
+First Party Driver At-Fault: 100%
+Third Party Driver: ******
+Third Party Driver DLN: ******
+Third Party Driver Insurer Name: Coachman Insurance Company
+Third Party Driver Policy #: X75080051-5
+Third Party Driver At-Fault: Not available
+Page 11 of 14
+Claim #4
+Date of Loss 2018-09-17
+The Dominion of Canada General Insurance
+Company
+At-Fault : 100%
+Policyholder Name: THINLEY WANGDUE
+Coverage: AB, AP, TP-BI
+Policyholder Address: 47 Vanevery St,Etobicoke,ON M8V1Y5
+Date Reported: 2018-09-19
+Policy #: APP1541604
+Claim Status: Closed
+Claim #: PS1541604
+Total Loss: $930,658.00
+Total Expense: $44,981.00
+ 
+KOL06 - Bodily Injury, WITHIN PROVINCE, by any other third party: $910,000.00 (Loss); $44,731.00 (Expense);
+KOL20 - Collision: $16,798.00 (Loss); $148.00 (Expense);
+KOL41 - Medical, excluding rehabilitation and extended care: $3,860.00 (Loss); $0.00 (Expense);
+KOL86 - Costs of examinations: $0.00 (Loss); $102.00 (Expense);
+Vehicle: 2013 FORD - FUSION SE 4DR - 3FA6P0H90DR129585
+Type of Use / Vehicle Class: 03 / Private Passenger Vehicle
+Vehicle Loss: Not available
+First Party Driver: Thinley Wangdue
+First Party Driver DLN: W0421-74005-61003 Ontario
+First Party Driver Date of Birth: 1956-10-03
 First Party Driver Listed on Policy: Yes
 First Party Driver Excluded: Not available
 First Party Driver At-Fault: 100%
 Third Party Driver: ******
 Third Party Driver DLN: ******
-Third Party Driver Insurer Name: Pembridge Insurance Company
-Third Party Driver Policy #: 258796682
+Third Party Driver Insurer Name: Coachman Insurance Company
+Third Party Driver Policy #: X75080051-5
 Third Party Driver At-Fault: Not available
-Page 6 of 6
+Page 12 of 14
+Claim #5
+Date of Loss 2018-04-14
+The Dominion of Canada General Insurance
+Company
+At-Fault : 100%
+Policyholder Name: THINLEY WANGDUE
+Coverage: AP
+Policyholder Address: 47 Vanevery St,Etobicoke,ON M8V1Y5
+Date Reported: 2018-04-25
+Policy #: APP1541604
+Claim Status: Closed
+Claim #: PP1541604
+Total Loss: $8,899.00
+Total Expense: $80.00
+ 
+KOL20 - Collision: $8,899.00 (Loss); $80.00 (Expense);
+Vehicle: 2012 MAZDA - MAZDA6 GS V6 4DR - 1YVHZ8BB5C5M09053
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Vehicle Loss: Total
+First Party Driver: NAMGYAL, TSERING
+First Party Driver DLN: N0352-75207-91013 Ontario
+First Party Driver Date of Birth: 1979-10-13
+First Party Driver Listed on Policy: Yes
+First Party Driver Excluded: Not available
+First Party Driver At-Fault: 100%
+Third Party Driver: ******
+Third Party Driver DLN: ******
+Third Party Driver Insurer Name: The Wawanesa Mutual Insurance Company
+Third Party Driver Policy #: 8747195
+Third Party Driver At-Fault: Not available
+Page 13 of 14
+Claim #6
+Date of Loss 2017-10-10
+The Dominion of Canada General Insurance
+Company
+At-Fault : 100%
+Policyholder Name: THINLEY WANGDUE
+Coverage: AP
+Policyholder Address: 47 Vanevery St,Etobicoke,ON M8V1Y5
+Date Reported: 2017-10-17
+Policy #: APP1541604
+Claim Status: Closed
+Claim #: PP1541604
+Total Loss: $3,318.00
+Total Expense: $0.00
+ 
+KOL20 - Collision: $3,318.00 (Loss); $0.00 (Expense);
+Vehicle: 2005 FORD - FOCUS ZX4 S 4DR - 1FAFP34N95W234080
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Vehicle Loss: Total
+First Party Driver: Thinley Wangdue
+First Party Driver DLN: W0421-74005-61003 Ontario
+First Party Driver Date of Birth: 1956-10-03
+First Party Driver Listed on Policy: Yes
+First Party Driver Excluded: Not available
+First Party Driver At-Fault: 100%
+Third Party Driver: ******
+Third Party Driver DLN: ******
+Third Party Driver Insurer Name: Aviva Canada Inc. - Facility
+Third Party Driver Policy #: 6741116000
+Third Party Driver At-Fault: Not available
+Page 14 of 14

@@ -4,10 +4,8 @@ Etobicoke, ON M8Z 4X6
 Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Mobile: (416)414-5626
-92 Pritchard Ave
-Toronto, ON M6N 1T3
-john.malcolm91@gmail.com
+47 Vanevery Street
+Etobicoke, ON M8V 1Y5
 Policy Information
  
 Property Policy Type
@@ -31,11 +29,11 @@ Term Length
 Applicant Information
  
 Salutation
-Jonathan
+Yang
 First Name
-Bryan
+ 
 Middle
-Malcolm
+Palmo
 Last Name
  
 Suffix
@@ -50,35 +48,37 @@ Middle
 Last Name
  
 Suffix
-Jonathan Bryan Malcolm
+Yang Palmo
 Drivers
 Coverages
-Vehicle 1 of 1 | Private Passenger - 2017 MAZDA MAZDA6 GT 4DR (771901)
+User Initiated Discounts and Surcharges
+Vehicle 1 of 1 | Private Passenger - 2007 BMW X3 3.0si 4DR AWD (907100)
 Private Passenger
 Vehicle Type
-JM1GL1W50H1147715
+WBXPC93417WF00481
 VIN
-4 Door Sedan/Hard Top
+SUV - Small and Medium (Hard
+Top)
 Body Style
 Gasoline
 Fuel Type
 No
 Hybrid
-Pleasure
+Business
 Primary Use
-10000
+15000
 Annual km
-0
+5000
 Business km
-0
+10
 Daily km
-TORONTO M6N1T3
+ETOBICOKE M8V1Y5
 Garaging Location
 No
 Single Vehicle MVD
 No
 Leased
-4
+6
 Cylinders
  
 Anti-Theft - Device Type
@@ -89,45 +89,51 @@ Anti-Theft - Engraving
 Used
 Purchase
 Condition
-03/22/2024
+05/22/2025
 Purchase Date
  
 km at Purchase
-36194
+53954
 List Price New
- 
+10000
 Purchase Price
 No
 Winter Tires
  
 Parking at Night
-Jonathan Malcolm (Prn)
+Yang Palmo (Prn)
 Bodily Injury (2,000,000)
 Property Damage (2,000,000)
 Direct Compensation (0)
 Accident Benefits (Standard)
-Collision (1,000)
-Comprehensive (1,000)
+All Perils (1,000)
 Uninsured Automobile
-Package Endorsement (NaN)
 #20 Loss of Use (3,000)
-#27 Liab to Unowned Veh. (75,000)
+#27 Liab to Unowned Veh. (50,000)
 #44 Family Protection (2,000,000)
-Prepared 03/21/2025 by Nishank Bhola
-Effective Date: 03/22/2025
+Accident Waiver
+Yang Palmo
+Driver
+CAA Insurance Company
+Company
+Family Discount (Discount)
+Description
+Prepared 05/22/2025 by Nishank Bhola
+Effective Date: 05/22/2025
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
+Claims
 Convictions
-Suspensions
+Lapses
 Disclaimer: Coverages shown reflect user entry. For details on the coverages quoted please refer to the Carrier Detail printout.
-Driver 1 of 1 | Jonathan Malcolm
-07/09/1991
+Driver 1 of 1 | Yang Palmo
+10/26/1987
 Birth Date
 Single
 Marital Status
-Male
+Female
 Gender
-Insured
+Applicant
 Relationship to Applicant
 No
 Driver Training
@@ -136,33 +142,39 @@ Driver Training
 Date
 No
 Out of Province / Country Driver
-G2
+G
 Licence Class
- 
+10/04/2010
 Date G
-12/28/2022
+05/05/2009
 Date G2
-08/29/2008
+03/06/2008
 Date G1
-M02504091910709
+P03117892876026
 Licence Number
 ON
 Licence Province
  
 Occupation
-03/22/2024
+None
+Membership Plan 1 Description
+ 
+Membership Date
+ 
+Membership Number
+09/04/2010
 Date Insured
-Wawanesa Mutual
+ 
 Current Carrier
-05/03/2024
+ 
 Date with
 Company
- 
+10/19/2022
 Brokerage Insured
- 
+09/04/2010
 Date
 Owner/Principal
-No
+Yes
 Applicant lives with Parents
  
 Student Away at School (km)
@@ -174,21 +186,40 @@ Class
  
 Other Licence
 Date
-Prohibited Use of Hand-Held Device
+Non-responsible Collision
 Description
-12/02/2024
+12/08/2024
 Date
+No
+Charge
+2007 BMW X3 3.0si 4DR AWD
+Vehicle Involved
  
+ 
+TP/BI$
+ 
+TP/PD$
+ 
+AB$
+10132
+Coll$
+ 
+Other PD$
+Speeding
+Description
+08/06/2024
+Date
+15
 km/h
 Minor
 Severity
-Other - Administrative
+No Vehicle Hence No Insurance Required
 Description
-12/02/2024
+01/11/2025
 Date
-2
+4
 Duration months
-02/27/2025
+05/22/2025
 Re-Instate Date
 Vieira & Associates Insurance Brokers Ltd
 55 Horner Ave, Suite 201
@@ -196,174 +227,155 @@ Etobicoke, ON M8Z 4X6
 Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Prepared 03/21/2025 by Nishank Bhola
-Applied Ref. # RWS 972329647, CWS 336208052,
-RBWS 416835145
+Prepared 05/22/2025 by Nishank Bhola
+Applied Ref. # RWS 992601892, CWS 341446648,
+RBWS 429763433
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
-Mobile: (416)414-5626
-92 Pritchard Ave
-Toronto, ON M6N 1T3
-john.malcolm91@gmail.com
+47 Vanevery Street
+Etobicoke, ON M8V 1Y5
 Company
 12 Months
-Aviva - Aviva Journey
-11,098
-JEVCO
-11,106
-Aviva
-12,315
 CAA Insurance Company (Future Member)
-12,327
-CAA MyPace
-12,591
+4,019
+Aviva - Aviva Journey
+4,023
 CAA Insurance Company
-12,975
-Wawanesa Drive Change
-13,569
-Echelon
-13,665
-Wawanesa Mutual
-15,050
-Coachman
-15,408
-Facility Association
-16,488
-Definity Insurance Company
-0
-Dominion of Canada
-0
-Dominion of Canada - IntelliDrive
-0
-Dominion of Canada - Single Pay and DPD
-0
-Intact Insurance
-0
-Intact Insurance - my Drive
-0
+4,072
+Aviva
+4,444
 SGI CANADA
+4,553
+Wawanesa Drive Change
+5,008
+Intact Insurance - my Drive
+5,131
+Facility Association
+5,521
+Wawanesa Mutual
+5,535
+Intact Insurance
+5,666
+Definity Insurance Company
+6,048
+Dominion of Canada - Single Pay and DPD
+7,423
+Dominion of Canada - IntelliDrive
+9,234
+Dominion of Canada
+9,472
+Echelon
+9,483
+CAA MyPace
+0
+Coachman
+0
+JEVCO
 0
 Summary
-Jonathan Bryan Malcolm
-1 Vehicle, 1 Driver  |  Effective Date: 03/22/2025
+Yang Palmo
+1 Vehicle, 1 Driver  |  Effective Date: 05/22/2025
 Vieira & Associates Insurance Brokers Ltd
 55 Horner Ave, Suite 201
 Etobicoke, ON M8Z 4X6
 Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-JEVCO
-New Business  |  Effective Date: 03/22/2025
-Mobile: (416)414-5626
-92 Pritchard Ave
-Toronto, ON M6N 1T3
-john.malcolm91@gmail.com
+Prepared 05/22/2025 by Nishank Bhola
+Applied Ref. # RBWS 429763433
+* User Initiated Discounts and Surcharges
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
+CAA Insurance Company
+1234  |  New Business  |  Effective Date: 05/22/2025
+47 Vanevery Street
+Etobicoke, ON M8V 1Y5
 Vehicles
 TOTALS
-Private Passenger - 2017 MAZDA MAZDA6 GT 4DR  (771901)
-$11,106
+Private Passenger - 2007 BMW X3 3.0si 4DR AWD  (907100)
+$4,072
 Annual Premium
-$11,106.00
+$4,072.00
 0% Tax Applied
 $0.00
 Total Premium
-$11,106.00
+$4,072.00
 Totals
-■ Severity changed to Major: Prohibited Use of Hand-Held Device
-MSG
-10/2024
+04/2025
 Effective Date
-4
+8
 Book
-TORONTO M6N 1T3 / Territory TF
+ETOBICOKE M8V 1Y5 / Territory 
 Territory
-11/2024
+10/2024
 VRG eff. date
-39
+32
 DCPD
-31
+37
 AB
-39
+32
 Coll
-31
+27
 Comp
 Rates
+MSG
+■ Territories: TP 47, DC 48, AB 50, COL 49 , CMP 48
+DIS
+● * Family Discount = 5% - Prn
 SUR
-▲ Major Conviction = 25% - Prn
+▲ Minor Convictions = 10% - Prn
 Operator
 PRIN.
 TOTALS
 Class/Liability/Collision
-01/2/2
+07/11/11
 Bodily Injury
 2 M
-3,103
-3,103
+628
+628
 Property Damage
 2 M
-73
-73
+32
+32
 Direct Compensation
 0
-1,387
-1,387
+972
+972
 Accident Benefits
-3,876
-3,876
-Collision
+1,340
+1,340
+All Perils
 1,000
-1,795
-1,795
-Comprehensive
-1,000
-499
-499
+840
+840
 Uninsured Automobile
-204
-204
-Annual Premium
-$11,106
-$11,106
-0% Tax Applied
-$0.00
-$0.00
-Total Premium
-$11,106.00
-$11,106.00
-Breakdown
-Jonathan Bryan Malcolm
-Policy
-1 of 1  |  2017 MAZDA MAZDA6 GT 4DR  (771901)
-$11,106.00
-Prepared 03/21/2025 by Nishank Bhola
-Applied Ref. # RWS 972329647
-Provided by Applied Rating Services®,
-© 2025 Applied Systems® Canada Inc.
-Operator
-PRIN.
-TOTALS
+39
+39
+#20 Loss of Use
+3,000
+63
+63
+#27 Liab to Unowned Veh.
+50K
+36
+36
 #44 Family Protection
 2 M
-29
-29
-PLUS PAK
-PAK6
-140
-140
-#20 Loss of Use
-1,500
- 
- 
-#27 Liab to Unowned Veh.
-75K
- 
- 
+37
+37
+Forgive & Forget
+85
+85
 Annual Premium
-$11,106
-$11,106
+$4,072
+$4,072
 0% Tax Applied
 $0.00
 $0.00
 Total Premium
-$11,106.00
-$11,106.00
+$4,072.00
+$4,072.00
+Breakdown
+Yang Palmo
+1 of 1  |  2007 BMW X3 3.0si 4DR AWD  (907100)
+$4,072.00

@@ -26,6 +26,7 @@ def extract_quote_data(path):
         "vehicles": [],
         "convictions": [],
         "suspensions": [],
+        "claims": [],
         "coverages": [],
         "address": None
     }
@@ -183,6 +184,10 @@ def extract_quote_data(path):
     result["convictions"] = convictions_and_suspensions["convictions"]
     result["suspensions"] = convictions_and_suspensions["suspensions"]
 
+    # Claims Extraction - Look for claims information in the PDF
+    claims_info = _extract_claims_information(text)
+    result["claims"] = claims_info
+
     # Coverages - more specific extraction
     coverage_section = re.search(r"Coverage[s]?\s*(.*?)(?=Driver|Vehicle|Effective|$)", text, re.DOTALL | re.IGNORECASE)
     if coverage_section:
@@ -205,6 +210,88 @@ def extract_quote_data(path):
         json.dump(result, f, indent=4)
 
     return result
+
+
+def _extract_claims_information(text):
+    """Extract claims information from the PDF text"""
+    claims = []
+    
+    # Pattern 1: Look for "Non-responsible Collision" claims
+    # This pattern matches the structure found in the PDF
+    non_responsible_pattern = r'Non-responsible Collision\s*\n\s*Description\s*\n\s*(\d{2}/\d{2}/\d{4})\s*\n\s*Date\s*\n\s*(No|Yes)\s*\n\s*Charge\s*\n\s*([^\n]+?)\s*\n\s*Vehicle Involved'
+    non_responsible_matches = re.findall(non_responsible_pattern, text, re.IGNORECASE)
+    
+    for match in non_responsible_matches:
+        date, charge, vehicle = match
+        claim = {
+            "claim_type": "Non-responsible Collision",
+            "date": date,
+            "charge": charge,
+            "vehicle_involved": vehicle.strip(),
+            "driver": None,  # Will be populated if we can match to a driver
+            "amount": None,
+            "status": "Closed" if charge == "No" else "Open"
+        }
+        claims.append(claim)
+    
+    # Pattern 2: Look for other claim patterns that might exist
+    # Pattern for claims with amounts
+    claim_amount_pattern = r'([A-Za-z][A-Za-z\s\-]{10,})\s*\n\s*Description\s*\n\s*(\d{2}/\d{2}/\d{4})\s*\n\s*Date\s*\n\s*\$?([\d,]+\.?\d*)'
+    claim_amount_matches = re.findall(claim_amount_pattern, text, re.IGNORECASE)
+    
+    for match in claim_amount_matches:
+        description, date, amount = match
+        # Skip if it's already captured as a conviction or suspension
+        if any(word in description.lower() for word in ['speeding', 'prohibited', 'suspension', 'administrative']):
+            continue
+            
+        claim = {
+            "claim_type": description.strip(),
+            "date": date,
+            "amount": amount.replace(',', ''),
+            "driver": None,
+            "charge": None,
+            "vehicle_involved": None,
+            "status": "Closed"
+        }
+        claims.append(claim)
+    
+    # Pattern 3: Look for claims without amounts but with other details
+    claim_no_amount_pattern = r'([A-Za-z][A-Za-z\s\-]{10,})\s*\n\s*Description\s*\n\s*(\d{2}/\d{2}/\d{4})\s*\n\s*Date\s*\n\s*([^\n]+)'
+    claim_no_amount_matches = re.findall(claim_no_amount_pattern, text, re.IGNORECASE)
+    
+    for match in claim_no_amount_matches:
+        description, date, details = match
+        # Skip if it's already captured as a conviction or suspension
+        if any(word in description.lower() for word in ['speeding', 'prohibited', 'suspension', 'administrative']):
+            continue
+            
+        claim = {
+            "claim_type": description.strip(),
+            "date": date,
+            "details": details.strip(),
+            "driver": None,
+            "amount": None,
+            "charge": None,
+            "vehicle_involved": None,
+            "status": "Closed"
+        }
+        claims.append(claim)
+    
+    # Remove duplicates and filter out invalid claims
+    seen_claims = set()
+    unique_claims = []
+    for claim in claims:
+        # Skip claims with invalid claim_type (too long or contains newlines)
+        if len(claim["claim_type"]) > 100 or '\n' in claim["claim_type"]:
+            continue
+            
+        claim_key = (claim["claim_type"].lower(), claim["date"])
+        if claim_key not in seen_claims:
+            seen_claims.add(claim_key)
+            unique_claims.append(claim)
+    
+    return unique_claims
 
 def _extract_vehicle_details(vehicle_text):
     """Extract vehicle information from vehicle section text using PyMuPDF's better structure"""

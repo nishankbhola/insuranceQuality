@@ -29,20 +29,43 @@ def upload_files():
         "quotes": []
     }
 
+    print(f"Processing {len(files)} files...")
+
     for file in files:
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(path)
+            
+            print(f"Processing file: {filename}")
 
-            if "MVR" in filename.upper():
-                results["mvrs"].append(extract_mvr_data(path))
-            elif "DASH" in filename.upper():
-                results["dashes"].append(extract_dash_data(path))
-            elif "QUOTE" in filename.upper():
-                results["quotes"].append(extract_quote_data(path))
+            try:
+                if "MVR" in filename.upper():
+                    mvr_data = extract_mvr_data(path)
+                    print(f"MVR extracted: {mvr_data.get('licence_number', 'No license')} - {mvr_data.get('name', 'No name')}")
+                    results["mvrs"].append(mvr_data)
+                elif "DASH" in filename.upper():
+                    dash_data = extract_dash_data(path)
+                    print(f"DASH extracted: {len(dash_data.get('claims', []))} claims")
+                    results["dashes"].append(dash_data)
+                elif "QUOTE" in filename.upper():
+                    quote_data = extract_quote_data(path)
+                    print(f"Quote extracted: {len(quote_data.get('drivers', []))} drivers, {len(quote_data.get('vehicles', []))} vehicles")
+                    results["quotes"].append(quote_data)
+            except Exception as e:
+                print(f"Error processing {filename}: {e}")
+                # Continue processing other files
 
-    validation_report = validate_quote(results)
+    print(f"Extraction complete. MVRs: {len(results['mvrs'])}, DASHes: {len(results['dashes'])}, Quotes: {len(results['quotes'])}")
+
+    try:
+        validation_report = validate_quote(results)
+        print("Validation completed successfully")
+    except Exception as e:
+        print(f"Validation error: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
 
     return jsonify({
         "extracted": results,

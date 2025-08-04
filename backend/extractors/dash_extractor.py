@@ -115,29 +115,68 @@ def extract_dash_data(path):
     if claims_section:
         claims_text = claims_section.group(1)
         
-        # Enhanced pattern for claims with additional fields
-        claim_patterns = [
-            r'#(\d+)\s+Date of Loss\s+(\d{4}-\d{2}-\d{2})\s+([^A]+?)\s+At-Fault\s*:\s*(\d+)%',
-            r'#(\d+)\s+Date of Loss\s+(\d{4}-\d{2}-\d{2})\s+(.+?)\s+At-Fault\s*:\s*(\d+)%'
-        ]
+        # Parse claims using a more robust approach
+        lines = claims_text.split('\n')
+        current_claim = None
+        current_company_lines = []
         
-        for pattern in claim_patterns:
-            claim_matches = re.findall(pattern, claims_text)
-            if claim_matches:
-                for claim_num, date, company, at_fault in claim_matches:
-                    claim_data = {
-                        "claim_number": claim_num,
-                        "date": date,
-                        "company": company.strip(),
-                        "at_fault_percentage": int(at_fault)
-                    }
-                    
-                    # Try to extract additional claim details from the full text
-                    claim_details = _extract_claim_details_enhanced(text, claim_num)
-                    claim_data.update(claim_details)
-                    
-                    result["claims"].append(claim_data)
-                break
+        for line in lines:
+            line = line.strip()
+            
+            # Check for claim number
+            claim_match = re.match(r'#(\d+)', line)
+            if claim_match:
+                # Save previous claim if exists
+                if current_claim:
+                    current_claim['company'] = ' '.join(current_company_lines).strip()
+                    result["claims"].append(current_claim)
+                
+                # Start new claim
+                claim_num = claim_match.group(1)
+                current_claim = {
+                    "claim_number": claim_num,
+                    "date": None,
+                    "company": None,
+                    "at_fault_percentage": None
+                }
+                current_company_lines = []
+                continue
+            
+            # Check for date
+            date_match = re.search(r'Date of Loss\s+(\d{4}-\d{2}-\d{2})', line)
+            if date_match and current_claim:
+                current_claim['date'] = date_match.group(1)
+                continue
+            
+            # Check for At-Fault percentage
+            at_fault_match = re.search(r'At-Fault\s*:\s*(\d+)%', line)
+            if at_fault_match and current_claim:
+                current_claim['at_fault_percentage'] = int(at_fault_match.group(1))
+                continue
+            
+            # If line is not empty and doesn't match special patterns, it's part of company name
+            if line and not re.match(r'^\*.*\*$', line) and current_claim and current_claim['date'] and not current_claim['at_fault_percentage']:
+                current_company_lines.append(line)
+        
+        # Don't forget the last claim
+        if current_claim:
+            current_claim['company'] = ' '.join(current_company_lines).strip()
+            result["claims"].append(current_claim)
+        
+        # Extract additional details for all claims
+        for claim_data in result["claims"]:
+            claim_details = _extract_claim_details_enhanced(text, claim_data["claim_number"])
+            claim_data.update(claim_details)
+            
+            # Ensure we have the required fields with default values if not found
+            if not claim_data.get('first_party_driver'):
+                claim_data['first_party_driver'] = 'N/A'
+            if not claim_data.get('first_party_driver_at_fault'):
+                claim_data['first_party_driver_at_fault'] = 'N/A'
+            if not claim_data.get('total_loss'):
+                claim_data['total_loss'] = 'N/A'
+            if not claim_data.get('claim_status'):
+                claim_data['claim_status'] = 'N/A'
 
     # Additional extraction for detailed policy information if needed
     _extract_detailed_policies(text, result)
@@ -242,36 +281,141 @@ def _extract_claim_details_enhanced(text, claim_number):
     """
     details = {}
     
-    # First try the specific claim section approach
+    # Look for the specific claim section with more comprehensive patterns
     claim_section_pattern = rf'Claim #{claim_number}.*?(?=Claim #\d+|Page \d+|$)'
     claim_section_match = re.search(claim_section_pattern, text, re.DOTALL | re.IGNORECASE)
     
     if claim_section_match:
         claim_section = claim_section_match.group(0)
-        # Use the existing _extract_claim_details function
-        details = _extract_claim_details(text, claim_number)
-    
-    # If we didn't find anything in the specific section, search the entire document
-    if not details.get('first_party_driver') or details.get('first_party_driver') == 'N/A':
-        # Search for First Party Driver in the entire document
-        driver_patterns = [
-            rf'Claim #{claim_number}.*?First Party Driver Listed on Policy:\s*(Yes|No|True|False)',
-            rf'Claim #{claim_number}.*?First Party Driver:\s*(Yes|No|True|False)',
-            rf'First Party Driver Listed on Policy:\s*(Yes|No|True|False).*?Claim #{claim_number}',
-            rf'First Party Driver:\s*(Yes|No|True|False).*?Claim #{claim_number}'
+        
+        # Extract First Party Driver - Enhanced patterns based on actual PDF content
+        # Priority: First Party Driver name, then fallback to Listed on Policy status
+        driver_name_patterns = [
+            rf'First Party Driver:\s*([^\n]+)',
+            rf'Driver:\s*([^\n]+)',
+            rf'Insured Driver:\s*([^\n]+)'
         ]
         
-        for pattern in driver_patterns:
-            driver_match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+        # First try to get the actual driver name
+        driver_name_found = False
+        for pattern in driver_name_patterns:
+            driver_match = re.search(pattern, claim_section, re.IGNORECASE)
             if driver_match:
-                details['first_party_driver'] = driver_match.group(1).strip()
+                driver_value = driver_match.group(1).strip()
+                # If it's a name (not Yes/No/True/False), use it
+                if driver_value and driver_value not in ['Yes', 'No', 'True', 'False', 'Not available']:
+                    details['first_party_driver'] = driver_value
+                    driver_name_found = True
+                    break
+        
+        # If no driver name found, fallback to Listed on Policy status
+        if not driver_name_found:
+            listed_patterns = [
+                rf'First Party Driver Listed on Policy:\s*(Yes|No|True|False)',
+                rf'First Party Driver:\s*(Yes|No|True|False)',
+                rf'Driver Listed on Policy:\s*(Yes|No|True|False)',
+                rf'Driver:\s*(Yes|No|True|False)',
+                rf'Insured Driver:\s*(Yes|No|True|False)'
+            ]
+            
+            for pattern in listed_patterns:
+                listed_match = re.search(pattern, claim_section, re.IGNORECASE)
+                if listed_match:
+                    details['first_party_driver'] = listed_match.group(1).strip()
+                    break
+        
+        # Extract First Party Driver At-Fault - Enhanced patterns
+        at_fault_patterns = [
+            rf'First Party Driver At-Fault:\s*(\d+%)',
+            rf'First Party Driver At-Fault:\s*(Yes|No|True|False)',
+            rf'First Party Driver At Fault:\s*(Yes|No|True|False)',
+            rf'Driver At-Fault:\s*(Yes|No|True|False)',
+            rf'Driver At Fault:\s*(Yes|No|True|False)',
+            rf'At-Fault:\s*(Yes|No|True|False)'
+        ]
+        
+        for pattern in at_fault_patterns:
+            at_fault_match = re.search(pattern, claim_section, re.IGNORECASE)
+            if at_fault_match:
+                at_fault_value = at_fault_match.group(1).strip()
+                # Convert percentage to Yes/No
+                if '%' in at_fault_value:
+                    percentage = int(at_fault_value.replace('%', ''))
+                    details['first_party_driver_at_fault'] = 'Yes' if percentage > 0 else 'No'
+                else:
+                    details['first_party_driver_at_fault'] = at_fault_value
+                break
+        
+        # Extract Total Loss
+        total_loss_patterns = [
+            rf'Total Loss:\s*\$?([\d,]+\.?\d*)',
+            rf'Loss Amount:\s*\$?([\d,]+\.?\d*)',
+            rf'Claim Amount:\s*\$?([\d,]+\.?\d*)'
+        ]
+        
+        for pattern in total_loss_patterns:
+            total_loss_match = re.search(pattern, claim_section, re.IGNORECASE)
+            if total_loss_match:
+                details['total_loss'] = total_loss_match.group(1).replace(',', '')
+                break
+        
+        # Extract Claim Status
+        status_patterns = [
+            rf'Claim Status:\s*([^\n]+)',
+            rf'Status:\s*([^\n]+)',
+            rf'Claim State:\s*([^\n]+)'
+        ]
+        
+        for pattern in status_patterns:
+            status_match = re.search(pattern, claim_section, re.IGNORECASE)
+            if status_match:
+                details['claim_status'] = status_match.group(1).strip()
                 break
     
+    # If we still don't have the required fields, search the entire document
+    if not details.get('first_party_driver'):
+        # Search for First Party Driver in the entire document - prioritize driver name
+        driver_name_patterns = [
+            rf'Claim #{claim_number}.*?First Party Driver:\s*([^\n]+)',
+            rf'First Party Driver:\s*([^\n]+).*?Claim #{claim_number}',
+            rf'Claim #{claim_number}.*?Driver:\s*([^\n]+)',
+            rf'Driver:\s*([^\n]+).*?Claim #{claim_number}'
+        ]
+        
+        # First try to get the actual driver name
+        driver_name_found = False
+        for pattern in driver_name_patterns:
+            driver_match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+            if driver_match:
+                driver_value = driver_match.group(1).strip()
+                # If it's a name (not Yes/No/True/False), use it
+                if driver_value and driver_value not in ['Yes', 'No', 'True', 'False', 'Not available']:
+                    details['first_party_driver'] = driver_value
+                    driver_name_found = True
+                    break
+        
+        # If no driver name found, fallback to Listed on Policy status
+        if not driver_name_found:
+            listed_patterns = [
+                rf'Claim #{claim_number}.*?First Party Driver Listed on Policy:\s*(Yes|No|True|False)',
+                rf'Claim #{claim_number}.*?First Party Driver:\s*(Yes|No|True|False)',
+                rf'First Party Driver Listed on Policy:\s*(Yes|No|True|False).*?Claim #{claim_number}',
+                rf'First Party Driver:\s*(Yes|No|True|False).*?Claim #{claim_number}'
+            ]
+            
+            for pattern in listed_patterns:
+                driver_match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+                if driver_match:
+                    details['first_party_driver'] = driver_match.group(1).strip()
+                    break
+    
     # Similar enhanced search for At-Fault
-    if not details.get('first_party_driver_at_fault') or details.get('first_party_driver_at_fault') == 'N/A':
+    if not details.get('first_party_driver_at_fault'):
         at_fault_patterns = [
+            rf'Claim #{claim_number}.*?First Party Driver At-Fault:\s*(\d+%)',
             rf'Claim #{claim_number}.*?First Party Driver At-Fault:\s*(Yes|No|True|False)',
             rf'Claim #{claim_number}.*?At-Fault:\s*(Yes|No|True|False)',
+            rf'First Party Driver At-Fault:\s*(\d+%).*?Claim #{claim_number}',
             rf'First Party Driver At-Fault:\s*(Yes|No|True|False).*?Claim #{claim_number}',
             rf'At-Fault:\s*(Yes|No|True|False).*?Claim #{claim_number}'
         ]
@@ -279,7 +423,13 @@ def _extract_claim_details_enhanced(text, claim_number):
         for pattern in at_fault_patterns:
             at_fault_match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
             if at_fault_match:
-                details['first_party_driver_at_fault'] = at_fault_match.group(1).strip()
+                at_fault_value = at_fault_match.group(1).strip()
+                # Convert percentage to Yes/No
+                if '%' in at_fault_value:
+                    percentage = int(at_fault_value.replace('%', ''))
+                    details['first_party_driver_at_fault'] = 'Yes' if percentage > 0 else 'No'
+                else:
+                    details['first_party_driver_at_fault'] = at_fault_value
                 break
     
     return details
