@@ -49,15 +49,15 @@ def create_test_data():
             "mvrs": [{
                 "licence_number": "M0250-40919-10709",
                 "name": "DOE,JOHN",
-                "birth_date": "07/09/1991",
+                "birth_date": "09/07/1991",  # MVR format: DD/MM/YYYY
                 "gender": "M",
                 "address": "92 PRITCHARD AVE",
                 "convictions": [{
                     "description": "SHALL NOT DRV HOLDING OR USING A HAND-HELD COM DEV",
-                    "offence_date": "12/02/2024"
+                    "offence_date": "02/12/2024"  # MVR format: DD/MM/YYYY
                 }],
-                "expiry_date": "07/09/2027",  # Same MM/YYYY as birth_date
-                "issue_date": "08/29/2008"
+                "expiry_date": "09/07/2027",  # MVR format: DD/MM/YYYY
+                "issue_date": "29/08/2008"  # MVR format: DD/MM/YYYY
             }],
             "dashes": []
         }
@@ -91,12 +91,12 @@ def create_test_data():
             "mvrs": [{
                 "licence_number": "M0250-40919-10710",
                 "name": "SMITH,JANE",
-                "birth_date": "05/15/1995",
+                "birth_date": "15/05/1995",  # MVR format: DD/MM/YYYY
                 "gender": "F",
                 "address": "123 MAIN ST",
                 "convictions": [],
-                "expiry_date": "12/15/2025",  # Different MM/YYYY from birth_date
-                "issue_date": "05/15/2015"
+                "expiry_date": "15/12/2025",  # MVR format: DD/MM/YYYY
+                "issue_date": "15/05/2015"  # MVR format: DD/MM/YYYY
             }],
             "dashes": []
         }
@@ -134,15 +134,15 @@ def create_test_data():
             "mvrs": [{
                 "licence_number": "M0250-40919-10711",
                 "name": "WILSON,BOB",
-                "birth_date": "03/20/1988",
+                "birth_date": "20/03/1988",  # MVR format: DD/MM/YYYY
                 "gender": "M",
                 "address": "456 OAK AVE",
                 "convictions": [{
                     "description": "SHALL NOT DRV HOLDING OR USING A HAND-HELD COM DEV",
-                    "offence_date": "12/02/2024"
+                    "offence_date": "02/12/2024"  # MVR format: DD/MM/YYYY
                 }],
-                "expiry_date": "03/20/2028",
-                "issue_date": "03/20/2008"
+                "expiry_date": "20/03/2028",  # MVR format: DD/MM/YYYY
+                "issue_date": "20/03/2008"  # MVR format: DD/MM/YYYY
             }],
             "dashes": []
         }
@@ -176,12 +176,12 @@ def create_test_data():
             "mvrs": [{
                 "licence_number": "M0250-40919-10713",  # Different license number
                 "name": "JOHNSON,ALICE",
-                "birth_date": "06/10/1990",
+                "birth_date": "10/06/1990",  # MVR format: DD/MM/YYYY
                 "gender": "F",
                 "address": "789 PINE ST",
                 "convictions": [],
-                "expiry_date": "06/10/2026",
-                "issue_date": "06/10/2010"
+                "expiry_date": "10/06/2026",  # MVR format: DD/MM/YYYY
+                "issue_date": "10/06/2010"  # MVR format: DD/MM/YYYY
             }],
             "dashes": []
         }
