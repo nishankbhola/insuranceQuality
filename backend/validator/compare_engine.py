@@ -590,11 +590,10 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             "matches": []
         }
         
-        # Get driver info from quote
-        quote_driver = quote.get("drivers", [{}])[0] if quote.get("drivers") else {}
-        quote_name = quote_driver.get("full_name", "")
-        quote_license = quote_driver.get("licence_number", "")
-        quote_dob = quote_driver.get("birth_date", "")
+        # Use the driver parameter that was passed in (correct driver for this validation)
+        quote_name = driver.get("full_name", "")
+        quote_license = driver.get("licence_number", "")
+        quote_dob = driver.get("birth_date", "")
         
         # Get DASH info
         dash_name = dash.get("name", "")
@@ -792,6 +791,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         - "nadeen thomas" vs "thomas,nadeen" -> True
         - "john smith" vs "smith,john" -> True
         - "mary jane wilson" vs "wilson,mary jane" -> True
+        - "matthew f silva" vs "silva,matthew,freitas" -> True (F vs FREITAS, different order)
         """
         if not name1 or not name2:
             return False
@@ -801,22 +801,55 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         name2_clean = name2.replace(",", " ").replace("  ", " ").strip()
         
         # Split names into parts and normalize
-        parts1 = set(name1_clean.lower().split())
-        parts2 = set(name2_clean.lower().split())
+        parts1 = name1_clean.lower().split()
+        parts2 = name2_clean.lower().split()
         
-        # Check if they contain the same parts
-        if parts1 == parts2:
+        # Convert to sets for comparison
+        set1 = set(parts1)
+        set2 = set(parts2)
+        
+        # Check if they contain the same parts (exact match)
+        if set1 == set2:
             return True
         
-        # Handle cases where one name might have extra parts (middle names, etc.)
-        # If all parts of the shorter name are in the longer name, consider it a match
-        if len(parts1) != len(parts2):
-            shorter_parts = parts1 if len(parts1) < len(parts2) else parts2
-            longer_parts = parts2 if len(parts1) < len(parts2) else parts1
-            
-            # Check if all parts of the shorter name are in the longer name
-            if shorter_parts.issubset(longer_parts):
-                return True
+        # Handle middle initial vs full middle name with different orders
+        # Create sets that consider initials as matches
+        set1_with_initials = set()
+        set2_with_initials = set()
+        
+        # Add all parts to sets, including initial variations
+        for part in parts1:
+            set1_with_initials.add(part)
+            if len(part) == 1:  # If it's an initial, add possible full names
+                for other_part in parts2:
+                    if other_part.startswith(part):
+                        set1_with_initials.add(other_part)
+        
+        for part in parts2:
+            set2_with_initials.add(part)
+            if len(part) == 1:  # If it's an initial, add possible full names
+                for other_part in parts1:
+                    if other_part.startswith(part):
+                        set2_with_initials.add(other_part)
+        
+        # Check if sets match with initial handling
+        if set1_with_initials == set2_with_initials:
+            return True
+        
+        # More flexible matching: check if most parts match
+        matches = 0
+        total_parts = max(len(parts1), len(parts2))
+        
+        # Check each part in parts1 against parts2
+        for part1 in parts1:
+            for part2 in parts2:
+                if part1 == part2 or (len(part1) == 1 and part2.startswith(part1)) or (len(part2) == 1 and part1.startswith(part2)):
+                    matches += 1
+                    break
+        
+        # If we have enough matches (allowing for one mismatch), consider it a match
+        if matches >= min(len(parts1), len(parts2)) and matches >= total_parts - 1:
+            return True
         
         return False
 
