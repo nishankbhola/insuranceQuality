@@ -86,42 +86,86 @@ def extract_dash_data(path):
             break
 
     # Policies - Updated pattern to match the actual format and extract cancellation reasons
-    policies_section = re.search(r'Policies\s*.*?\n(.*?)(?=Claims|Previous Inquiries)', text, re.DOTALL)
+    policies_section = re.search(r'Policies\s*\n(.*?)(?=Claims|Previous Inquiries)', text, re.DOTALL)
     if policies_section:
         policy_text = policies_section.group(1)
         
-        # Enhanced pattern to capture cancellation reasons
-        policy_patterns = [
-            r'#(\d+)\s+(\d{4}-\d{2}-\d{2})\s+to\s+(\d{4}-\d{2}-\d{2})\s+([^*]+?)(?:\s*\*[^*]*\*)?\s+(Active|Inactive|Expired|Cancelled[^-\n]*(?:-\s*[^-\n]*)?)',
-            r'#(\d+)\s+(\d{4}-\d{2}-\d{2})\s+to\s+(\d{4}-\d{2}-\d{2})\s+(.+?)\s+(Active|Inactive|Expired|Cancelled[^-\n]*(?:-\s*[^-\n]*)?)'
-        ]
+        # Split into individual policy blocks
+        policy_blocks = re.split(r'#\d+', policy_text)[1:]  # Skip the first empty element
         
-        for pattern in policy_patterns:
-            policy_matches = re.findall(pattern, policy_text)
-            if policy_matches:
-                for policy_num, start_date, end_date, company, status in policy_matches:
-                    # Clean company name
-                    company_clean = re.sub(r'\s*\*[^*]*\*\s*', '', company).strip()
+        for i, block in enumerate(policy_blocks):
+            # Extract policy number (i+1 since we split on #)
+            policy_num = str(i + 1)
+            
+            # Extract dates
+            date_match = re.search(r'(\d{4}-\d{2}-\d{2})\s+to\s+(\d{4}-\d{2}-\d{2})', block)
+            if not date_match:
+                continue
+                
+            start_date = date_match.group(1)
+            end_date = date_match.group(2)
+            
+            # Extract company name (everything between dates and status/cancellation)
+            lines = block.split('\n')
+            company_lines = []
+            status = "Active"  # Default status
+            cancellation_reason = None
+            
+            # Find the company name and status
+            for line in lines:
+                line = line.strip()
+                if not line or line.startswith('*'):
+                    continue
                     
-                    # Extract cancellation reason if present
-                    cancellation_reason = None
-                    if 'Cancelled' in status:
-                        # Look for the reason after "Cancelled"
-                        reason_match = re.search(r'Cancelled[^-\n]*-\s*([^-\n]+)', status)
-                        if reason_match:
-                            cancellation_reason = reason_match.group(1).strip()
-                        else:
-                            cancellation_reason = "Cancelled"
-                    
-                    result["policies"].append({
-                        "policy_number": policy_num,
-                        "start_date": start_date,
-                        "end_date": end_date,
-                        "company": company_clean,
-                        "status": status.strip(),
-                        "cancellation_reason": cancellation_reason
-                    })
-                break
+                # Check if this line contains a status
+                if any(status_word in line for status_word in ['Active', 'Inactive', 'Expired', 'Cancelled']):
+                    status = line
+                    # Check if cancellation reason is on the same line
+                    if 'Cancelled' in line:
+                        reason_patterns = [
+                            r'Cancelled[^-\n]*-\s*([^-\n]+)',
+                            r'Cancelled[^-\n]*\s+([^-\n]+)',
+                            r'Cancelled\s*-\s*([^-\n]+)',
+                            r'Cancelled\s+([^-\n]+)'
+                        ]
+                        
+                        for reason_pattern in reason_patterns:
+                            reason_match = re.search(reason_pattern, line, re.IGNORECASE)
+                            if reason_match:
+                                cancellation_reason = reason_match.group(1).strip()
+                                break
+                elif not re.match(r'^\d{4}-\d{2}-\d{2}', line):  # Not a date line
+                    company_lines.append(line)
+            
+            # Clean company name
+            company_clean = ' '.join(company_lines).strip()
+            company_clean = re.sub(r'\s*\*[^*]*\*\s*', '', company_clean).strip()
+            
+            # If no cancellation reason found in status line, check the next line
+            if 'Cancelled' in status and not cancellation_reason:
+                # Look for cancellation reason on the next line
+                block_lines = block.split('\n')
+                for j, line in enumerate(block_lines):
+                    if 'Cancelled' in line:
+                        # Check next line for reason
+                        if j + 1 < len(block_lines):
+                            next_line = block_lines[j + 1].strip()
+                            if next_line and not next_line.startswith('*'):
+                                cancellation_reason = next_line
+                                break
+                
+                # If still no reason found, use "Cancelled"
+                if not cancellation_reason:
+                    cancellation_reason = "Cancelled"
+            
+            result["policies"].append({
+                "policy_number": policy_num,
+                "start_date": start_date,
+                "end_date": end_date,
+                "company": company_clean,
+                "status": status.strip(),
+                "cancellation_reason": cancellation_reason
+            })
         
         # Detect policy gaps
         result["policy_gaps"] = _detect_policy_gaps(result["policies"])

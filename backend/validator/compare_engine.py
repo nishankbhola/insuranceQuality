@@ -251,9 +251,9 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         
         if quote_license and mvr_license:
             if quote_license == mvr_license:
-                validation["matches"].append("License number matches between Quote and MVR")
+                validation["matches"].append(f"License number matches: Quote '{quote_license_raw}' vs MVR '{mvr_license_raw}'")
             else:
-                validation["critical_errors"].append("License number mismatch between Quote and MVR")
+                validation["critical_errors"].append(f"License number mismatch: Quote '{quote_license_raw}' vs MVR '{mvr_license_raw}'")
                 validation["status"] = "FAIL"
         
         # Name validation (fuzzy match)
@@ -261,9 +261,9 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         mvr_name = mvr.get("name", "")
         
         if self._similar(quote_name, mvr_name) or self._names_contain_same_parts(quote_name, mvr_name):
-            validation["matches"].append("Name matches between Quote and MVR")
+            validation["matches"].append(f"Name matches: Quote '{quote_name}' vs MVR '{mvr_name}'")
         else:
-            validation["critical_errors"].append("Name mismatch between Quote and MVR")
+            validation["critical_errors"].append(f"Name mismatch: Quote '{quote_name}' vs MVR '{mvr_name}'")
             validation["status"] = "FAIL"
         
         # Address validation - compare MVR address with quote garaging location
@@ -288,17 +288,15 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             print(f"  Quote normalized: '{normalized_quote}'")
             
             if self._addresses_match(normalized_mvr, normalized_quote):
-                validation["matches"].append("Address matches between MVR and Quote garaging location")
+                validation["matches"].append(f"Address matches: MVR '{mvr_address}' vs Quote garaging '{quote_garaging_location}'")
             else:
-                validation["critical_errors"].append(f"Address mismatch between MVR ({mvr_address}) and Quote garaging location ({quote_garaging_location})")
+                validation["critical_errors"].append(f"Address mismatch: MVR '{mvr_address}' vs Quote garaging location '{quote_garaging_location}'")
                 validation["status"] = "FAIL"
         elif mvr_address and not quote_garaging_location:
-            validation["critical_errors"].append("MVR has address but Quote has no garaging location")
+            validation["critical_errors"].append(f"MVR has address '{mvr_address}' but Quote has no garaging location")
             validation["status"] = "FAIL"
         elif not mvr_address and quote_garaging_location:
-            validation["warnings"].append("Quote has garaging location but MVR has no address")
-        else:
-            validation["warnings"].append("No address information available for comparison")
+            validation["warnings"].append(f"Quote has garaging location '{quote_garaging_location}' but MVR has no address")
         
         # Date of birth validation
         quote_dob = driver.get("birth_date", "")
@@ -378,33 +376,33 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             
             # Compare calculated dates with quote dates
             if quote_g1_date:
-                if self._dates_match(calculated_g1, quote_g1_date, "quote", "quote"):
-                    validation["matches"].append(f"G1 date matches: Quote ({quote_g1_date}) = Calculated ({calculated_g1})")
+                if self._dates_match(calculated_g1, quote_g1_date, "calculated", "quote"):
+                    validation["matches"].append(f"G1 date matches: Calculated '{calculated_g1}' vs Quote '{quote_g1_date}'")
                 else:
-                    validation["critical_errors"].append(f"G1 date mismatch: Quote ({quote_g1_date}) ≠ Calculated ({calculated_g1})")
+                    validation["critical_errors"].append(f"G1 date mismatch: Calculated '{calculated_g1}' vs Quote '{quote_g1_date}'")
                     validation["status"] = "FAIL"
             else:
-                validation["critical_errors"].append(f"Quote missing G1 date, expected: {calculated_g1}")
+                validation["critical_errors"].append(f"Quote missing G1 date, expected: '{calculated_g1}'")
                 validation["status"] = "FAIL"
             
             if quote_g2_date:
-                if self._dates_match(calculated_g2, quote_g2_date, "quote", "quote"):
-                    validation["matches"].append(f"G2 date matches: Quote ({quote_g2_date}) = Calculated ({calculated_g2})")
+                if self._dates_match(calculated_g2, quote_g2_date, "calculated", "quote"):
+                    validation["matches"].append(f"G2 date matches: Calculated '{calculated_g2}' vs Quote '{quote_g2_date}'")
                 else:
-                    validation["critical_errors"].append(f"G2 date mismatch: Quote ({quote_g2_date}) ≠ Calculated ({calculated_g2})")
+                    validation["critical_errors"].append(f"G2 date mismatch: Calculated '{calculated_g2}' vs Quote '{quote_g2_date}'")
                     validation["status"] = "FAIL"
             else:
-                validation["critical_errors"].append(f"Quote missing G2 date, expected: {calculated_g2}")
+                validation["critical_errors"].append(f"Quote missing G2 date, expected: '{calculated_g2}'")
                 validation["status"] = "FAIL"
             
             if quote_g_date:
-                if self._dates_match(calculated_g, quote_g_date, "quote", "quote"):
-                    validation["matches"].append(f"G date matches: Quote ({quote_g_date}) = Calculated ({calculated_g})")
+                if self._dates_match(calculated_g, quote_g_date, "calculated", "quote"):
+                    validation["matches"].append(f"G date matches: Calculated '{calculated_g}' vs Quote '{quote_g_date}'")
                 else:
-                    validation["critical_errors"].append(f"G date mismatch: Quote ({quote_g_date}) ≠ Calculated ({calculated_g})")
+                    validation["critical_errors"].append(f"G date mismatch: Calculated '{calculated_g}' vs Quote '{quote_g_date}'")
                     validation["status"] = "FAIL"
             else:
-                validation["critical_errors"].append(f"Quote missing G date, expected: {calculated_g}")
+                validation["critical_errors"].append(f"Quote missing G date, expected: '{calculated_g}'")
                 validation["status"] = "FAIL"
         else:
             validation["critical_errors"].append("Could not calculate expected license dates from MVR data")
@@ -413,12 +411,12 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         # Validate that the progression makes sense (additional check)
         if quote_g1_date and quote_g2_date:
             if not self._is_date_before(quote_g1_date, quote_g2_date, "quote", "quote"):
-                validation["critical_errors"].append(f"G1 date ({quote_g1_date}) should be before G2 date ({quote_g2_date})")
+                validation["critical_errors"].append(f"G1 date '{quote_g1_date}' should be before G2 date '{quote_g2_date}'")
                 validation["status"] = "FAIL"
         
         if quote_g2_date and quote_g_date:
             if not self._is_date_before(quote_g2_date, quote_g_date, "quote", "quote"):
-                validation["critical_errors"].append(f"G2 date ({quote_g2_date}) should be before G date ({quote_g_date})")
+                validation["critical_errors"].append(f"G2 date '{quote_g2_date}' should be before G date '{quote_g_date}'")
                 validation["status"] = "FAIL"
         
         return validation
@@ -530,7 +528,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
 
     def _validate_convictions_enhanced(self, driver, mvr, quote):
         """
-        Enhanced convictions validation with detailed matching
+        Enhanced convictions validation with detailed comparison information
         """
         validation = {
             "status": "PASS",
@@ -539,61 +537,51 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             "matches": []
         }
         
-        # Get convictions from MVR
+        # Get convictions from MVR and quote
         mvr_convictions = mvr.get("convictions", [])
-        
-        # Get convictions from quote
         quote_convictions = quote.get("convictions", [])
         
+        validation["matches"].append(f"Found {len(mvr_convictions)} conviction(s) in MVR, {len(quote_convictions)} in Quote")
+        
+        # If no convictions in MVR, this is acceptable
         if not mvr_convictions:
-            validation["matches"].append("No convictions found in MVR")
+            validation["matches"].append("No convictions found in MVR - this is acceptable")
             return validation
         
-        # Check each MVR conviction against quote
-        for mvr_conv in mvr_convictions:
-            mvr_date = mvr_conv.get("offence_date", "")
-            mvr_description = mvr_conv.get("description", "")
+        # Check each MVR conviction against quote convictions
+        for mvr_conviction in mvr_convictions:
+            # MVR uses 'offence_date' field, Quote uses 'date' field
+            mvr_date = mvr_conviction.get("offence_date", mvr_conviction.get("date", ""))
+            mvr_description = mvr_conviction.get("description", "")
+            mvr_code = mvr_conviction.get("code", "")
             
             # Look for matching conviction in quote
-            found_match = False
-            for quote_conv in quote_convictions:
-                quote_date = quote_conv.get("date", "")
-                quote_description = quote_conv.get("description", "")
-                
-                # Check if dates and descriptions match
-                if (self._dates_match(mvr_date, quote_date, "mvr", "quote") and 
-                    self._conviction_descriptions_match(mvr_description, quote_description)):
-                    validation["matches"].append(f"Conviction matched: {mvr_date} - {mvr_description}")
-                    found_match = True
-                    break
+            conviction_found = False
             
-            if not found_match:
-                validation["critical_errors"].append(f"Conviction not found in quote: {mvr_date} - {mvr_description}")
+            for quote_conviction in quote_convictions:
+                quote_date = quote_conviction.get("date", "")
+                quote_description = quote_conviction.get("description", "")
+                quote_code = quote_conviction.get("code", "")
+                
+                # Check if dates match
+                if mvr_date and quote_date and self._dates_match(mvr_date, quote_date, "mvr", "quote"):
+                    # Check if descriptions match
+                    if self._conviction_descriptions_match(mvr_description, quote_description):
+                        validation["matches"].append(f"Conviction validated: MVR '{mvr_description}' on '{mvr_date}' vs Quote '{quote_description}' on '{quote_date}'")
+                        conviction_found = True
+                        break
+                    else:
+                        validation["warnings"].append(f"Conviction date match but description mismatch: MVR '{mvr_description}' vs Quote '{quote_description}' on '{mvr_date}'")
+            
+            if not conviction_found:
+                validation["critical_errors"].append(f"Conviction not declared in Quote: '{mvr_description}' on '{mvr_date}' (Code: {mvr_code})")
                 validation["status"] = "FAIL"
-        
-        # Check for extra convictions in quote that aren't in MVR
-        for quote_conv in quote_convictions:
-            quote_date = quote_conv.get("date", "")
-            quote_description = quote_conv.get("description", "")
-            
-            found_in_mvr = False
-            for mvr_conv in mvr_convictions:
-                mvr_date = mvr_conv.get("offence_date", "")
-                mvr_description = mvr_conv.get("description", "")
-                
-                if (self._dates_match(quote_date, mvr_date, "quote", "mvr") and 
-                    self._conviction_descriptions_match(quote_description, mvr_description)):
-                    found_in_mvr = True
-                    break
-            
-            if not found_in_mvr:
-                validation["warnings"].append(f"Extra conviction in quote not in MVR: {quote_date} - {quote_description}")
         
         return validation
 
     def _validate_dash_data(self, driver, dash, quote):
         """
-        Validate DASH data against quote driver information
+        Validate DASH data against quote data according to business rules
         """
         validation = {
             "status": "PASS",
@@ -602,64 +590,59 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             "matches": []
         }
         
-        # Date of birth validation
-        quote_dob = driver.get("birth_date", "")
+        # Get driver info from quote
+        quote_driver = quote.get("drivers", [{}])[0] if quote.get("drivers") else {}
+        quote_name = quote_driver.get("full_name", "")
+        quote_license = quote_driver.get("licence_number", "")
+        quote_dob = quote_driver.get("birth_date", "")
+        
+        # Get DASH info
+        dash_name = dash.get("name", "")
+        dash_license = dash.get("dln", "")
         dash_dob = dash.get("date_of_birth", "")
         
+        # Name comparison
+        if quote_name and dash_name:
+            if self._similar(quote_name, dash_name):
+                validation["matches"].append(f"Name matches: Quote '{quote_name}' vs DASH '{dash_name}'")
+            else:
+                validation["critical_errors"].append(f"Name mismatch: Quote '{quote_name}' vs DASH '{dash_name}'")
+                validation["status"] = "FAIL"
+        
+        # License number comparison
+        if quote_license and dash_license:
+            if self._similar(quote_license, dash_license):
+                validation["matches"].append(f"License number matches: Quote '{quote_license}' vs DASH '{dash_license}'")
+            else:
+                validation["critical_errors"].append(f"License number mismatch: Quote '{quote_license}' vs DASH '{dash_license}'")
+                validation["status"] = "FAIL"
+        
+        # Date of birth comparison
         if quote_dob and dash_dob:
             if self._dates_match(quote_dob, dash_dob, "quote", "dash"):
-                validation["matches"].append("Date of birth matches between Quote and DASH")
+                validation["matches"].append(f"Date of birth matches: Quote '{quote_dob}' vs DASH '{dash_dob}'")
             else:
-                validation["critical_errors"].append("Date of birth mismatch between Quote and DASH")
+                validation["critical_errors"].append(f"Date of birth mismatch: Quote '{quote_dob}' vs DASH '{dash_dob}'")
                 validation["status"] = "FAIL"
         
-        # Gender validation
-        quote_gender = driver.get("gender", "").lower()
-        dash_gender = dash.get("gender", "").lower()
-        
-        if quote_gender and dash_gender:
-            gender_mapping = {
-                'm': 'male',
-                'male': 'male',
-                'f': 'female', 
-                'female': 'female'
-            }
-            
-            quote_gender_normalized = gender_mapping.get(quote_gender, quote_gender)
-            dash_gender_normalized = gender_mapping.get(dash_gender, dash_gender)
-            
-            if quote_gender_normalized == dash_gender_normalized:
-                validation["matches"].append("Gender matches between Quote and DASH")
-            else:
-                validation["warnings"].append("Gender mismatch between Quote and DASH")
-        
-        # License number validation
-        quote_license_raw = driver.get("licence_number", "")
-        quote_license = quote_license_raw.replace("-", "") if quote_license_raw else ""
-        dash_license_raw = dash.get("dln", "")
-        dash_license = dash_license_raw.replace("-", "") if dash_license_raw else ""
-        
-        if quote_license and dash_license:
-            if quote_license == dash_license:
-                validation["matches"].append("License number matches between Quote and DASH")
-            else:
-                validation["critical_errors"].append("License number mismatch between Quote and DASH")
-                validation["status"] = "FAIL"
-        
-        # Policy validation
+        # Validate policies and claims
         policies_validation = self._validate_policies(dash, quote)
-        validation["critical_errors"].extend(policies_validation["critical_errors"])
-        validation["warnings"].extend(policies_validation["warnings"])
-        validation["matches"].extend(policies_validation["matches"])
-        
-        # Claims validation
         claims_validation = self._validate_claims(dash, quote)
-        validation["critical_errors"].extend(claims_validation["critical_errors"])
-        validation["warnings"].extend(claims_validation["warnings"])
-        validation["matches"].extend(claims_validation["matches"])
         
+        # Combine results
+        validation["matches"].extend(policies_validation["matches"])
+        validation["warnings"].extend(policies_validation["warnings"])
+        validation["critical_errors"].extend(policies_validation["critical_errors"])
+        
+        validation["matches"].extend(claims_validation["matches"])
+        validation["warnings"].extend(claims_validation["warnings"])
+        validation["critical_errors"].extend(claims_validation["critical_errors"])
+        
+        # Update status if there are critical errors
         if validation["critical_errors"]:
             validation["status"] = "FAIL"
+        elif validation["warnings"]:
+            validation["status"] = "WARNING"
         
         return validation
 
@@ -687,17 +670,6 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         
         validation["matches"].append(f"Found {len(policies)} total policies in DASH")
         validation["matches"].append(f"First policy ever held: {first_policy_start} ({first_policy.get('company', 'Unknown')})")
-        
-        # Business rule: Compare date_insured from Quote with first policy start_date from DASH
-        quote_date_insured = ""
-        if quote.get("drivers"):
-            quote_date_insured = quote["drivers"][0].get("date_insured", "")
-        
-        if quote_date_insured and first_policy_start:
-            if self._dates_match(quote_date_insured, first_policy_start, "quote", "dash"):
-                validation["matches"].append(f"Date insured ({quote_date_insured}) matches first policy start date ({first_policy_start})")
-            else:
-                validation["critical_errors"].append(f"Date insured ({quote_date_insured}) doesn't match first policy start date ({first_policy_start})")
         
         # Business rule: Check for gaps between policy end and next policy start
         policy_gaps = dash.get("policy_gaps", [])
@@ -752,8 +724,9 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         if quote.get("drivers"):
             policyholder_name = quote["drivers"][0].get("full_name", "")
         
+        # If no claims in DASH, this is a pass condition
         if not dash_claims:
-            validation["matches"].append("No claims found in DASH")
+            validation["matches"].append("No claims found in DASH - this is acceptable")
             return validation
         
         validation["matches"].append(f"Found {len(dash_claims)} claim(s) in DASH")
@@ -813,25 +786,39 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
 
     def _names_contain_same_parts(self, name1, name2):
         """
-        Check if two names contain the same key parts (first and last name)
+        Check if two names contain the same parts (handles different name orders and formats)
+        Examples:
+        - "nadeen thomas" vs "thomas nadeen" -> True
+        - "nadeen thomas" vs "thomas,nadeen" -> True
+        - "john smith" vs "smith,john" -> True
+        - "mary jane wilson" vs "wilson,mary jane" -> True
         """
         if not name1 or not name2:
             return False
         
-        # Split names into parts first, then clean each part
-        name1_clean = name1.replace(",", " ") if name1 else ""
-        name2_clean = name2.replace(",", " ") if name2 else ""
-        parts1 = [part.strip().upper() for part in name1_clean.split() if len(part.strip()) > 2]
-        parts2 = [part.strip().upper() for part in name2_clean.split() if len(part.strip()) > 2]
+        # Clean and normalize names
+        name1_clean = name1.replace(",", " ").replace("  ", " ").strip()
+        name2_clean = name2.replace(",", " ").replace("  ", " ").strip()
         
-        # Check if they share key name parts
-        for part1 in parts1:
-            for part2 in parts2:
-                if part1 == part2 or self._similar(part1, part2):
-                    return True
+        # Split names into parts and normalize
+        parts1 = set(name1_clean.lower().split())
+        parts2 = set(name2_clean.lower().split())
         
-        # Also check if the names are similar overall
-        return self._similar(name1, name2)
+        # Check if they contain the same parts
+        if parts1 == parts2:
+            return True
+        
+        # Handle cases where one name might have extra parts (middle names, etc.)
+        # If all parts of the shorter name are in the longer name, consider it a match
+        if len(parts1) != len(parts2):
+            shorter_parts = parts1 if len(parts1) < len(parts2) else parts2
+            longer_parts = parts2 if len(parts1) < len(parts2) else parts1
+            
+            # Check if all parts of the shorter name are in the longer name
+            if shorter_parts.issubset(longer_parts):
+                return True
+        
+        return False
 
     def _dates_match(self, date1, date2, source1_type=None, source2_type=None):
         """
@@ -1012,7 +999,25 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
 
     def _similar(self, a, b):
         """Check if two strings are similar using fuzzy matching"""
-        return SequenceMatcher(None, a.lower(), b.lower()).ratio() > 0.6
+        if not a or not b:
+            return False
+        
+        # Normalize strings for comparison
+        a_normalized = a.lower().strip()
+        b_normalized = b.lower().strip()
+        
+        # Exact match after normalization
+        if a_normalized == b_normalized:
+            return True
+        
+        # Check if names are the same but in different order
+        if self._names_contain_same_parts(a_normalized, b_normalized):
+            return True
+        
+        # Use fuzzy matching for other cases
+        from difflib import SequenceMatcher
+        similarity = SequenceMatcher(None, a_normalized, b_normalized).ratio()
+        return similarity >= 0.8
 
     def _conviction_descriptions_match(self, desc1, desc2):
         """

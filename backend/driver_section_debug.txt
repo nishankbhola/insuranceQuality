@@ -1,50 +1,44 @@
-Driver: Yang Palmo
+Driver: Matthew F Silva
 Section: 
-10/26/1987
+10/23/2002
 Birth Date
 Single
 Marital Status
-Female
+Male
 Gender
-Applicant
+Child
 Relationship to Applicant
-No
+Yes
 Driver Training
- 
+09/22/2020
 Driver Training
 Date
 No
 Out of Province / Country Driver
-G
+G2
 Licence Class
-10/04/2010
+ 
 Date G
-05/05/2009
+08/04/2022
 Date G2
-03/06/2008
+09/22/2020
 Date G1
-P03117892876026
+S44035293021023
 Licence Number
 ON
 Licence Province
  
 Occupation
-None
-Membership Plan 1 Description
- 
-Membership Date
- 
-Membership Number
-09/04/2010
+08/04/2022
 Date Insured
- 
+Wawanesa Mutual
 Current Carrier
- 
+08/04/2022
 Date with
 Company
-10/19/2022
+08/04/2022
 Brokerage Insured
-09/04/2010
+ 
 Date
 Owner/Principal
 Yes
@@ -59,27 +53,74 @@ Class
  
 Other Licence
 Date
-Non-responsible Collision
-Description
-12/08/2024
-Date
-No
-Charge
-2007 BMW X3 3.0si 4DR AWD
-
-Extracted dates - G: 10/04/2010, G2: 05/05/2009, G1: 03/06/2008
+Vieira & Associates Insurance Brokers Ltd
+55 Horner Ave, Suite 201
+Etobicoke, ON M8Z 4X6
+Phone: (416)531-1146    Fax: (416)531-1148
+Email: info@vieirainsurance.com
+Website: www.vieirainsurance.com
+Prepared 04/24/2025 by Nishank Bhola
+Applied Ref. # RWS 983232053, CWS 339036048,
+RBWS 423938044
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
+Home: (416)685-9434
+676 LANSDOWNE AVENUE
+TORONTO, ON M6H 3Y8
+Company
+12 Months
+CAA MyPace
+3,626
+Wawanesa Drive Change
+3,630
+CAA Insurance Company (Future Member)
+3,858
+Definity Insurance Company
+3,888
+Wawanesa Mutual
+3,998
+CAA Insurance Company
+4,060
+Aviva - Aviva Journey
+4,133
+Aviva
+4,392
+Dominion of Canada - Single Pay and DPD
+5,130
+SGI CANADA
+5,163
+Intact Insurance - my Drive
+5,713
+Intact Insurance
+6,306
+Dominion of Canada - IntelliDrive
+6,382
+Dominion of Canada
+6,545
+Facility Association
+8,311
+Echelon
+9,720
+Coachman
+0
+JEVCO
+0
+Summary
+Nancy Freitas
+1 
+Extracted dates - G: 08/04/2022, G2: 08/04/2022, G1: 09/22/2020
 
 === DETAILED DEBUG ===
 Testing all date patterns:
-Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['10/04/2010', '05/05/2009', '03/06/2008']
-Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['10/04/2010', '05/05/2009', '03/06/2008']
-Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: ['05/05/2009']
-Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: ['05/05/2009']
-Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: ['03/06/2008']
-Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: ['03/06/2008']
+Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['08/04/2022', '09/22/2020']
+Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['08/04/2022', '09/22/2020']
+Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: ['08/04/2022']
+Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: ['08/04/2022']
+Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: ['09/22/2020']
+Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: ['09/22/2020']
 
 All date patterns found:
-All dates: ['10/26/1987', '10/04/2010', '05/05/2009', '03/06/2008', '09/04/2010', '10/19/2022', '09/04/2010', '12/08/2024']
+All dates: ['10/23/2002', '09/22/2020', '08/04/2022', '09/22/2020', '08/04/2022', '08/04/2022', '08/04/2022', '04/24/2025']
 
 Looking for 'Date G1' specifically:
 Date G1 context: 'Date G1'

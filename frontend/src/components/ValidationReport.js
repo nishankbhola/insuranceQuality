@@ -28,34 +28,29 @@ function ValidationReport({ data }) {
 
   // Calculate overall match score
   const calculateOverallScore = () => {
-    if (!validationData.summary) {
+    if (!validationData.drivers || validationData.drivers.length === 0) {
       return 0;
     }
     
-    const totalDrivers = validationData.summary.total_drivers;
-    const validatedDrivers = validationData.summary.validated_drivers;
+    // Calculate average score across all drivers
+    let totalScore = 0;
+    let driverCount = 0;
     
-    // Calculate percentage based on validated drivers
-    if (totalDrivers > 0) {
-      return Math.round((validatedDrivers / totalDrivers) * 100);
-    }
+    validationData.drivers.forEach(driver => {
+      // Calculate individual scores for this driver
+      const mvrScore = calculateMVRScore(driver);
+      const licenseScore = calculateLicenseProgressionScore(driver);
+      const convictionsScore = calculateConvictionsScore(driver);
+      const dashScore = calculateDASHScore(driver);
+      
+      // Calculate average for this driver
+      const driverScore = Math.round((mvrScore + licenseScore + convictionsScore + dashScore) / 4);
+      totalScore += driverScore;
+      driverCount++;
+    });
     
-    // If no summary data, calculate from individual driver statuses
-    if (validationData.drivers && validationData.drivers.length > 0) {
-      let totalScore = 0;
-      validationData.drivers.forEach(driver => {
-        if (driver.validation_status === 'PASS') {
-          totalScore += 100;
-        } else if (driver.validation_status === 'WARNING') {
-          totalScore += 50; // Partial validation
-        } else {
-          totalScore += 0;
-        }
-      });
-      return Math.round(totalScore / validationData.drivers.length);
-    }
-    
-    return 0;
+    // Return average across all drivers
+    return driverCount > 0 ? Math.round(totalScore / driverCount) : 0;
   };
 
   // Calculate MVR match score
@@ -138,17 +133,28 @@ function ValidationReport({ data }) {
     }
   };
 
-  // Download PDF report
+  // Download PDF report (high-quality image-based)
   const downloadPDF = async () => {
     if (!reportRef.current) return;
 
+    // High-quality image-based PDF for better visual appearance
     const canvas = await html2canvas(reportRef.current, {
-      scale: 2,
+      scale: 2, // Increased scale for better quality
       useCORS: true,
-      allowTaint: true
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      imageTimeout: 0,
+      removeContainer: true,
+      width: reportRef.current.scrollWidth,
+      height: reportRef.current.scrollHeight,
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: reportRef.current.scrollWidth,
+      windowHeight: reportRef.current.scrollHeight
     });
 
-    const imgData = canvas.toDataURL('image/png');
+    const imgData = canvas.toDataURL('image/png', 1.0); // Use PNG for maximum quality
     const pdf = new jsPDF('p', 'mm', 'a4');
     const imgWidth = 210;
     const pageHeight = 295;
@@ -157,18 +163,62 @@ function ValidationReport({ data }) {
 
     let position = 0;
 
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'MEDIUM'); // Use MEDIUM compression for balance
     heightLeft -= pageHeight;
 
     while (heightLeft >= 0) {
       position = heightLeft - imgHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'MEDIUM');
       heightLeft -= pageHeight;
     }
 
     const timestamp = new Date().toISOString().split('T')[0];
     pdf.save(`validation-report-${timestamp}.pdf`);
+  };
+
+  // Download High-Quality PDF report (maximum quality for debugging)
+  const downloadHighQualityPDF = async () => {
+    if (!reportRef.current) return;
+
+    // Balanced quality settings for readable debugging
+    const canvas = await html2canvas(reportRef.current, {
+      scale: 2, // Good balance between quality and size
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      imageTimeout: 0,
+      removeContainer: true,
+      width: reportRef.current.scrollWidth,
+      height: reportRef.current.scrollHeight,
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: reportRef.current.scrollWidth,
+      windowHeight: reportRef.current.scrollHeight
+    });
+
+    const imgData = canvas.toDataURL('image/jpeg', 0.9); // Use JPEG with 90% quality for smaller size
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST'); // Use FAST compression
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+      heightLeft -= pageHeight;
+    }
+
+    const timestamp = new Date().toISOString().split('T')[0];
+    pdf.save(`validation-report-HIGH-QUALITY-${timestamp}.pdf`);
   };
 
   const overallScore = calculateOverallScore();
@@ -177,11 +227,16 @@ function ValidationReport({ data }) {
   return (
     <div className="space-y-6">
       {/* Report Header */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
         <div className="flex justify-between items-start mb-6">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Enhanced Validation Report</h2>
-            <p className="text-gray-600">Comprehensive analysis with domain-specific rules and severity indicators</p>
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center">
+              <FileText className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-1">Validation Report</h2>
+              <p className="text-gray-600">Vieira Insurance Quality Control System</p>
+            </div>
           </div>
           <div className="flex space-x-3">
             <button
@@ -191,6 +246,7 @@ function ValidationReport({ data }) {
               {showRawJson ? <EyeOff className="w-4 h-4 mr-2" /> : <Eye className="w-4 h-4 mr-2" />}
               {showRawJson ? 'Hide' : 'View'} Raw JSON
             </button>
+            
             <button
               onClick={downloadPDF}
               className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -198,14 +254,22 @@ function ValidationReport({ data }) {
               <Download className="w-4 h-4 mr-2" />
               Download PDF
             </button>
+
+            <button
+              onClick={downloadHighQualityPDF}
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              High-Quality PDF
+            </button>
           </div>
         </div>
 
         {/* Company Info and Timestamp */}
-        <div className="flex justify-between items-center py-4 border-t border-b border-gray-200">
+        <div className="flex justify-between items-center py-4 border-t border-gray-200">
           <div className="flex items-center">
-            <Building className="w-6 h-6 text-blue-600 mr-2" />
-            <span className="font-semibold text-gray-900">Insurance Quality Control System</span>
+            <Building className="w-5 h-5 text-blue-600 mr-2" />
+            <span className="font-semibold text-gray-900">Vieira Insurance Quality Control System</span>
           </div>
           <div className="flex items-center text-gray-600">
             <Clock className="w-4 h-4 mr-2" />
@@ -216,7 +280,7 @@ function ValidationReport({ data }) {
 
       {/* Raw JSON Toggle */}
       {showRawJson && (
-        <div className="bg-gray-900 rounded-lg p-4">
+        <div className="bg-gray-900 rounded-xl p-4 mb-6">
           <pre className="text-green-400 text-sm overflow-auto max-h-96">
             {JSON.stringify(validationData, null, 2)}
           </pre>
@@ -224,13 +288,13 @@ function ValidationReport({ data }) {
       )}
 
       {/* Main Report Content */}
-      <div ref={reportRef} className="bg-white rounded-lg shadow-lg p-6">
+      <div ref={reportRef} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         {/* Validation Summary Section */}
         <div className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">Validation Summary</h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-6">Validation Summary</h3>
           
           {/* Overall Score */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-6">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-6 border border-blue-100">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="text-lg font-semibold text-gray-900 mb-2">Overall Match Score</h4>
@@ -257,46 +321,50 @@ function ValidationReport({ data }) {
 
           {/* Summary Cards */}
           <div className="grid md:grid-cols-4 gap-6">
-            <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
               <div className="flex items-center mb-3">
                 <FileText className="w-6 h-6 text-blue-600 mr-2" />
                 <h5 className="font-semibold text-gray-900">MVR vs Quote</h5>
               </div>
               <div className="text-2xl font-bold text-blue-600">
-                {validationData.drivers?.length > 0 ? calculateMVRScore(validationData.drivers[0]) : 0}%
+                {validationData.drivers?.length > 0 ? 
+                  Math.round(validationData.drivers.reduce((sum, driver) => sum + calculateMVRScore(driver), 0) / validationData.drivers.length) : 0}%
               </div>
               <div className="text-sm text-gray-600 mt-1">Critical field validation</div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
               <div className="flex items-center mb-3">
                 <TrendingUp className="w-6 h-6 text-purple-600 mr-2" />
                 <h5 className="font-semibold text-gray-900">License Progression</h5>
               </div>
               <div className="text-2xl font-bold text-purple-600">
-                {validationData.drivers?.length > 0 ? calculateLicenseProgressionScore(validationData.drivers[0]) : 0}%
+                {validationData.drivers?.length > 0 ? 
+                  Math.round(validationData.drivers.reduce((sum, driver) => sum + calculateLicenseProgressionScore(driver), 0) / validationData.drivers.length) : 0}%
               </div>
               <div className="text-sm text-gray-600 mt-1">G1/G2/G date logic</div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
               <div className="flex items-center mb-3">
                 <Gavel className="w-6 h-6 text-orange-600 mr-2" />
                 <h5 className="font-semibold text-gray-900">Convictions</h5>
               </div>
               <div className="text-2xl font-bold text-orange-600">
-                {validationData.drivers?.length > 0 ? calculateConvictionsScore(validationData.drivers[0]) : 0}%
+                {validationData.drivers?.length > 0 ? 
+                  Math.round(validationData.drivers.reduce((sum, driver) => sum + calculateConvictionsScore(driver), 0) / validationData.drivers.length) : 0}%
               </div>
               <div className="text-sm text-gray-600 mt-1">Conviction matching</div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
               <div className="flex items-center mb-3">
                 <Shield className="w-6 h-6 text-green-600 mr-2" />
                 <h5 className="font-semibold text-gray-900">DASH vs Quote</h5>
               </div>
               <div className="text-2xl font-bold text-green-600">
-                {validationData.drivers?.length > 0 ? calculateDASHScore(validationData.drivers[0]) : 0}%
+                {validationData.drivers?.length > 0 ? 
+                  Math.round(validationData.drivers.reduce((sum, driver) => sum + calculateDASHScore(driver), 0) / validationData.drivers.length) : 0}%
               </div>
               <div className="text-sm text-gray-600 mt-1">Claims and policy validation</div>
             </div>
@@ -305,18 +373,25 @@ function ValidationReport({ data }) {
 
         {/* Detailed Comparison Breakdown */}
         <div className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">Detailed Comparison Breakdown</h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-6">Detailed Comparison Breakdown</h3>
           
           {validationData.drivers?.map((driver, driverIndex) => (
             <div key={driverIndex} className="mb-8">
-              <div className="bg-gray-50 rounded-lg p-4 mb-4">
+              <div className="bg-gray-50 rounded-xl p-4 mb-4">
                 <div className="flex items-center space-x-3">
                   <User className="w-6 h-6 text-gray-600" />
-                  <div>
+                  <div className="flex-1">
                     <h4 className="text-xl font-semibold text-gray-900">{driver.driver_name}</h4>
                     <p className="text-gray-600">License: {driver.driver_license}</p>
                   </div>
-                  <div className="ml-auto">
+                  <div className="flex items-center space-x-4">
+                    {/* Individual Driver Score */}
+                    <div className="text-right">
+                      <div className="text-sm text-gray-600">Driver Score</div>
+                      <div className="text-lg font-bold text-blue-600">
+                        {Math.round((calculateMVRScore(driver) + calculateLicenseProgressionScore(driver) + calculateConvictionsScore(driver) + calculateDASHScore(driver)) / 4)}%
+                      </div>
+                    </div>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                       driver.validation_status === 'PASS' 
                         ? 'bg-green-100 text-green-800' 
@@ -331,173 +406,152 @@ function ValidationReport({ data }) {
               </div>
 
               {/* MVR Validation Section */}
-              <div className="mb-6">
-                <h5 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                  <FileText className="w-5 h-5 mr-2 text-blue-600" />
-                  MVR Validation ({calculateMVRScore(driver)}%)
-                </h5>
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-0">
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Field</div>
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Comparison</div>
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Status</div>
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Severity</div>
-                  </div>
-                  
-                  {/* License Number Check */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700">License Number</div>
-                    <div className="px-4 py-3 text-gray-600">Exact match validation</div>
-                    <div className="px-4 py-3">
-                      {driver.mvr_validation.matches.some(m => m.includes('License number matches')) ? (
-                        <div className="flex items-center text-green-600">
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Match
-                        </div>
-                      ) : (
-                        <div className="flex items-center text-red-600">
-                          <XCircle className="w-4 h-4 mr-1" />
-                          Mismatch
-                        </div>
-                      )}
+              {driver.mvr_validation && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                    <FileText className="w-5 h-5 mr-2 text-blue-600" />
+                    MVR Validation ({calculateMVRScore(driver)}%)
+                    {driver.mvr_validation.status === 'NOT_FOUND' && (
+                      <span className="ml-2 text-sm text-red-600 font-medium">(No MVR found for this driver)</span>
+                    )}
+                  </h3>
+                  {driver.mvr_validation.status === 'NOT_FOUND' ? (
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                      <div className="flex items-center">
+                        <XCircle className="w-5 h-5 text-red-600 mr-2" />
+                        <span className="text-red-800 font-medium">No MVR report found for driver {driver.driver_name} (License: {driver.driver_license})</span>
+                      </div>
+                      <p className="text-red-600 text-sm mt-2">Please ensure you have uploaded the correct MVR report for this driver.</p>
                     </div>
-                    <div className="px-4 py-3">
-                      {driver.mvr_validation.matches.some(m => m.includes('License number matches')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
-                    </div>
-                  </div>
+                  ) : (
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200 bg-gray-50">
+                        <div className="px-4 py-3 font-medium text-gray-700">Field</div>
+                        <div className="px-4 py-3 font-medium text-gray-700">Comparison</div>
+                        <div className="px-4 py-3 font-medium text-gray-700">Status</div>
+                      </div>
+                      
+                      {/* Name Check */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200">
+                        <div className="px-4 py-3 text-gray-700">Name</div>
+                        <div className="px-4 py-3 text-gray-600">
+                          {driver.mvr_validation.matches.find(m => m.includes('Name matches'))?.split('Name matches: ')[1] || 
+                           driver.mvr_validation.critical_errors.find(e => e.includes('Name mismatch'))?.split('Name mismatch: ')[1] || 'N/A'}
+                        </div>
+                        <div className="px-4 py-3">
+                          {driver.mvr_validation.matches.some(m => m.includes('Name matches')) ? 
+                            getSeverityBadge('match') : getSeverityBadge('critical')}
+                        </div>
+                      </div>
 
-                  {/* Name Check */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700">Driver Name</div>
-                    <div className="px-4 py-3 text-gray-600">Fuzzy string comparison</div>
-                    <div className="px-4 py-3">
-                      {driver.mvr_validation.matches.some(m => m.includes('Name matches')) ? (
-                        <div className="flex items-center text-green-600">
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Match
+                      {/* License Number Check */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200">
+                        <div className="px-4 py-3 text-gray-700">License Number</div>
+                        <div className="px-4 py-3 text-gray-600">
+                          {driver.mvr_validation.matches.find(m => m.includes('License number matches'))?.split('License number matches: ')[1] || 
+                           driver.mvr_validation.critical_errors.find(e => e.includes('License number mismatch'))?.split('License number mismatch: ')[1] || 'N/A'}
                         </div>
-                      ) : (
-                        <div className="flex items-center text-red-600">
-                          <XCircle className="w-4 h-4 mr-1" />
-                          Mismatch
+                        <div className="px-4 py-3">
+                          {driver.mvr_validation.matches.some(m => m.includes('License number matches')) ? 
+                            getSeverityBadge('match') : getSeverityBadge('critical')}
                         </div>
-                      )}
-                    </div>
-                    <div className="px-4 py-3">
-                      {driver.mvr_validation.matches.some(m => m.includes('Name matches')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
-                    </div>
-                  </div>
+                      </div>
 
-                  {/* Address Check */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700">Address</div>
-                    <div className="px-4 py-3 text-gray-600">Fuzzy string comparison</div>
-                    <div className="px-4 py-3">
-                      {driver.mvr_validation.matches.some(m => m.includes('Address matches')) ? (
-                        <div className="flex items-center text-green-600">
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Match
+                      {/* Address Check */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200">
+                        <div className="px-4 py-3 text-gray-700">Address</div>
+                        <div className="px-4 py-3 text-gray-600">
+                          {driver.mvr_validation.matches.find(m => m.includes('Address matches'))?.split('Address matches: ')[1] || 
+                           driver.mvr_validation.critical_errors.find(e => e.includes('Address mismatch'))?.split('Address mismatch: ')[1] || 'N/A'}
                         </div>
-                      ) : (
-                        <div className="flex items-center text-red-600">
-                          <XCircle className="w-4 h-4 mr-1" />
-                          Mismatch
+                        <div className="px-4 py-3">
+                          {driver.mvr_validation.matches.some(m => m.includes('Address matches')) ? 
+                            getSeverityBadge('match') : getSeverityBadge('critical')}
                         </div>
-                      )}
+                      </div>
                     </div>
-                    <div className="px-4 py-3">
-                      {driver.mvr_validation.matches.some(m => m.includes('Address matches')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
-                    </div>
-                  </div>
-
-                  {/* DOB Check */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700">Date of Birth</div>
-                    <div className="px-4 py-3 text-gray-600">Cross-format date comparison</div>
-                    <div className="px-4 py-3">
-                      {driver.mvr_validation.matches.some(m => m.includes('Date of birth matches')) ? (
-                        <div className="flex items-center text-green-600">
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Match
-                        </div>
-                      ) : (
-                        <div className="flex items-center text-red-600">
-                          <XCircle className="w-4 h-4 mr-1" />
-                          Mismatch
-                        </div>
-                      )}
-                    </div>
-                    <div className="px-4 py-3">
-                      {driver.mvr_validation.matches.some(m => m.includes('Date of birth matches')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
-                    </div>
-                  </div>
+                  )}
                 </div>
-              </div>
+              )}
 
               {/* License Progression Validation Section */}
               <div className="mb-6">
                 <h5 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                   <TrendingUp className="w-5 h-5 mr-2 text-purple-600" />
                   License Progression Validation ({calculateLicenseProgressionScore(driver)}%)
+                  {driver.license_progression_validation?.status === 'NOT_FOUND' && (
+                    <span className="ml-2 text-sm text-red-600 font-medium">(No MVR found for this driver)</span>
+                  )}
                 </h5>
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-0">
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">License Stage</div>
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Calculated Date</div>
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Quote Date</div>
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Status</div>
+                {driver.license_progression_validation?.status === 'NOT_FOUND' ? (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div className="flex items-center">
+                      <XCircle className="w-5 h-5 text-red-600 mr-2" />
+                      <span className="text-red-800 font-medium">License progression validation requires MVR data</span>
+                    </div>
+                    <p className="text-red-600 text-sm mt-2">No MVR report found for this driver. License progression cannot be validated without MVR data.</p>
                   </div>
-                  
-                  {/* G1 Date Check */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700 font-medium">G1 Date</div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {driver.license_progression_validation.matches.find(m => m.includes('G1 date matches'))?.split(': ')[1] || 'N/A'}
+                ) : (
+                  <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-0">
+                      <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">License Stage</div>
+                      <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Calculated Date</div>
+                      <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Quote Date</div>
+                      <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Status</div>
                     </div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {/* Extract quote G1 date from validation message */}
-                      {driver.license_progression_validation.critical_errors.find(e => e.includes('G1 date mismatch'))?.split('Quote: ')[1] || 'N/A'}
+                    
+                    {/* G1 Date Check */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
+                      <div className="px-4 py-3 text-gray-700 font-medium">G1 Date</div>
+                      <div className="px-4 py-3 text-gray-600">
+                        {driver.license_progression_validation.matches.find(m => m.includes('G1 date matches'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 
+                         driver.license_progression_validation.critical_errors.find(e => e.includes('G1 date mismatch'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 'N/A'}
+                      </div>
+                      <div className="px-4 py-3 text-gray-600">
+                        {driver.license_progression_validation.matches.find(m => m.includes('G1 date matches'))?.split('Quote \'')[1]?.split('\'')[0] || 
+                         driver.license_progression_validation.critical_errors.find(e => e.includes('G1 date mismatch'))?.split('Quote \'')[1]?.split('\'')[0] || 'N/A'}
+                      </div>
+                      <div className="px-4 py-3">
+                        {driver.license_progression_validation.matches.some(m => m.includes('G1 date matches')) ? 
+                          getSeverityBadge('match') : getSeverityBadge('critical')}
+                      </div>
                     </div>
-                    <div className="px-4 py-3">
-                      {driver.license_progression_validation.matches.some(m => m.includes('G1 date matches')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
-                    </div>
-                  </div>
 
-                  {/* G2 Date Check */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700 font-medium">G2 Date</div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {driver.license_progression_validation.matches.find(m => m.includes('G2 date matches'))?.split(': ')[1] || 'N/A'}
+                    {/* G2 Date Check */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
+                      <div className="px-4 py-3 text-gray-700 font-medium">G2 Date</div>
+                      <div className="px-4 py-3 text-gray-600">
+                        {driver.license_progression_validation.matches.find(m => m.includes('G2 date matches'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 
+                         driver.license_progression_validation.critical_errors.find(e => e.includes('G2 date mismatch'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 'N/A'}
+                      </div>
+                      <div className="px-4 py-3 text-gray-600">
+                        {driver.license_progression_validation.matches.find(m => m.includes('G2 date matches'))?.split('Quote \'')[1]?.split('\'')[0] || 
+                         driver.license_progression_validation.critical_errors.find(e => e.includes('G2 date mismatch'))?.split('Quote \'')[1]?.split('\'')[0] || 'N/A'}
+                      </div>
+                      <div className="px-4 py-3">
+                        {driver.license_progression_validation.matches.some(m => m.includes('G2 date matches')) ? 
+                          getSeverityBadge('match') : getSeverityBadge('critical')}
+                      </div>
                     </div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {driver.license_progression_validation.critical_errors.find(e => e.includes('G2 date mismatch'))?.split('Quote: ')[1] || 'N/A'}
-                    </div>
-                    <div className="px-4 py-3">
-                      {driver.license_progression_validation.matches.some(m => m.includes('G2 date matches')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
-                    </div>
-                  </div>
 
-                  {/* G Date Check */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700 font-medium">G Date</div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {driver.license_progression_validation.matches.find(m => m.includes('G date matches'))?.split(': ')[1] || 'N/A'}
-                    </div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {driver.license_progression_validation.critical_errors.find(e => e.includes('G date mismatch'))?.split('Quote: ')[1] || 'N/A'}
-                    </div>
-                    <div className="px-4 py-3">
-                      {driver.license_progression_validation.matches.some(m => m.includes('G date matches') || m.includes('G date validation skipped')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
+                    {/* G Date Check */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
+                      <div className="px-4 py-3 text-gray-700 font-medium">G Date</div>
+                      <div className="px-4 py-3 text-gray-600">
+                        {driver.license_progression_validation.matches.find(m => m.includes('G date matches'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 
+                         driver.license_progression_validation.critical_errors.find(e => e.includes('G date mismatch'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 'N/A'}
+                      </div>
+                      <div className="px-4 py-3 text-gray-600">
+                        {driver.license_progression_validation.matches.find(m => m.includes('G date matches'))?.split('Quote \'')[1]?.split('\'')[0] || 
+                         driver.license_progression_validation.critical_errors.find(e => e.includes('G date mismatch'))?.split('Quote \'')[1]?.split('\'')[0] || 'N/A'}
+                      </div>
+                      <div className="px-4 py-3">
+                        {driver.license_progression_validation.matches.some(m => m.includes('G date matches')) ? 
+                          getSeverityBadge('match') : getSeverityBadge('critical')}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Convictions Validation Section */}
@@ -506,7 +560,7 @@ function ValidationReport({ data }) {
                   <Gavel className="w-5 h-5 mr-2 text-orange-600" />
                   Convictions Validation ({calculateConvictionsScore(driver)}%)
                 </h5>
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
                     <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Offence Date</div>
                     <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Description</div>
@@ -565,119 +619,96 @@ function ValidationReport({ data }) {
                 </div>
               </div>
 
-              {/* DASH Validation Section */}
-              <div className="mb-6">
-                <h5 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                  <Shield className="w-5 h-5 mr-2 text-green-600" />
-                  DASH Validation ({calculateDASHScore(driver)}%)
-                </h5>
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">What Was Checked</div>
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Comparison Result</div>
-                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Status</div>
-                  </div>
-                  
-                  {/* First Policy Validation */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700">First Policy Ever Held</div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {driver.dash_validation.matches.find(m => m.includes('First policy ever held'))?.split(': ')[1] || 'N/A'}
-                    </div>
-                    <div className="px-4 py-3">
-                      {driver.dash_validation.matches.some(m => m.includes('First policy ever held')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
-                    </div>
-                  </div>
-
-                  {/* Date Insured vs First Policy */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700">Date Insured vs First Policy</div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {driver.dash_validation.matches.find(m => m.includes('Date insured'))?.split('(')[1]?.split(')')[0] || 
-                       driver.dash_validation.critical_errors.find(e => e.includes('Date insured'))?.split('(')[1]?.split(')')[0] || 'N/A'}
-                    </div>
-                    <div className="px-4 py-3">
-                      {driver.dash_validation.matches.some(m => m.includes('Date insured')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
-                    </div>
-                  </div>
-
-                  {/* Policy Gaps Check */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700">Policy Gaps</div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {driver.dash_validation.matches.some(m => m.includes('No policy gaps detected')) ? 
-                        'No gaps detected' : 
-                        driver.dash_validation.warnings.filter(w => w.includes('Policy gap detected')).length + ' gap(s) found'}
-                    </div>
-                    <div className="px-4 py-3">
-                      {driver.dash_validation.matches.some(m => m.includes('No policy gaps detected')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('warning')}
-                    </div>
-                  </div>
-
-                  {/* Active Policy Status Check */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700">Active Policy Status</div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {driver.dash_validation.matches.find(m => m.includes('active policy'))?.split('Found ')[1] || 'N/A'}
-                    </div>
-                    <div className="px-4 py-3">
-                      {driver.dash_validation.matches.some(m => m.includes('active policy')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
-                    </div>
-                  </div>
-
-                  {/* Claims History Check */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-gray-200">
-                    <div className="px-4 py-3 text-gray-700">Claims History</div>
-                    <div className="px-4 py-3 text-gray-600">
-                      {driver.dash_validation.matches.find(m => m.includes('Found') && m.includes('claim'))?.split('Found ')[1] || 'N/A'}
-                    </div>
-                    <div className="px-4 py-3">
-                      {driver.dash_validation.matches.some(m => m.includes('Found') && m.includes('claim')) ? 
-                        getSeverityBadge('match') : getSeverityBadge('critical')}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Policy Gaps Details */}
-                {driver.dash_validation.warnings.filter(w => w.includes('Policy gap detected')).length > 0 && (
-                  <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <h6 className="font-semibold text-yellow-800 mb-2">Policy Gaps Detected:</h6>
-                    {driver.dash_validation.warnings
-                      .filter(w => w.includes('Policy gap detected'))
-                      .map((warning, index) => (
-                        <div key={index} className="text-sm text-yellow-700 mb-1">
-                          • {warning.replace('Policy gap detected: ', '')}
+                  {/* DASH Validation Section */}
+                  {driver.dash_validation && (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-3">DASH Validation</h3>
+                      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200 bg-gray-50">
+                          <div className="px-4 py-3 font-medium text-gray-700">Field</div>
+                          <div className="px-4 py-3 font-medium text-gray-700">Comparison</div>
+                          <div className="px-4 py-3 font-medium text-gray-700">Status</div>
                         </div>
-                      ))}
-                  </div>
-                )}
+                        
+                        {/* Name Check */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200">
+                          <div className="px-4 py-3 text-gray-700">Name</div>
+                          <div className="px-4 py-3 text-gray-600">
+                            {driver.dash_validation.matches.find(m => m.includes('Name matches'))?.split('Name matches: ')[1] || 
+                             driver.dash_validation.critical_errors.find(e => e.includes('Name mismatch'))?.split('Name mismatch: ')[1] || 'N/A'}
+                          </div>
+                          <div className="px-4 py-3">
+                            {driver.dash_validation.matches.some(m => m.includes('Name matches')) ? 
+                              getSeverityBadge('match') : getSeverityBadge('critical')}
+                          </div>
+                        </div>
 
-                {/* Claims Details */}
-                {(driver.dash_validation.matches.some(m => m.includes('Claim') && m.includes('validated')) ||
-                  driver.dash_validation.critical_errors.some(e => e.includes('At-fault claim'))) && (
-                  <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h6 className="font-semibold text-blue-800 mb-2">Claims Validation Details:</h6>
-                    {driver.dash_validation.matches
-                      .filter(m => m.includes('Claim') && (m.includes('validated') || m.includes('skipped')))
-                      .map((match, index) => (
-                        <div key={index} className="text-sm text-blue-700 mb-1">
-                          ✅ {match.replace('Claim ', 'Claim #').replace(' validated', ' - Validated').replace(' skipped', ' - Skipped')}
+                        {/* License Number Check */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200">
+                          <div className="px-4 py-3 text-gray-700">License Number</div>
+                          <div className="px-4 py-3 text-gray-600">
+                            {driver.dash_validation.matches.find(m => m.includes('License number matches'))?.split('License number matches: ')[1] || 
+                             driver.dash_validation.critical_errors.find(e => e.includes('License number mismatch'))?.split('License number mismatch: ')[1] || 'N/A'}
+                          </div>
+                          <div className="px-4 py-3">
+                            {driver.dash_validation.matches.some(m => m.includes('License number matches')) ? 
+                              getSeverityBadge('match') : getSeverityBadge('critical')}
+                          </div>
                         </div>
-                      ))}
-                    {driver.dash_validation.critical_errors
-                      .filter(e => e.includes('At-fault claim'))
-                      .map((error, index) => (
-                        <div key={index} className="text-sm text-red-700 mb-1">
-                          ❌ {error.replace('At-fault claim ', 'Claim #').replace(' not declared in quote', ' - Not declared in quote')}
+
+                        {/* Date of Birth Check */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200">
+                          <div className="px-4 py-3 text-gray-700">Date of Birth</div>
+                          <div className="px-4 py-3 text-gray-600">
+                            {driver.dash_validation.matches.find(m => m.includes('Date of birth matches'))?.split('Date of birth matches: ')[1] || 
+                             driver.dash_validation.critical_errors.find(e => e.includes('Date of birth mismatch'))?.split('Date of birth mismatch: ')[1] || 'N/A'}
+                          </div>
+                          <div className="px-4 py-3">
+                            {driver.dash_validation.matches.some(m => m.includes('Date of birth matches')) ? 
+                              getSeverityBadge('match') : getSeverityBadge('critical')}
+                          </div>
                         </div>
-                      ))}
-                  </div>
-                )}
-              </div>
+
+                        {/* First Policy Check */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200">
+                          <div className="px-4 py-3 text-gray-700">First Policy Ever Held</div>
+                          <div className="px-4 py-3 text-gray-600">
+                            {driver.dash_validation.matches.find(m => m.includes('First policy ever held'))?.split('First policy ever held: ')[1] || 'N/A'}
+                          </div>
+                          <div className="px-4 py-3">
+                            {driver.dash_validation.matches.some(m => m.includes('First policy ever held')) ? 
+                              getSeverityBadge('match') : getSeverityBadge('warning')}
+                          </div>
+                        </div>
+
+                        {/* Policy Gaps Check */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200">
+                          <div className="px-4 py-3 text-gray-700">Policy Gaps</div>
+                          <div className="px-4 py-3 text-gray-600">
+                            {driver.dash_validation.warnings.find(w => w.includes('Policy gap detected'))?.split('Policy gap detected: ')[1] || 'No gaps found'}
+                          </div>
+                          <div className="px-4 py-3">
+                            {driver.dash_validation.warnings.some(w => w.includes('Policy gap detected')) ? 
+                              getSeverityBadge('warning') : getSeverityBadge('match')}
+                          </div>
+                        </div>
+
+                        {/* Claims History Check */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-gray-200">
+                          <div className="px-4 py-3 text-gray-700">Claims History</div>
+                          <div className="px-4 py-3 text-gray-600">
+                            {driver.dash_validation.matches.find(m => m.includes('Found') && m.includes('claim'))?.split('Found ')[1] || 
+                             driver.dash_validation.matches.find(m => m.includes('No claims found in DASH')) ? 'No claims found' : 'N/A'}
+                          </div>
+                          <div className="px-4 py-3">
+                            {driver.dash_validation.matches.some(m => m.includes('Found') && m.includes('claim')) || 
+                             driver.dash_validation.matches.some(m => m.includes('No claims found in DASH')) ? 
+                              getSeverityBadge('match') : getSeverityBadge('critical')}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
               {/* Issues and Warnings Summary */}
               <div className="mb-6">
@@ -692,7 +723,7 @@ function ValidationReport({ data }) {
                     </h6>
                     <div className="space-y-2">
                       {driver.critical_errors.map((error, index) => (
-                        <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-3">
+                        <div key={index} className="bg-red-50 border border-red-200 rounded-xl p-3">
                           <div className="flex items-start">
                             <XCircle className="w-4 h-4 text-red-600 mr-2 mt-0.5" />
                             <span className="text-red-800">{error}</span>
@@ -712,7 +743,7 @@ function ValidationReport({ data }) {
                     </h6>
                     <div className="space-y-2">
                       {driver.warnings.map((warning, index) => (
-                        <div key={index} className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                        <div key={index} className="bg-orange-50 border border-orange-200 rounded-xl p-3">
                           <div className="flex items-start">
                             <AlertTriangle className="w-4 h-4 text-orange-600 mr-2 mt-0.5" />
                             <span className="text-orange-800">{warning}</span>
@@ -732,7 +763,7 @@ function ValidationReport({ data }) {
                     </h6>
                     <div className="space-y-2">
                       {driver.matches.map((match, index) => (
-                        <div key={index} className="bg-green-50 border border-green-200 rounded-lg p-3">
+                        <div key={index} className="bg-green-50 border border-green-200 rounded-xl p-3">
                           <div className="flex items-start">
                             <CheckCircle className="w-4 h-4 text-green-600 mr-2 mt-0.5" />
                             <span className="text-green-800">{match}</span>
