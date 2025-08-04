@@ -1,0 +1,179 @@
+Its is a quality control web application
+The purpose of the application is to compare MVR reports and dash reports with the quote report
+
+this is how application should work
+
+for example there are 2 drivers and 2 vehicles in the quote
+so there will be 1 MVR and 1 dash report for every driver totaling in = 2 MVR'S and 2 Dash reports  and 1 quote
+
+other example is 3 driver 2 vehicle
+so there will be 3 MVR's and 3 Dash reports for every driver but only one quote 
+
+each driver has its own MVR and dash report
+
+the date formats of MVR is in format : dd/mm/yyyy
+date format of dash report is : yyyy/mm/dd
+quote report date format is : mm/dd/yyyy
+
+so you need to be very careful with dates while comparing otherwise the report and application will fail
+
+---------------------------------
+
+so here is the rule for MVR
+
+extract all the g1,g2 and g date from MVR and Quote
+
+which i think is implemented correctly 
+
+this is the objective of the application
+
+if the DD/MM of the MVR's - Expiry Date and Birth Date match
+the issue date = g1_date
+g2 date = g1_date + 1 year
+g date = g2_date + 1 year
+
+if the DD/MM of the MVR's - Expiry Date and Birth Date do not match
+then g1 date = Expiry Date - 5 years 
+g2 date is = g1 date + 1 year
+g date is = g2 date + 1 year
+
+the above rule applies to the MVR 
+
+and then we take the quotes g1,g2 and g dates from the above calculation
+and compare it in the compare engine with the quotes g1, g2 and g dates which was extracted 
+
+if the class is G2 there is no need to compare the G date as its not required the  driver did not get g license
+
+just for info
+
+the driver first gets the G1
+then it gets g2 
+and then g
+
+but some drivers just drive with g2,
+
+it can be determined in the MVR with the class  
+
+Also each driver has its own MVR and Dash report
+
+A quote can have multiple drivers and multiple vehicles
+
+make sure the dates are extracted properly for each driver
+ 
+and validated properly for each driver in the compare engine
+
+and the most important part is the front end displays it properly and create a very professional report that can be downloaded with percentage given out of 100% if it fails or passes 
+
+
+--------------------------------------------------------------------------------------------------------------
+so here is the rule for Dash report
+
+this is what you must know about the dash report and how to compare with the quote report 
+
+
+ date_insured from the quote should match start_date of the first insurance policy extracted from dash report
+
+now for the claims in the dash extracted data if at_fault_percentage > 0
+then check if that first_party_driver is = to name of (policy holder name)
+
+ then check if date extracted from the quote matches the date extracted from the dash report if yes pass the test if not return critical fail
+
+
+the above is vaild for all claims if the  at_fault_percentage <= 0 then skip this claim move to the next one 
+
+
+-------------------------------------------------------------------
+
+This is a quality control web application.
+
+The purpose of the application is to compare MVR reports and Dash reports with the Quote report.
+
+This is how the application should work:
+
+Each quote can have multiple drivers and multiple vehicles. For every driver, there should be exactly one MVR and one Dash report.
+
+Examples:
+
+If the quote has 2 drivers and 2 vehicles: expect 2 MVRs, 2 Dash reports, and 1 quote.
+
+If the quote has 3 drivers and 2 vehicles: expect 3 MVRs, 3 Dash reports, and 1 quote.
+
+Each driver has their own MVR and Dash report.
+
+Be extremely careful with date formats. Each document uses a different format:
+
+MVR uses dd/mm/yyyy
+
+Dash report uses yyyy/mm/dd
+
+Quote uses mm/dd/yyyy
+
+Failure to normalize these formats before comparing will break the application.
+
+----- MVR Validation Rules -----
+
+From the MVR and Quote, extract G1, G2, and G dates.
+
+This logic is assumed to be implemented.
+
+Based on the MVR:
+
+If the Birth Date and Expiry Date (DD/MM) match:
+
+G1 date = MVR Issue Date
+
+G2 date = G1 date + 1 year
+
+G date = G2 date + 1 year
+
+If the Birth Date and Expiry Date (DD/MM) do not match:
+
+G1 date = Expiry Date - 5 years
+
+G2 date = G1 date + 1 year
+
+G date = G2 date + 1 year
+
+These derived dates (G1, G2, G) must be compared to the dates extracted from the Quote.
+
+If the license class is G2 (found in MVR), skip the comparison for G date. This is because the driver has not yet received their G license.
+
+Note: Drivers progress from G1 → G2 → G. Some drivers only have a G2. Use the class from MVR to determine this.
+
+Validate and extract dates for each driver individually.
+
+Ensure these comparisons are done cleanly and accurately in the compare engine.
+
+----- Dash Report Validation Rules -----
+
+For Dash reports, follow this logic:
+
+Compare date_insured from the Quote with the start_date of the first insurance policy in the Dash report. If they match, it passes. If not, it fails.
+
+For all claims in the Dash data:
+
+If at_fault_percentage > 0:
+
+Check if first_party_driver equals the policyholder name (from the Quote).
+
+Then, check if the claim date from the Quote matches the date in the Dash report.
+
+If they match, it passes. If not, mark it as a critical fail.
+
+If at_fault_percentage <= 0, skip the claim and move to the next one.
+
+----- Frontend Reporting -----
+
+The frontend must:
+
+Display validation results for each driver clearly
+
+Separate results for MVR and Dash validations
+
+Label issues as: Pass, Warning, or Critical Fail
+
+Provide an overall result as a percentage out of 100%
+
+Allow the user to download a clean, professional PDF report
+
+Make sure each driver’s data is processed and reported individually. No mismatches in indexing or order between MVR, Dash, and Quote should occur.
