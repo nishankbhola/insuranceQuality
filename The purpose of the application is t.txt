@@ -1,207 +1,344 @@
-Cursor Agent Context
+# Vieira Insurance Quality Control System - Complete Application Documentation
 
-This is a quality control web application for reviewing insurance quotes.
+## Application Overview
 
-The goal of this app is to check whether the broker has properly created the quote by comparing it with actual MVR and Dash data.
+The **Vieira Insurance Quality Control System** is a comprehensive web-based application designed to validate and quality-check insurance quotes created by insurance brokers. The system compares manually created insurance quotes against official government and insurance industry documents to ensure accuracy, compliance, and proper risk assessment.
 
-Documents Uploaded Per Case
+## Core Purpose
 
-1 quote PDF (created manually by broker)
+The primary goal is to identify discrepancies between what brokers declare in insurance quotes and what is actually documented in official records. This helps prevent:
+- Insurance fraud
+- Inaccurate risk assessment
+- Policy cancellations due to misrepresentation
+- Financial losses for insurance companies
+- Compliance violations
 
-1 MVR report per driver
+## System Architecture
 
-1 Dash report per driver
+### Technology Stack
+- **Backend**: Python Flask API
+- **Frontend**: React.js with Tailwind CSS
+- **PDF Processing**: PyMuPDF (fitz)
+- **Data Extraction**: Custom regex-based extractors
+- **Validation Engine**: Business rule-based comparison system
+- **Report Generation**: HTML to PDF conversion
 
-Example: If a policy has 3 drivers → expect 7 documents
-(1 quote + 3 MVRs + 3 Dash reports)
+### File Structure
+```
+ROCKET/
+├── backend/
+│   ├── app.py (main Flask application)
+│   ├── extractors/
+│   │   ├── quote_extractor.py
+│   │   ├── mvr_extractor.py
+│   │   ├── dash_extractor.py
+│   │   └── application_extractor.py
+│   ├── validator/
+│   │   └── compare_engine.py
+│   └── uploads/
+└── frontend/
+    ├── src/
+    │   ├── App.js
+    │   └── components/
+    │       ├── FileUpload.js
+    │       ├── ValidationReport.js
+    │       └── ApplicationQC.js
+    └── public/
+```
 
-Extractors Used
+## Document Processing Workflow
 
-quote_extractor.py → pulls info from quote PDF
+### 1. Document Upload
+- **Single Upload Interface**: Users upload multiple PDF files in one interface
+- **Automatic File Detection**: System automatically identifies document types based on:
+  - Filename patterns (e.g., "MVR_ON_", "DASH_", "Quote")
+  - Content analysis using different extractors
+- **Multi-Driver Support**: Handles multiple drivers per policy (1 Quote + N MVRs + N DASH reports)
 
-mvr_extractor.py → pulls info from MVR report
+### 2. Document Types Processed
 
-dash_extractor.py → pulls info from Dash report
+#### A. Insurance Quote PDF
+**Source**: Manually created by insurance broker
+**Extracted Data**:
+- Driver information (name, license number, birth date)
+- License progression dates (G1, G2, G dates)
+- Declared convictions and claims
+- Date insured (when driver first got insurance)
+- Vehicle details and coverage information
+- Policy terms and premium amounts
 
-MVR Report Contains
+#### B. MVR (Motor Vehicle Record) PDF
+**Source**: Government-issued driving record
+**Extracted Data**:
+- Full name and driver's license number
+- Birth date, issue date, expiry date
+- License class (G, G2, G1)
+- Current address
+- All convictions (speeding, traffic violations, etc.)
+- **Note**: Does NOT contain insurance history or claims
 
-Full name
+#### C. DASH (Driver Abstract and System History) PDF
+**Source**: Insurance industry database
+**Extracted Data**:
+- Complete insurance policy history
+- Claim history with at-fault percentages
+- Policy cancellation and expiry reasons
+- Insurance gaps between policies
+- **Note**: Does NOT contain driving convictions
 
-Driver's Licence Number (DLN)
+#### D. Application PDF (New Feature)
+**Source**: Insurance application forms
+**Extracted Data**:
+- Applicant personal information
+- Vehicle details and VIN numbers
+- Coverage preferences
+- Policy information
+- Claims and conviction history
 
-Birth date
+## Data Extraction Process
 
-Issue date
+### Quote Extractor (`quote_extractor.py`)
+- **Date Format**: MM/DD/YYYY
+- **Key Functions**:
+  - Extract driver information from quote tables
+  - Parse license progression dates (G1, G2, G)
+  - Identify declared convictions and claims
+  - Extract vehicle and coverage details
+  - Parse policy terms and premium information
 
-Expiry date
+### MVR Extractor (`mvr_extractor.py`)
+- **Date Format**: DD/MM/YYYY
+- **Key Functions**:
+  - Extract driver identification information
+  - Parse license dates and class information
+  - Extract all convictions with dates and descriptions
+  - Parse current address information
+  - Handle various MVR report formats
 
-Licence class (e.g. G, G2)
+### DASH Extractor (`dash_extractor.py`)
+- **Date Format**: YYYY/MM/DD
+- **Key Functions**:
+  - Extract complete policy history
+  - Parse claim information with at-fault status
+  - Identify policy gaps and cancellation reasons
+  - Extract driver information from insurance records
+  - Handle policy start/end dates
 
-Address
+### Application Extractor (`application_extractor.py`)
+- **Key Functions**:
+  - Extract applicant personal information
+  - Parse vehicle details and VIN numbers
+  - Extract coverage preferences
+  - Parse policy information
+  - Handle various application form formats
 
-Convictions (e.g. speeding)
+## Validation Engine (`compare_engine.py`)
 
-MVR does not contain insurance history or claims.
+### Core Validation Logic
 
-Dash Report Contains
+#### 1. Driver Matching
+- **Primary Key**: Full name + Driver's License Number
+- **Fuzzy Name Matching**: Handles name variations:
+  - Different name orders ("John Smith" vs "SMITH, JOHN")
+  - Middle initial vs full middle name ("John F Smith" vs "John Frank Smith")
+  - Case variations and comma separations
+- **License Number Normalization**: Removes dashes and spaces for comparison
 
-Insurance policy history
+#### 2. MVR Validation Rules
 
-Claim history
-
-First-party driver info
-
-At-fault percentages
-
-Cancellation and expiry reasons
-
-Dash does not contain convictions.
-
-Quote Contains
-
-Driver info (name, DLN, birthdate)
-
-Licence dates (G1, G2, G)
-
-Convictions and claims (declared by broker)
-
-date_insured (when driver first got insurance)
-
-Vehicle and coverage details
-
-Validation Rules – MVR
-
-Match driver using full name + DLN
-
-Normalize MVR date format: dd/mm/yyyy
-
+**License Progression Calculation**:
+```
 If birth date and expiry date have same day/month:
-
-G1 = issue date
-
-G2 = G1 + 1 year
-
-G = G2 + 1 year
+  G1 = issue date
+  G2 = G1 + 1 year
+  G = G2 + 1 year
 
 If birth date and expiry date do not match:
+  G1 = expiry date - 5 years
+  G2 = G1 + 1 year
+  G = G2 + 1 year
+```
 
-G1 = expiry date - 5 years
+**Validation Checks**:
+- Compare calculated G1, G2, G dates with quote declarations
+- If license class is G2 → skip G date comparison
+- Check if all MVR convictions are declared in quote
+- Any missing conviction → Critical Fail
 
-G2 = G1 + 1 year
+#### 3. DASH Validation Rules
 
-G = G2 + 1 year
+**Insurance History Validation**:
+- Find first insurance policy ever held
+- Compare start date with quote's "date_insured"
+- Any mismatch → Fail
 
-Compare G1, G2, G with those listed in quote
+**Policy Gap Detection**:
+- Identify gaps between policy end and next policy start
+- Extract cancellation/expiry reasons
+- Report gaps with reasons (e.g., "Cancelled - insured's request")
 
-If licence class is G2 → skip G date comparison
+**Claims Validation**:
+- If at-fault > 0 and driver matches:
+  - Check if claim is declared in quote
+  - Missing claim → Critical Fail
+- If at-fault = 0 → skip validation
 
-Check if any convictions in MVR are declared in quote
+#### 4. Quote Validation Rules
+- Normalize all dates to standard format
+- Match each driver to corresponding MVR and DASH
+- Compare all extracted data against declarations
+- Any missing information = Fail
+- Any missing conviction or at-fault claim = Critical Fail
 
-If any conviction is missing → mark as critical fail
+### Date Normalization
+- **MVR Dates**: DD/MM/YYYY → YYYY-MM-DD
+- **Quote Dates**: MM/DD/YYYY → YYYY-MM-DD
+- **DASH Dates**: YYYY/MM/DD → YYYY-MM-DD
 
-Validation Rules – Dash
+## Frontend Features
 
-Normalize Dash date format: yyyy/mm/dd
+### 1. Professional Dashboard
+- **Company Branding**: "Vieira Insurance Quality Control System"
+- **Side Navigation**: Dashboard, File Upload, Validation Reports, Application QC
+- **Modern UI**: Professional design with gradients, shadows, and responsive layout
 
-Find first insurance policy ever held
+### 2. Unified File Upload
+- **Single Upload Area**: Drag-and-drop interface for all document types
+- **Automatic Detection**: System identifies document types automatically
+- **Multi-File Support**: Handle multiple MVR and DASH files for different drivers
+- **Real-time Feedback**: Shows detected file types and upload status
 
-Compare its start date with date_insured in quote
+### 3. Validation Reports
+- **Per-Driver Results**: Separate sections for each driver
+- **Status Indicators**: Pass (✅), Warning (⚠️), Critical Fail (🟥)
+- **Detailed Comparisons**: Shows actual values being compared
+- **Match Percentages**: 0-100% scores for each validation category
+- **Professional PDF Export**: High-quality downloadable reports
 
-If mismatch → fail
+### 4. Application QC (New Feature)
+- **PDF Upload**: Upload insurance application forms
+- **Data Extraction**: Automatic extraction of application data
+- **JSON Export**: Download extracted data as structured JSON
+- **Data Preview**: View extracted information before download
 
-Check for gaps between policy end and next policy start
+## Business Rules and Validation Logic
 
-If gap exists → report it and include reason (e.g. cancelled by insured)
+### Critical Fail Conditions
+1. **Missing Convictions**: Any conviction in MVR not declared in quote
+2. **Missing Claims**: Any at-fault claim in DASH not declared in quote
+3. **Driver Mismatch**: Unable to match driver across documents
+4. **License Progression Errors**: Significant discrepancies in G1/G2/G dates
 
-For claims:
+### Warning Conditions
+1. **Minor Date Discrepancies**: Small differences in license dates
+2. **Address Variations**: Minor differences in address formatting
+3. **Name Variations**: Slight differences in name formatting
 
-If at-fault > 0 and driver matches:
+### Pass Conditions
+1. **Exact Matches**: All data matches perfectly
+2. **No Claims**: DASH shows no claims (automatic pass)
+3. **Fuzzy Matches**: Names match using fuzzy logic
+4. **Date Tolerance**: Dates within acceptable range
 
-Check if claim is declared in quote
+## Example Validation Scenario
 
-If missing → critical fail
+### Driver: Yang Palmo
+**Documents**:
+- Quote: Auto Quote 2025-05-22
+- MVR: MVR_ON_P0311-78928-76026.pdf
+- DASH: DASH report for Yang Palmo
 
-If at-fault = 0 → skip
+**MVR Data**:
+- DLN: P0311-78928-76026
+- Birthdate: 26/10/1987
+- Issue date: 06/03/2008
+- Expiry date: 26/10/2029
+- License class: G
+- Conviction: Speeding on 06/08/2024
 
-Validation Rules – Quote
+**Calculated License Progression**:
+- G1 = 06/03/2008
+- G2 = 06/03/2009
+- G = 06/03/2010
 
-Normalize quote date format: mm/dd/yyyy
+**Quote Declarations**:
+- G1 = 03/06/2008 → Close match (Pass)
+- G2 = 05/05/2009 → Incorrect (Warning)
+- G = 10/04/2010 → Incorrect (Warning)
+- Convictions: None declared → Missing speeding conviction (Critical Fail)
 
-Match each driver to corresponding MVR and Dash
+**DASH Data**:
+- First policy: 2015-09-04
+- Quote date_insured: 09/04/2010 → Mismatch (Fail)
+- Gap detected: 2025-01-11 to 2025-05-23
+- Reason: "Cancelled - insured's request"
+- At-fault claim: 2024-12-08 → Not declared in quote (Critical Fail)
 
-Compare all extracted data against what is declared
+## Technical Implementation Details
 
-Any missing info = fail
+### Error Handling
+- **File Upload Errors**: Invalid file types, corrupted PDFs
+- **Extraction Errors**: Unreadable text, missing data
+- **Validation Errors**: Data mismatches, missing documents
+- **System Errors**: Network issues, processing failures
 
-Any missing conviction or at-fault claim = critical fail
+### Performance Optimization
+- **PDF Processing**: Efficient text extraction using PyMuPDF
+- **Memory Management**: Cleanup of temporary files
+- **Response Time**: Optimized validation algorithms
+- **File Size**: Compressed PDF reports (10-25MB target)
 
-Frontend Output
+### Security Considerations
+- **File Validation**: PDF file type verification
+- **Data Sanitization**: Input validation and cleaning
+- **Temporary Storage**: Secure file handling
+- **Error Logging**: Comprehensive error tracking
 
-Show results per driver
+## Future Enhancements
 
-Separate MVR and Dash sections
+### Planned Features
+1. **Batch Processing**: Handle multiple policies simultaneously
+2. **API Integration**: Connect with insurance company databases
+3. **Machine Learning**: Improve extraction accuracy with AI
+4. **Real-time Validation**: Instant feedback during quote creation
+5. **Audit Trail**: Complete history of all validations
+6. **Custom Rules**: Configurable validation rules per company
 
-Labels: Pass / Warning / Critical Fail
+### Scalability Considerations
+- **Database Integration**: Store validation history
+- **User Management**: Multi-user access with roles
+- **Cloud Deployment**: AWS/Azure hosting options
+- **API Versioning**: Backward compatibility
+- **Performance Monitoring**: Real-time system metrics
 
-Show reasons for each failure
+## Usage Instructions
 
-Show match percentage (0–100%)
+### For Insurance Brokers
+1. **Prepare Documents**: Ensure all required PDFs are available
+2. **Upload Files**: Use the unified upload interface
+3. **Review Results**: Check validation report for any issues
+4. **Download Report**: Generate professional PDF for records
+5. **Address Issues**: Fix any critical failures before submitting
 
-Allow professional PDF report download
+### For Quality Control Teams
+1. **Monitor Validations**: Track validation results across brokers
+2. **Generate Reports**: Create summary reports for management
+3. **Identify Trends**: Spot common issues and training needs
+4. **Maintain Standards**: Ensure consistent quality across team
 
-Example – Yang Palmo
+## Support and Maintenance
 
-DLN: P0311-78928-76026
+### Troubleshooting
+- **Common Issues**: File upload problems, extraction errors
+- **Error Messages**: Clear, actionable error descriptions
+- **Log Files**: Detailed system logs for debugging
+- **User Guide**: Comprehensive documentation
 
-Birthdate: 26/10/1987
+### Updates and Maintenance
+- **Regular Updates**: Monthly feature and security updates
+- **Backup Procedures**: Automated data backup
+- **Performance Monitoring**: Continuous system monitoring
+- **User Training**: Regular training sessions for new features
 
-MVR issue date: 06/03/2008
-
-MVR expiry date: 26/10/2029
-
-Licence class: G
-
-Licence progression (calculated from MVR):
-
-G1 = 06/03/2008
-
-G2 = 06/03/2009
-
-G = 06/03/2010
-
-From quote:
-
-G1 = 03/06/2008 → close match
-
-G2 = 05/05/2009 → incorrect
-
-G = 10/04/2010 → incorrect
-
-MVR conviction:
-
-Speeding on 06/08/2024
-
-Not declared in quote → critical fail
-
-Dash insurance history:
-
-First policy started: 2015-09-04
-
-Quote says date_insured: 09/04/2010 → mismatch → fail
-
-Dash gap detected:
-
-Policy ended: 2025-01-11
-
-Next policy started: 2025-05-23
-
-Gap exists → must be flagged
-
-Reason: Cancelled – insured’s request
-
-Dash claims:
-
-At-fault claim on 2024-12-08 involving Yang Palmo
-
-Not disclosed in quote → critical fail
+This comprehensive documentation provides a complete understanding of the Vieira Insurance Quality Control System, enabling any AI or developer to work with the application without requiring additional context or explanation.
 
