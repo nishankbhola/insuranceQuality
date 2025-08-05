@@ -4,9 +4,9 @@ Etobicoke, ON M8Z 4X6
 Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Home: (416)685-9434
-676 LANSDOWNE AVENUE
-TORONTO, ON M6H 3Y8
+164 Bruce St
+Oshawa, ON L1H 1R2
+melbssmith@gmail.com
 Policy Information
  
 Property Policy Type
@@ -30,11 +30,11 @@ Term Length
 Applicant Information
  
 Salutation
-Nancy
+Melanie
 First Name
  
 Middle
-Freitas
+Smith
 Last Name
  
 Suffix
@@ -49,13 +49,13 @@ Middle
 Last Name
  
 Suffix
-Nancy Freitas
+Melanie Smith
 Drivers
 Coverages
-Vehicle 1 of 1 | Private Passenger - 2015 HONDA CIVIC LX 4DR (025100)
+Vehicle 1 of 1 | Private Passenger - 2001 AUDI A4 1.8T QUATTRO 4DR (948300)
 Private Passenger
 Vehicle Type
-2HGFB2F44FH049170
+WAUDC68D11A009804
 VIN
 4 Door Sedan/Hard Top
 Body Style
@@ -65,13 +65,13 @@ No
 Hybrid
 Pleasure
 Primary Use
-6000
+10000
 Annual km
 0
 Business km
 0
 Daily km
-TORONTO M6H3Y8
+OSHAWA L1H1R2
 Garaging Location
 No
 Single Vehicle MVD
@@ -88,40 +88,28 @@ Anti-Theft - Engraving
 Used
 Purchase
 Condition
-02/01/2020
+06/01/2015
 Purchase Date
-0
+ 
 km at Purchase
-21234
+39253
 List Price New
-15000
+10000
 Purchase Price
 No
 Winter Tires
  
 Parking at Night
-Nancy Freitas (Prn)
-Matthew F Silva (Occ)
-Bodily Injury (2,000,000)
+Melanie Smith (Prn)
 Bodily Injury (2,000,000)
 Property Damage (2,000,000)
-Property Damage (2,000,000)
-Direct Compensation (-1)
 Direct Compensation (0)
 Accident Benefits (Standard)
-Accident Benefits (Standard)
-All Perils (-1)
-All Perils (500)
 Uninsured Automobile
-Uninsured Automobile
-#20 Loss of Use (3,000)
-#27 Liab to Unowned Veh. (50,000)
 #44 Family Protection (2,000,000)
 Accident Waiver
-Minor Conviction Protection
-Claims
-Driver 1 of 2 | Nancy Freitas
-06/12/1978
+Driver 1 of 1 | Melanie Smith
+07/03/1986
 Birth Date
 Single
 Marital Status
@@ -138,28 +126,28 @@ No
 Out of Province / Country Driver
 G
 Licence Class
-11/27/2002
+10/29/2005
 Date G
-11/27/2001
+09/28/2004
 Date G2
-11/27/2000
+08/27/2003
 Date G1
-F73305777785612
+S57785371865703
 Licence Number
 ON
 Licence Province
  
 Occupation
-05/02/2006
+06/04/2015
 Date Insured
-Wawanesa Mutual
+Travelers Insurance Company of Canada
 Current Carrier
-05/02/2006
+06/04/2023
 Date with
 Company
-04/07/2015
+06/04/2023
 Brokerage Insured
-05/02/2006
+06/04/2015
 Date
 Owner/Principal
 No
@@ -174,158 +162,66 @@ Class
  
 Other Licence
 Date
-Liability & Collision
-Description
-04/27/2020
-Date
-No
-Charge
-2015 HONDA CIVIC LX 4DR
-Vehicle Involved
- 
- 
-TP/BI$
-9940
-TP/PD$
- 
-AB$
- 
-Coll$
- 
-Other PD$
-Liability & Collision
-Description
-08/15/2020
-Date
-No
-Charge
-2015 HONDA CIVIC LX 4DR
-Vehicle Involved
- 
- 
-TP/BI$
-58471
-TP/PD$
- 
-AB$
- 
-Coll$
- 
-Other PD$
-Prepared 04/24/2025 by Nishank Bhola
-Effective Date: 05/02/2025
+Prepared 05/13/2025 by Nishank Bhola
+Effective Date: 06/04/2025
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
 Disclaimer: Coverages shown reflect user entry. For details on the coverages quoted please refer to the Carrier Detail printout.
-Driver 2 of 2 | Matthew F Silva
-10/23/2002
-Birth Date
-Single
-Marital Status
-Male
-Gender
-Child
-Relationship to Applicant
-Yes
-Driver Training
-09/22/2020
-Driver Training
-Date
-No
-Out of Province / Country Driver
-G2
-Licence Class
- 
-Date G
-08/04/2022
-Date G2
-09/22/2020
-Date G1
-S44035293021023
-Licence Number
-ON
-Licence Province
- 
-Occupation
-08/04/2022
-Date Insured
-Wawanesa Mutual
-Current Carrier
-08/04/2022
-Date with
-Company
-08/04/2022
-Brokerage Insured
- 
-Date
-Owner/Principal
-Yes
-Applicant lives with Parents
- 
-Student Away at School (km)
-No
-Retired
- 
-Other Licence
-Class
- 
-Other Licence
-Date
 Vieira & Associates Insurance Brokers Ltd
 55 Horner Ave, Suite 201
 Etobicoke, ON M8Z 4X6
 Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Prepared 04/24/2025 by Nishank Bhola
-Applied Ref. # RWS 983232053, CWS 339036048,
-RBWS 423938044
+Prepared 05/13/2025 by Nishank Bhola
+Applied Ref. # RWS 989652684, CWS 340691829,
+RBWS 427931477
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
-Home: (416)685-9434
-676 LANSDOWNE AVENUE
-TORONTO, ON M6H 3Y8
+164 Bruce St
+Oshawa, ON L1H 1R2
+melbssmith@gmail.com
 Company
 12 Months
-CAA MyPace
-3,626
-Wawanesa Drive Change
-3,630
-CAA Insurance Company (Future Member)
-3,858
 Definity Insurance Company
-3,888
-Wawanesa Mutual
-3,998
+1,383
+CAA Insurance Company (Future Member)
+1,489
+CAA MyPace
+1,522
 CAA Insurance Company
-4,060
-Aviva - Aviva Journey
-4,133
-Aviva
-4,392
-Dominion of Canada - Single Pay and DPD
-5,130
-SGI CANADA
-5,163
+1,566
 Intact Insurance - my Drive
-5,713
+1,715
 Intact Insurance
-6,306
-Dominion of Canada - IntelliDrive
-6,382
-Dominion of Canada
-6,545
+1,887
+Aviva - Aviva Journey
+1,918
+Aviva
+2,120
+Wawanesa Drive Change
+2,171
+Wawanesa Mutual
+2,399
 Facility Association
-8,311
+2,553
+Dominion of Canada - Single Pay and DPD
+2,800
+Dominion of Canada - IntelliDrive
+3,574
+Dominion of Canada
+3,574
 Echelon
-9,720
+3,714
 Coachman
 0
 JEVCO
 0
+SGI CANADA
+0
 Summary
-Nancy Freitas
-1 Vehicle, 2 Drivers  |  Effective Date: 05/02/2025
+Melanie Smith
+1 Vehicle, 1 Driver  |  Effective Date: 06/04/2025
 Vieira & Associates Insurance Brokers Ltd
 55 Horner Ave, Suite 201
 Etobicoke, ON M8Z 4X6
@@ -333,138 +229,107 @@ Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
 Definity Insurance Company
-6684  |  New Business  |  Effective Date: 05/02/2025
-Home: (416)685-9434
-676 LANSDOWNE AVENUE
-TORONTO, ON M6H 3Y8
+6684  |  New Business  |  Effective Date: 06/04/2025
+164 Bruce St
+Oshawa, ON L1H 1R2
+melbssmith@gmail.com
 Vehicles
 TOTALS
-Private Passenger - 2015 HONDA CIVIC LX 4DR  (025100)
-$3,888
+Private Passenger - 2001 AUDI A4 1.8T QUATTRO 4DR  (948300)
+$1,383
 Annual Premium
-$3,888.00
+$1,383.00
 0% Tax Applied
 $0.00
 Total Premium
-$3,888.00
+$1,383.00
 Totals
-■ Here is your quote number: Q17455036991722002
+■ Here is your quote number: Q17471504226422260
 ■ Account match not found.
-■ https://extranet.id.economical.com/gwpcweb/BrokerQuote.do?
-JobNumber=%2BLeAbvM8%2BvqaS54hoMCkvT2%2FgQTLoo0Iy3cufm%2FZMcs%3D
-■ 2015 HONDA CIVIC LX 4DR : To confirm eligibility, all modifications must be declared in Guidewire prior to binding
-■ 2015 HONDA CIVIC LX 4DR : Vehicles with prior Unrepaired Damage may be ineligible. Please confirm eligibility in Guidewire.
+■ https://extranet.id.economical.com/gwpcweb/BrokerQuote.do?JobNumber=0yHV8KW9t79TaUVdUHr9TdDYTHwh6n7zLZxaRX2eY5k%3D
+■ 2001 AUDI A4 1.8T QUATTRO 4DR : To confirm eligibility, all modifications must be declared in Guidewire prior to binding
+■ 2001 AUDI A4 1.8T QUATTRO 4DR : Vehicles with prior Unrepaired Damage may be ineligible. Please confirm eligibility in Guidewire.
 MSG
 RB
 Effective Date
 Book
-TORONTO M6H 3Y8 / Territory 147
+OSHAWA L1H 1R2 / Territory 145
 Territory
 RB
 VRG eff. date
-31
+20
 DCPD
-36
+35
 AB
-31
+20
 Coll
-18
+19
 Comp
 Rates
 MSG
-■ Third Party Liability - Direct Compensation: Coverage added as an additional driver exists.
-■ All Perils: Coverage added as an additional driver exists.
-■ Third Party Liability - Bodily Injury: Coverage added as an additional driver exists.
-■ Third Party Liability - Bodily Injury: Coverage added as an additional driver exists.
-■ Accident Benefits: Coverage added as an additional driver exists.
-■ Uninsured Automobile: Coverage added as an additional driver exists.
-■ Minor Conviction Protection: Coverage added as an additional driver exists.
 ■ Accident Rating Waiver: Accident waiver is included if driver is eligible for 6, 8 or 9 driving record.
-■ Transportation Replacement has been selected as 60 days.
-■ Legal Liability for Damage to Non-Owned Automobile has been selected as 30 days
 DIS
 ● Conviction Free included - Prn
-● Smart Move included - Prn
-Nancy Freitas
-Policy
-1 of 1  |  2015 HONDA CIVIC LX 4DR  (025100)
-$3,888.00
-Prepared 04/24/2025 by Nishank Bhola
-Applied Ref. # RBWS 423938044
-Provided by Applied Rating Services®,
-© 2025 Applied Systems® Canada Inc.
 Operator
 PRIN.
-OCC 1
 TOTALS
 Class/Liability/Collision
 /9/9
-/3/3
 Bodily Injury
 2 M
-486
-685
-1,171
+479
+479
 Property Damage
 2 M
- 
  
 0
 Direct Compensation
 0
-393
-216
-609
+234
+234
 Accident Benefits
-714
-400
-1,114
-All Perils
-500
-447
-313
-760
+626
+626
 Uninsured Automobile
-17
-17
-34
-#20 Loss of Use
-3,000
-95
- 
-95
-#27 Liab to Unowned Veh.
-50K
-40
- 
-40
-#44 Family Protection
-2 M
-25
- 
-25
-Accident Waiver
- 
- 
-0
-Minor Conviction Protection
-40
- 
-40
-Service Fee
- 
- 
-0
+18
+18
 Annual Premium
-$2,257
-$1,631
-$3,888
+$1,383
+$1,383
 0% Tax Applied
 $0.00
 $0.00
+Total Premium
+$1,383.00
+$1,383.00
+Breakdown
+Melanie Smith
+Policy
+1 of 1  |  2001 AUDI A4 1.8T QUATTRO 4DR  (948300)
+$1,383.00
+Prepared 05/13/2025 by Nishank Bhola
+Applied Ref. # RBWS 427931477
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
+Operator
+PRIN.
+TOTALS
+#44 Family Protection
+2 M
+26
+26
+Accident Waiver
+ 
+0
+Service Fee
+ 
+0
+Annual Premium
+$1,383
+$1,383
+0% Tax Applied
+$0.00
 $0.00
 Total Premium
-$2,257.00
-$1,631.00
-$3,888.00
-Breakdown
+$1,383.00
+$1,383.00

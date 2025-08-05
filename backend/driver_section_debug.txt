@@ -1,47 +1,47 @@
-Driver: Matthew F Silva
+Driver: Melanie Smith
 Section: 
-10/23/2002
+07/03/1986
 Birth Date
 Single
 Marital Status
-Male
+Female
 Gender
-Child
+Insured
 Relationship to Applicant
-Yes
+No
 Driver Training
-09/22/2020
+ 
 Driver Training
 Date
 No
 Out of Province / Country Driver
-G2
+G
 Licence Class
- 
+10/29/2005
 Date G
-08/04/2022
+09/28/2004
 Date G2
-09/22/2020
+08/27/2003
 Date G1
-S44035293021023
+S57785371865703
 Licence Number
 ON
 Licence Province
  
 Occupation
-08/04/2022
+06/04/2015
 Date Insured
-Wawanesa Mutual
+Travelers Insurance Company of Canada
 Current Carrier
-08/04/2022
+06/04/2023
 Date with
 Company
-08/04/2022
+06/04/2023
 Brokerage Insured
- 
+06/04/2015
 Date
 Owner/Principal
-Yes
+No
 Applicant lives with Parents
  
 Student Away at School (km)
@@ -53,74 +53,21 @@ Class
  
 Other Licence
 Date
-Vieira & Associates Insurance Brokers Ltd
-55 Horner Ave, Suite 201
-Etobicoke, ON M8Z 4X6
-Phone: (416)531-1146    Fax: (416)531-1148
-Email: info@vieirainsurance.com
-Website: www.vieirainsurance.com
-Prepared 04/24/2025 by Nishank Bhola
-Applied Ref. # RWS 983232053, CWS 339036048,
-RBWS 423938044
-Provided by Applied Rating Services®,
-© 2025 Applied Systems® Canada Inc.
-Home: (416)685-9434
-676 LANSDOWNE AVENUE
-TORONTO, ON M6H 3Y8
-Company
-12 Months
-CAA MyPace
-3,626
-Wawanesa Drive Change
-3,630
-CAA Insurance Company (Future Member)
-3,858
-Definity Insurance Company
-3,888
-Wawanesa Mutual
-3,998
-CAA Insurance Company
-4,060
-Aviva - Aviva Journey
-4,133
-Aviva
-4,392
-Dominion of Canada - Single Pay and DPD
-5,130
-SGI CANADA
-5,163
-Intact Insurance - my Drive
-5,713
-Intact Insurance
-6,306
-Dominion of Canada - IntelliDrive
-6,382
-Dominion of Canada
-6,545
-Facility Association
-8,311
-Echelon
-9,720
-Coachman
-0
-JEVCO
-0
-Summary
-Nancy Freitas
-1 
-Extracted dates - G: 08/04/2022, G2: 08/04/2022, G1: 09/22/2020
+Prepared 05/13/2025 by Nishank Bhola
+
+Extracted dates - G: 10/29/2005, G2: 09/28/2004, G1: 08/27/2003
 
 === DETAILED DEBUG ===
 Testing all date patterns:
-Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['08/04/2022', '09/22/2020']
-Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['08/04/2022', '09/22/2020']
-Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: ['08/04/2022']
-Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: ['08/04/2022']
-Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: ['09/22/2020']
-Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: ['09/22/2020']
+Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['10/29/2005', '09/28/2004', '08/27/2003']
+Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['10/29/2005', '09/28/2004', '08/27/2003']
+Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: ['09/28/2004']
+Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: ['09/28/2004']
+Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: ['08/27/2003']
+Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: ['08/27/2003']
 
 All date patterns found:
-All dates: ['10/23/2002', '09/22/2020', '08/04/2022', '09/22/2020', '08/04/2022', '08/04/2022', '08/04/2022', '04/24/2025']
+All dates: ['07/03/1986', '10/29/2005', '09/28/2004', '08/27/2003', '06/04/2015', '06/04/2023', '06/04/2023', '06/04/2015', '05/13/2025']
 
 Looking for 'Date G1' specifically:
 Date G1 context: 'Date G1'

@@ -1,77 +1,104 @@
 DRIVER REPORT
-Silva Matthew Freitas
+Melanie Smith
  
  
-DLN: S4403-52930-21023 Ontario
-Date of Birth: 2002-10-23
-Report Date: 2025-04-11 09:46:19 EDT
+DLN: S5778-53718-65703 Ontario
+Date of Birth: 1986-07-03
+Report Date: 2025-05-13 11:20:28 EDT
 Requestor: Nishank Bhola
 Company: Vieira & Associates Insurance Brokers Ltd.
 Comment: Not available
-Last Data Update: 2025-03-14
+Last Data Update: 2025-04-05
 Number of Years of Data: 10
-Address: 676 Lansdowne Avenue Toronto ON M6H3Y8
+Address: 164 Bruce St,Oshawa,ON L1H1R2
 Number of Claims in Last 6 Years: 0
 Number of Policies at this Address: Not available
 Number of At-Fault Claims in Last 6 Years: 0
-Gender: Male
+Gender: Female
 Number of Comprehensive Losses in Last 6 Years: 0
 Marital Status: Not married
 Number of DCPD Claims in Last 6 Years: 0
-Years Licensed: 2
-Years of Continuous Insurance: 2
+Years Licensed: 21
+Years of Continuous Insurance: 9
  
-Years Claims Free: 2
+Years Claims Free: 21
  
-Driver Training: Yes
+Driver Training: NA
  
 Policies
 Note: Information related to commercial policies may be incomplete.
 #1
-2022-05-02 to 2026-05-02
-The Wawanesa Mutual Insurance Company
+2023-06-04 to 2026-06-04
+The Dominion of Canada General Insurance
+Company
  
 Active
+#2
+2015-06-04 to 2023-06-04
+Aviva Insurance Company of Canada
+ 
+Cancelled - insured's request
 Claims
 None
 Previous Inquiries
-2025-03-03   The Wawanesa Group
-Page 1 of 2
+None
+Page 1 of 3
 Policy #1
-2022-05-02 to 2026-05-02
-The Wawanesa Mutual Insurance Company
+2023-06-04 to 2026-06-04
+The Dominion of Canada General Insurance
+Company
 Active
-Policy #: 28775500
-Effective Date: 2020-05-02
-Policyholder Name: FREITAS NANCY
-Expiry Date: 2026-05-02
-Policyholder Address: 676 Lansdowne Avenue Toronto ON M6H3Y8
+Policy #: APP5436527
+Effective Date: 2023-06-04
+Policyholder Name: Melanie Smith
+Expiry Date: 2026-06-04
+Policyholder Address: 164 Bruce St,Oshawa,ON L1H1R2
 Cancellation Date: N/A
-Number of Reported Operators: 2
+Number of Reported Operators: 1
 Number of Private Passenger Vehicles: 1
-Operator: FREITAS NANCY
-DLN: F7330-57777-85612 Ontario
+Operator: Melanie Smith
+DLN: S5778-53718-65703 Ontario
 Relationship to Policyholder: NA
-Year of Birth: 1978
+Year of Birth: 1986
 Vehicle #1: Principal Operator
-Start of the Earliest Term: 2020-05-02
-End of the Latest Term: 2026-05-02
-Operator: Silva Matthew Freitas
-DLN: S4403-52930-21023 Ontario
-Relationship to Policyholder: Child
-Year of Birth: 2002
-Vehicle #1: Occasional Operator
-Start of the Earliest Term: 2022-05-02
-End of the Latest Term: 2026-05-02
-Vehicle #1: 2015  HONDA - CIVIC LX 4DR - 2HGFB2F44FH049170
-Coverage: AB, AP, TP-BI, CL, DCPD, TP-PD
-Vehicle Code: 025100
-Commuting Distance (One-Way / Annual): 0km / 6000km
-Vehicle Location: M6H
+Start of the Earliest Term: 2023-06-04
+End of the Latest Term: 2026-06-04
+Vehicle #1: 2001  AUDI - A4 1.8T QUATTRO 4DR - WAUDC68D11A009804
+Coverage: AB, TP-BI, DCPD, TP-PD
+Vehicle Code: 948300
+Commuting Distance (One-Way / Annual): 0km / 10000km
+Vehicle Location: L1H
 Business Use: 0%
 Vehicle Use: Pleasure
 Branding: None
 Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
 Gross Vehicle Weight: Not available
+Driving Record: 6
+Page 2 of 3
+Policy #2
+2015-06-04 to 2023-06-04
+Aviva Insurance Company of Canada
+Cancelled - insured's request
+Policy #: 96233660707
+Effective Date: 2015-06-04
+Policyholder Name: MELANIE SMITH
+Expiry Date: 2024-06-04
+Policyholder Address: 164 BRUCE ST OSHAWA ON L1H1R2
+Cancellation Date: 2023-06-04
+Number of Reported Operators: 1
+Number of Private Passenger Vehicles: 1
+Operator: Melanie Smith
+DLN: S5778-53718-65703 Ontario
+Relationship to Policyholder: Self
+Year of Birth: 1986
+Vehicle #1: Principal Operator
+Start of the Earliest Term: 2015-06-04
+End of the Latest Term: 2023-06-04
+Vehicle #1: 2001  AUDI - A4 1.8T QUATTRO 4DR - WAUDC68D11A009804
+Coverage: AB, TP-BI, DCPD, TP-PD
+Vehicle Use: Pleasure
+Commuting Distance (One-Way / Annual): 0km / 10000km
+Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
+Business Use: 0%
 Driving Record: 7
-Page 2 of 2
+Page 3 of 3
