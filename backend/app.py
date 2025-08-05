@@ -2,10 +2,12 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 from werkzeug.utils import secure_filename
+import json
 
 from extractors.mvr_extractor import extract_mvr_data
 from extractors.dash_extractor import extract_dash_data
 from extractors.quote_extractor import extract_quote_data
+from extractors.application_extractor import extract_application_data
 from validator.compare_engine import validate_quote
 from quote_comparison_service import compare_quote_with_pdf
 
@@ -215,6 +217,50 @@ def debug_extraction():
                 debug_results[filename]["extracted_data"] = extract_quote_data(path)
     
     return jsonify(debug_results)
+
+@app.route('/application-qc', methods=['POST'])
+def application_qc():
+    """Application QC endpoint to extract data from insurance application PDFs"""
+    if 'application' not in request.files:
+        return jsonify({"error": "No application file provided"}), 400
+    
+    file = request.files['application']
+    if file.filename == '':
+        return jsonify({"error": "No file selected"}), 400
+    
+    if not allowed_file(file.filename):
+        return jsonify({"error": "Only PDF files are allowed"}), 400
+    
+    try:
+        filename = secure_filename(file.filename)
+        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(path)
+        
+        print(f"Processing application file: {filename}")
+        
+        # Extract application data
+        application_data = extract_application_data(path)
+        
+        # Save to JSON file
+        json_filename = "application_data.json"
+        json_path = os.path.join(app.config['UPLOAD_FOLDER'], json_filename)
+        
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(application_data, f, indent=2, ensure_ascii=False)
+        
+        print(f"Application data saved to {json_path}")
+        
+        return jsonify({
+            "message": "Application data extracted successfully",
+            "filename": json_filename,
+            "data": application_data
+        })
+        
+    except Exception as e:
+        print(f"Error processing application: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Application processing failed: {str(e)}"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)

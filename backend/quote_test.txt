@@ -4,9 +4,11 @@ Etobicoke, ON M8Z 4X6
 Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-164 Bruce St
-Oshawa, ON L1H 1R2
-melbssmith@gmail.com
+Home: (905)851-6060
+Work:
+(905)851-6060
+5 SEA DRIFTER CRES
+BRAMPTON, ON L6P 4A9
 Policy Information
  
 Property Policy Type
@@ -30,11 +32,11 @@ Term Length
 Applicant Information
  
 Salutation
-Melanie
+Nadeen
 First Name
  
 Middle
-Smith
+Thomas
 Last Name
  
 Suffix
@@ -49,13 +51,13 @@ Middle
 Last Name
  
 Suffix
-Melanie Smith
+Nadeen Thomas
 Drivers
 Coverages
-Vehicle 1 of 1 | Private Passenger - 2001 AUDI A4 1.8T QUATTRO 4DR (948300)
+Vehicle 1 of 2 | Private Passenger - 2012 HONDA CIVIC LX 4DR (025100)
 Private Passenger
 Vehicle Type
-WAUDC68D11A009804
+2HGFB2F50CH020785
 VIN
 4 Door Sedan/Hard Top
 Body Style
@@ -65,13 +67,75 @@ No
 Hybrid
 Pleasure
 Primary Use
-10000
+5000
 Annual km
-0
+ 
 Business km
 0
 Daily km
-OSHAWA L1H1R2
+BRAMPTON L6P4A9
+Garaging Location
+No
+Single Vehicle MVD
+No
+Leased
+4
+Cylinders
+ 
+Anti-Theft - Device Type
+ 
+Anti-Theft - Manufacturer
+ 
+Anti-Theft - Engraving
+New
+Purchase
+Condition
+05/01/2012
+Purchase Date
+ 
+km at Purchase
+18995
+List Price New
+18995
+Purchase Price
+Yes
+Winter Tires
+ 
+Parking at Night
+Nadeen Thomas (Prn)
+Bodily Injury (1,000,000)
+Property Damage (1,000,000)
+Direct Compensation (0)
+Accident Benefits (Standard)
+All Perils (1,000)
+Uninsured Automobile
+#20 Loss of Use (2,000)
+#27 Liab to Unowned Veh. (75,000)
+#44 Family Protection (1,000,000)
+Accident Waiver
+Minor Conviction Protection
+Drivers
+Coverages
+Vehicle 2 of 2 | Private Passenger - 2017 HONDA CIVIC LX 4DR (025100)
+Private Passenger
+Vehicle Type
+2HGFC2F58HH019274
+VIN
+4 Door Sedan/Hard Top
+Body Style
+Gasoline
+Fuel Type
+No
+Hybrid
+Pleasure
+Primary Use
+5000
+Annual km
+ 
+Business km
+0
+Daily km
+BRAMPTON L6P4A9
 Garaging Location
 No
 Single Vehicle MVD
@@ -88,28 +152,39 @@ Anti-Theft - Engraving
 Used
 Purchase
 Condition
-06/01/2015
+06/01/2019
 Purchase Date
  
 km at Purchase
-39253
+20937
 List Price New
-10000
+20937
 Purchase Price
-No
+Yes
 Winter Tires
  
 Parking at Night
-Melanie Smith (Prn)
-Bodily Injury (2,000,000)
-Property Damage (2,000,000)
+Nadeen Thomas (Prn)
+Bodily Injury (1,000,000)
+Property Damage (1,000,000)
 Direct Compensation (0)
 Accident Benefits (Standard)
+All Perils (500)
 Uninsured Automobile
-#44 Family Protection (2,000,000)
+#20 Loss of Use (2,000)
+#23a Mortgage
+#27 Liab to Unowned Veh. (75,000)
+#44 Family Protection (1,000,000)
 Accident Waiver
-Driver 1 of 1 | Melanie Smith
-07/03/1986
+Minor Conviction Protection
+Prepared 05/21/2025 by Nishank Bhola
+Effective Date: 06/16/2025
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
+Lapses
+Disclaimer: Coverages shown reflect user entry. For details on the coverages quoted please refer to the Carrier Detail printout.
+Driver 1 of 1 | Nadeen Thomas
+08/04/1965
 Birth Date
 Single
 Marital Status
@@ -126,28 +201,40 @@ No
 Out of Province / Country Driver
 G
 Licence Class
-10/29/2005
+07/08/2004
 Date G
-09/28/2004
+07/08/2003
 Date G2
-08/27/2003
+07/08/2002
 Date G1
-S57785371865703
+T35945760655804
 Licence Number
 ON
 Licence Province
  
 Occupation
-06/04/2015
+None
+Membership Plan 1 Description
+ 
+Membership Date
+ 
+Membership Number
+None
+Membership Plan 2 Description
+ 
+Membership Date
+ 
+Membership Number
+06/13/2016
 Date Insured
-Travelers Insurance Company of Canada
+Aviva
 Current Carrier
-06/04/2023
+06/16/2020
 Date with
 Company
-06/04/2023
+06/13/2016
 Brokerage Insured
-06/04/2015
+06/13/2016
 Date
 Owner/Principal
 No
@@ -162,66 +249,71 @@ Class
  
 Other Licence
 Date
-Prepared 05/13/2025 by Nishank Bhola
-Effective Date: 06/04/2025
-Provided by Applied Rating Services®,
-© 2025 Applied Systems® Canada Inc.
-Disclaimer: Coverages shown reflect user entry. For details on the coverages quoted please refer to the Carrier Detail printout.
+No Vehicle Hence No Insurance Required
+Description
+06/13/2020
+Date
+0
+Duration months
+06/16/2020
+Re-Instate Date
 Vieira & Associates Insurance Brokers Ltd
 55 Horner Ave, Suite 201
 Etobicoke, ON M8Z 4X6
 Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Prepared 05/13/2025 by Nishank Bhola
-Applied Ref. # RWS 989652684, CWS 340691829,
-RBWS 427931477
+Prepared 05/21/2025 by Nishank Bhola
+Applied Ref. # RWS 991999616, CWS 341286051,
+RBWS 429398478
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
-164 Bruce St
-Oshawa, ON L1H 1R2
-melbssmith@gmail.com
+Home: (905)851-6060
+Work:
+(905)851-6060
+5 SEA DRIFTER CRES
+BRAMPTON, ON L6P 4A9
 Company
 12 Months
-Definity Insurance Company
-1,383
-CAA Insurance Company (Future Member)
-1,489
 CAA MyPace
-1,522
+4,767
+Definity Insurance Company
+5,681
+CAA Insurance Company (Future Member)
+6,455
 CAA Insurance Company
-1,566
-Intact Insurance - my Drive
-1,715
-Intact Insurance
-1,887
+6,791
+SGI CANADA
+7,279
 Aviva - Aviva Journey
-1,918
-Aviva
-2,120
+7,550
 Wawanesa Drive Change
-2,171
-Wawanesa Mutual
-2,399
-Facility Association
-2,553
+7,749
 Dominion of Canada - Single Pay and DPD
-2,800
+7,912
+Intact Insurance - my Drive
+8,007
+Aviva
+8,339
+Wawanesa Mutual
+8,566
+Intact Insurance
+8,827
+Facility Association
+9,488
 Dominion of Canada - IntelliDrive
-3,574
+9,851
 Dominion of Canada
-3,574
+10,102
 Echelon
-3,714
+13,139
 Coachman
 0
 JEVCO
 0
-SGI CANADA
-0
 Summary
-Melanie Smith
-1 Vehicle, 1 Driver  |  Effective Date: 06/04/2025
+Nadeen Thomas
+2 Vehicles, 1 Driver  |  Effective Date: 06/16/2025
 Vieira & Associates Insurance Brokers Ltd
 55 Horner Ave, Suite 201
 Etobicoke, ON M8Z 4X6
@@ -229,107 +321,221 @@ Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
 Definity Insurance Company
-6684  |  New Business  |  Effective Date: 06/04/2025
-164 Bruce St
-Oshawa, ON L1H 1R2
-melbssmith@gmail.com
+6684  |  New Business  |  Effective Date: 06/16/2025
+Home: (905)851-6060
+Work:
+(905)851-6060
+5 SEA DRIFTER CRES
+BRAMPTON, ON L6P 4A9
 Vehicles
 TOTALS
-Private Passenger - 2001 AUDI A4 1.8T QUATTRO 4DR  (948300)
-$1,383
+Private Passenger - 2012 HONDA CIVIC LX 4DR  (025100)
+$2,470
+Private Passenger - 2017 HONDA CIVIC LX 4DR  (025100)
+$3,211
 Annual Premium
-$1,383.00
+$5,681.00
 0% Tax Applied
 $0.00
 Total Premium
-$1,383.00
+$5,681.00
 Totals
-■ Here is your quote number: Q17471504226422260
+■ Here is your quote number: Q1747833234473854
 ■ Account match not found.
-■ https://extranet.id.economical.com/gwpcweb/BrokerQuote.do?JobNumber=0yHV8KW9t79TaUVdUHr9TdDYTHwh6n7zLZxaRX2eY5k%3D
-■ 2001 AUDI A4 1.8T QUATTRO 4DR : To confirm eligibility, all modifications must be declared in Guidewire prior to binding
-■ 2001 AUDI A4 1.8T QUATTRO 4DR : Vehicles with prior Unrepaired Damage may be ineligible. Please confirm eligibility in Guidewire.
+■ https://extranet.id.economical.com/gwpcweb/BrokerQuote.do?JobNumber=foYrdMe5nALjhwqneBTqH4ZRdIMjpKqAOxIDtITH4vE%3D
+■ 2012 HONDA CIVIC LX 4DR : To confirm eligibility, all modifications must be declared in Guidewire prior to binding
+■ 2012 HONDA CIVIC LX 4DR : Vehicles with prior Unrepaired Damage may be ineligible. Please confirm eligibility in Guidewire.
+■ 2017 HONDA CIVIC LX 4DR : To confirm eligibility, all modifications must be declared in Guidewire prior to binding
+■ 2017 HONDA CIVIC LX 4DR : Vehicles with prior Unrepaired Damage may be ineligible. Please confirm eligibility in Guidewire.
 MSG
 RB
 Effective Date
 Book
-OSHAWA L1H 1R2 / Territory 145
+BRAMPTON L6P 4A9 / Territory 142
 Territory
 RB
 VRG eff. date
-20
+27
 DCPD
-35
+36
 AB
-20
+27
 Coll
-19
+9
 Comp
 Rates
 MSG
 ■ Accident Rating Waiver: Accident waiver is included if driver is eligible for 6, 8 or 9 driving record.
+■ Transportation Replacement has been selected as 45 days.
+■ Legal Liability for Damage to Non-Owned Automobile has been selected as 30 days
 DIS
 ● Conviction Free included - Prn
+● Winter Tires included - Prn
+● Smart Move included - Prn
+● Multi-Vehicle included - Prn
+Operator
+PRIN.
+TOTALS
+Class/Liability/Collision
+/9/9
+Annual Premium
+$2,470
+$2,470
+0% Tax Applied
+$0.00
+$0.00
+Total Premium
+$2,470.00
+$2,470.00
+Breakdown
+Nadeen Thomas
+Policy
+1 of 2  |  2012 HONDA CIVIC LX 4DR  (025100)
+$2,470.00
+Operator
+PRIN.
+TOTALS
+Bodily Injury
+1 M
+661
+661
+Property Damage
+1 M
+ 
+0
+Direct Compensation
+0
+314
+314
+Accident Benefits
+1,065
+1,065
+All Perils
+1,000
+301
+301
+Uninsured Automobile
+16
+16
+#20 Loss of Use
+2,000
+60
+60
+#27 Liab to Unowned Veh.
+75K
+0
+0
+#44 Family Protection
+1 M
+13
+13
+Accident Waiver
+ 
+0
+Minor Conviction Protection
+40
+40
+Service Fee
+ 
+0
+Annual Premium
+$2,470
+$2,470
+0% Tax Applied
+$0.00
+$0.00
+Total Premium
+$2,470.00
+$2,470.00
+Prepared 05/21/2025 by Nishank Bhola
+Applied Ref. # RBWS 429398478
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
+ 
+RB
+Effective Date
+Book
+BRAMPTON L6P 4A9 / Territory 142
+Territory
+RB
+VRG eff. date
+38
+DCPD
+38
+AB
+38
+Coll
+29
+Comp
+Rates
+MSG
+■ Accident Rating Waiver: Accident waiver is included if driver is eligible for 6, 8 or 9 driving record.
+■ Transportation Replacement has been selected as 45 days.
+DIS
+● Conviction Free included - Prn
+● Winter Tires included - Prn
+● Smart Move included - Prn
+● Multi-Vehicle included - Prn
 Operator
 PRIN.
 TOTALS
 Class/Liability/Collision
 /9/9
 Bodily Injury
-2 M
-479
-479
+1 M
+674
+674
 Property Damage
-2 M
+1 M
  
 0
 Direct Compensation
 0
-234
-234
+553
+553
 Accident Benefits
-626
-626
+1,185
+1,185
+All Perils
+500
+655
+655
 Uninsured Automobile
-18
-18
-Annual Premium
-$1,383
-$1,383
-0% Tax Applied
-$0.00
-$0.00
-Total Premium
-$1,383.00
-$1,383.00
-Breakdown
-Melanie Smith
-Policy
-1 of 1  |  2001 AUDI A4 1.8T QUATTRO 4DR  (948300)
-$1,383.00
-Prepared 05/13/2025 by Nishank Bhola
-Applied Ref. # RBWS 427931477
-Provided by Applied Rating Services®,
-© 2025 Applied Systems® Canada Inc.
-Operator
-PRIN.
-TOTALS
+16
+16
+#20 Loss of Use
+2,000
+70
+70
+#23a Mortgage
+Inc.
+0
+#27 Liab to Unowned Veh.
+75K
+45
+45
 #44 Family Protection
-2 M
-26
-26
+1 M
+13
+13
 Accident Waiver
  
+0
+Minor Conviction Protection
+0
 0
 Service Fee
  
 0
 Annual Premium
-$1,383
-$1,383
+$3,211
+$3,211
 0% Tax Applied
 $0.00
 $0.00
 Total Premium
-$1,383.00
-$1,383.00
+$3,211.00
+$3,211.00
+Breakdown
+2 of 2  |  2017 HONDA CIVIC LX 4DR  (025100)
+$3,211.00

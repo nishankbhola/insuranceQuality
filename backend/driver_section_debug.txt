@@ -1,6 +1,6 @@
-Driver: Melanie Smith
+Driver: Nadeen Thomas
 Section: 
-07/03/1986
+08/04/1965
 Birth Date
 Single
 Marital Status
@@ -17,28 +17,40 @@ No
 Out of Province / Country Driver
 G
 Licence Class
-10/29/2005
+07/08/2004
 Date G
-09/28/2004
+07/08/2003
 Date G2
-08/27/2003
+07/08/2002
 Date G1
-S57785371865703
+T35945760655804
 Licence Number
 ON
 Licence Province
  
 Occupation
-06/04/2015
+None
+Membership Plan 1 Description
+ 
+Membership Date
+ 
+Membership Number
+None
+Membership Plan 2 Description
+ 
+Membership Date
+ 
+Membership Number
+06/13/2016
 Date Insured
-Travelers Insurance Company of Canada
+Aviva
 Current Carrier
-06/04/2023
+06/16/2020
 Date with
 Company
-06/04/2023
+06/13/2016
 Brokerage Insured
-06/04/2015
+06/13/2016
 Date
 Owner/Principal
 No
@@ -53,21 +65,20 @@ Class
  
 Other Licence
 Date
-Prepared 05/13/2025 by Nishank Bhola
-
-Extracted dates - G: 10/29/2005, G2: 09/28/2004, G1: 08/27/2003
+No 
+Extracted dates - G: 07/08/2004, G2: 07/08/2003, G1: 07/08/2002
 
 === DETAILED DEBUG ===
 Testing all date patterns:
-Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['10/29/2005', '09/28/2004', '08/27/2003']
-Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['10/29/2005', '09/28/2004', '08/27/2003']
-Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: ['09/28/2004']
-Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: ['09/28/2004']
-Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: ['08/27/2003']
-Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: ['08/27/2003']
+Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['07/08/2004', '07/08/2003', '07/08/2002']
+Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['07/08/2004', '07/08/2003', '07/08/2002']
+Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: ['07/08/2003']
+Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: ['07/08/2003']
+Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: ['07/08/2002']
+Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: ['07/08/2002']
 
 All date patterns found:
-All dates: ['07/03/1986', '10/29/2005', '09/28/2004', '08/27/2003', '06/04/2015', '06/04/2023', '06/04/2023', '06/04/2015', '05/13/2025']
+All dates: ['08/04/1965', '07/08/2004', '07/08/2003', '07/08/2002', '06/13/2016', '06/16/2020', '06/13/2016', '06/13/2016']
 
 Looking for 'Date G1' specifically:
 Date G1 context: 'Date G1'

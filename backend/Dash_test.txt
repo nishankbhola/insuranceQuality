@@ -1,16 +1,16 @@
 DRIVER REPORT
-Melanie Smith
+THOMAS NADEEN
  
  
-DLN: S5778-53718-65703 Ontario
-Date of Birth: 1986-07-03
-Report Date: 2025-05-13 11:20:28 EDT
+DLN: T3594-57606-55804 Ontario
+Date of Birth: 1965-08-04
+Report Date: 2025-05-21 09:05:08 EDT
 Requestor: Nishank Bhola
 Company: Vieira & Associates Insurance Brokers Ltd.
 Comment: Not available
-Last Data Update: 2025-04-05
+Last Data Update: 2024-12-15
 Number of Years of Data: 10
-Address: 164 Bruce St,Oshawa,ON L1H1R2
+Address: 5 SEA DRIFTER CRES BRAMPTON ON L6P4A9
 Number of Claims in Last 6 Years: 0
 Number of Policies at this Address: Not available
 Number of At-Fault Claims in Last 6 Years: 0
@@ -18,87 +18,149 @@ Gender: Female
 Number of Comprehensive Losses in Last 6 Years: 0
 Marital Status: Not married
 Number of DCPD Claims in Last 6 Years: 0
-Years Licensed: 21
-Years of Continuous Insurance: 9
+Years Licensed: 19
+Years of Continuous Insurance: 4
  
-Years Claims Free: 21
+Years Claims Free: 19
  
 Driver Training: NA
  
 Policies
 Note: Information related to commercial policies may be incomplete.
 #1
-2023-06-04 to 2026-06-04
+2020-06-16 to 2025-06-16
+Aviva Insurance Company of Canada
+ 
+Active
+ 
+ 
+ 
+*POSSIBLE GAP*
+ 
+#2
+2019-06-13 to 2020-06-13
 The Dominion of Canada General Insurance
 Company
  
-Active
-#2
-2015-06-04 to 2023-06-04
-Aviva Insurance Company of Canada
+Cancelled - insured's request
+#3
+2016-06-13 to 2019-06-13
+The Wawanesa Mutual Insurance Company
  
 Cancelled - insured's request
 Claims
 None
 Previous Inquiries
 None
-Page 1 of 3
+Page 1 of 4
 Policy #1
-2023-06-04 to 2026-06-04
-The Dominion of Canada General Insurance
-Company
+2020-06-16 to 2025-06-16
+Aviva Insurance Company of Canada
 Active
-Policy #: APP5436527
-Effective Date: 2023-06-04
-Policyholder Name: Melanie Smith
-Expiry Date: 2026-06-04
-Policyholder Address: 164 Bruce St,Oshawa,ON L1H1R2
+Policy #: 96753355707
+Effective Date: 2020-06-16
+Policyholder Name: NADEEN THOMAS
+Expiry Date: 2025-06-16
+Policyholder Address: 5 SEA DRIFTER CRES BRAMPTON ON L6P4A9
 Cancellation Date: N/A
 Number of Reported Operators: 1
-Number of Private Passenger Vehicles: 1
-Operator: Melanie Smith
-DLN: S5778-53718-65703 Ontario
-Relationship to Policyholder: NA
-Year of Birth: 1986
+Number of Private Passenger Vehicles: 2
+Operator: THOMAS NADEEN
+DLN: T3594-57606-55804 Ontario
+Relationship to Policyholder: Self
+Year of Birth: 1965
 Vehicle #1: Principal Operator
-Start of the Earliest Term: 2023-06-04
-End of the Latest Term: 2026-06-04
-Vehicle #1: 2001  AUDI - A4 1.8T QUATTRO 4DR - WAUDC68D11A009804
-Coverage: AB, TP-BI, DCPD, TP-PD
-Vehicle Code: 948300
-Commuting Distance (One-Way / Annual): 0km / 10000km
-Vehicle Location: L1H
+Vehicle #2: Principal Operator
+Start of the Earliest Term: 2020-06-16
+End of the Latest Term: 2025-06-16
+Vehicle #1: 2017  HONDA - CIVIC LX 4DR - 2HGFC2F58HH019274
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Code: 025100
+Commuting Distance (One-Way / Annual): 0km / 5000km
+Vehicle Location: L6P
 Business Use: 0%
 Vehicle Use: Pleasure
 Branding: None
 Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
 Gross Vehicle Weight: Not available
-Driving Record: 6
-Page 2 of 3
+Driving Record: 7
+ 
+Vehicle #2: 2012  HONDA - CIVIC EX 4DR / CIVIC LX 4DR -
+2HGFB2F50CH020785
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Code: 021006
+Commuting Distance (One-Way / Annual): 0km / 5000km
+Vehicle Location: L6P
+Business Use: 0%
+Vehicle Use: Pleasure
+Branding: None
+Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
+Gross Vehicle Weight: Not available
+Driving Record: 7
+Page 2 of 4
 Policy #2
-2015-06-04 to 2023-06-04
-Aviva Insurance Company of Canada
+2019-06-13 to 2020-06-13
+The Dominion of Canada General Insurance
+Company
 Cancelled - insured's request
-Policy #: 96233660707
-Effective Date: 2015-06-04
-Policyholder Name: MELANIE SMITH
-Expiry Date: 2024-06-04
-Policyholder Address: 164 BRUCE ST OSHAWA ON L1H1R2
-Cancellation Date: 2023-06-04
+Policy #: APP3889665
+Effective Date: 2019-06-13
+Policyholder Name: Nadeen Thomas
+Expiry Date: 2021-06-13
+Policyholder Address: 5 Sea Drifter Cres,Brampton,ON L6P4A9
+Cancellation Date: 2020-06-13
+Number of Reported Operators: 1
+Number of Private Passenger Vehicles: 2
+Operator: THOMAS NADEEN
+DLN: T3594-57606-55804 Ontario
+Relationship to Policyholder: Self
+Year of Birth: 1965
+Vehicle #1: Principal Operator
+Vehicle #2: Principal Operator
+Start of the Earliest Term: 2019-06-13
+End of the Latest Term: 2020-06-13
+Vehicle #1: 2017  HONDA - CIVIC LX 4DR - 2HGFC2F58HH019274
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 3km / 10000km
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 6
+ 
+Vehicle #2: 2012  HONDA - CIVIC EX 4DR / CIVIC LX 4DR -
+2HGFB2F50CH020785
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 3km / 10000km
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: 0%
+Driving Record: 6
+Page 3 of 4
+Policy #3
+2016-06-13 to 2019-06-13
+The Wawanesa Mutual Insurance Company
+Cancelled - insured's request
+Policy #: ANC7511612
+Effective Date: 2015-06-13
+Policyholder Name: NADEEN THOMAS
+Expiry Date: 2020-06-13
+Policyholder Address: 5 SEA DRIFTER CRESBRAMPTON ON L6P4A9
+Cancellation Date: 2019-06-13
 Number of Reported Operators: 1
 Number of Private Passenger Vehicles: 1
-Operator: Melanie Smith
-DLN: S5778-53718-65703 Ontario
-Relationship to Policyholder: Self
-Year of Birth: 1986
+Operator: THOMAS NADEEN
+DLN: T3594-57606-55804 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1965
 Vehicle #1: Principal Operator
-Start of the Earliest Term: 2015-06-04
-End of the Latest Term: 2023-06-04
-Vehicle #1: 2001  AUDI - A4 1.8T QUATTRO 4DR - WAUDC68D11A009804
-Coverage: AB, TP-BI, DCPD, TP-PD
-Vehicle Use: Pleasure
-Commuting Distance (One-Way / Annual): 0km / 10000km
-Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
+Start of the Earliest Term: 2016-06-13
+End of the Latest Term: 2019-06-13
+Vehicle #1: 2012  HONDA - CIVIC EX 4DR / CIVIC LX 4DR -
+2HGFB2F50CH020785
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): 3km / 10000km
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
 Business Use: 0%
-Driving Record: 7
-Page 3 of 3
+Driving Record: 6
+Page 4 of 4

@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import { 
-  FileText, 
+  LayoutDashboard, 
   Upload, 
-  FileCheck,
-  Menu,
+  FileText, 
+  BarChart3, 
+  Users, 
+  Database, 
+  TrendingUp, 
+  Settings, 
+  HelpCircle,
+  ClipboardCheck,
   X,
-  Home,
-  Shield,
-  TrendingUp,
-  CheckCircle,
-  AlertTriangle
+  Menu
 } from 'lucide-react';
+import Header from './components/Header';
 import FileUpload from './components/FileUpload';
 import ValidationReport from './components/ValidationReport';
+import ApplicationQC from './components/ApplicationQC';
 import './App.css';
 
 function App() {
@@ -47,9 +51,10 @@ function App() {
   };
 
   const navigationItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home, active: true },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, active: true },
     { id: 'upload', label: 'File Upload', icon: Upload },
-    { id: 'validation', label: 'Validation Reports', icon: FileCheck },
+    { id: 'validation', label: 'Validation Reports', icon: ClipboardCheck },
+    { id: 'application_qc', label: 'Application QC', icon: Users },
   ];
 
   const renderContent = () => {
@@ -60,7 +65,7 @@ function App() {
             <div className="mb-8">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-white" />
+                  <Database className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">Welcome to Vieira Insurance</h1>
@@ -70,7 +75,7 @@ function App() {
               
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <div className="flex items-start space-x-3">
-                  <CheckCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <ClipboardCheck className="w-5 h-5 text-blue-600 mt-0.5" />
                   <div>
                     <h3 className="font-medium text-blue-900">System Overview</h3>
                     <p className="text-sm text-blue-700 mt-1">
@@ -105,7 +110,7 @@ function App() {
                       className="p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors text-left"
                     >
                       <div className="flex items-center space-x-3">
-                        <FileCheck className="w-8 h-8 text-green-600" />
+                        <ClipboardCheck className="w-8 h-8 text-green-600" />
                         <div>
                           <p className="font-medium text-green-900">View Latest Report</p>
                           <p className="text-sm text-green-700">Review validation results</p>
@@ -131,7 +136,7 @@ function App() {
                   
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <ClipboardCheck className="w-4 h-4 text-green-600" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">Data Validation</p>
@@ -141,7 +146,7 @@ function App() {
                   
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <AlertTriangle className="w-4 h-4 text-orange-600" />
+                      <HelpCircle className="w-4 h-4 text-orange-600" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">Issue Detection</p>
@@ -194,6 +199,8 @@ function App() {
         return <FileUpload onFileUpload={handleFileUpload} isLoading={isLoading} />;
       case 'validation':
         return validationData ? <ValidationReport data={validationData} /> : <div className="p-6">No validation data available</div>;
+      case 'application_qc':
+        return <ApplicationQC />;
       default:
         return (
           <div className="p-6">
