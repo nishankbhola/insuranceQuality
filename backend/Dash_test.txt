@@ -1,166 +1,288 @@
 DRIVER REPORT
-THOMAS NADEEN
+TAHMASEBIAN-MALAYERI NAVID
  
  
-DLN: T3594-57606-55804 Ontario
-Date of Birth: 1965-08-04
-Report Date: 2025-05-21 09:05:08 EDT
-Requestor: Nishank Bhola
+DLN: T0168-58306-50618 Ontario
+Date of Birth: 1965-06-18
+Report Date: 2025-08-03 00:44:59 EDT
+Requestor: Saman Razavi
 Company: Vieira & Associates Insurance Brokers Ltd.
 Comment: Not available
-Last Data Update: 2024-12-15
-Number of Years of Data: 10
-Address: 5 SEA DRIFTER CRES BRAMPTON ON L6P4A9
+Last Data Update: 2024-07-07
+Number of Years of Data: 25
+Address: 10, STURTON RD ETOBICOKE ON M9P2C6
 Number of Claims in Last 6 Years: 0
 Number of Policies at this Address: Not available
 Number of At-Fault Claims in Last 6 Years: 0
-Gender: Female
+Gender: Male
 Number of Comprehensive Losses in Last 6 Years: 0
-Marital Status: Not married
+Marital Status: Married
 Number of DCPD Claims in Last 6 Years: 0
-Years Licensed: 19
-Years of Continuous Insurance: 4
+Years Licensed: 29
+Years of Continuous Insurance: 0
  
-Years Claims Free: 19
+Years Claims Free: 29
  
 Driver Training: NA
  
 Policies
 Note: Information related to commercial policies may be incomplete.
 #1
-2020-06-16 to 2025-06-16
-Aviva Insurance Company of Canada
- 
-Active
+2023-08-16 to 2024-08-16
+Certas Home and Auto Insurance Company
+*OVERLAP*   
+Active - driver deleted
+#2
+2018-10-02 to 2024-10-02
+Certas Home and Auto Insurance Company
+*OVERLAP*   
+Active - driver deleted
  
  
  
 *POSSIBLE GAP*
  
-#2
-2019-06-13 to 2020-06-13
-The Dominion of Canada General Insurance
-Company
- 
-Cancelled - insured's request
 #3
-2016-06-13 to 2019-06-13
-The Wawanesa Mutual Insurance Company
+2010-10-25 to 2012-08-22
+State Farm Mutual Automobile Insurance
+Company
+*OVERLAP*   
+Cancelled - insured's request
+#4
+2007-10-25 to 2011-04-25
+State Farm Mutual Automobile Insurance
+Company
+*OVERLAP*   
+Expired
+#5
+2006-05-27 to 2008-05-27
+Scottish & York Insurance Co. Limited
+*OVERLAP*   
+Expired
+ 
+ 
+ 
+*POSSIBLE GAP*
+ 
+#6
+2004-05-27 to 2005-05-27
+AVIVA General Insurance Company
  
 Cancelled - insured's request
 Claims
 None
 Previous Inquiries
-None
-Page 1 of 4
+2025-06-28   Vieira & Associates Insurance Brokers Ltd.
+Page 1 of 7
 Policy #1
-2020-06-16 to 2025-06-16
-Aviva Insurance Company of Canada
-Active
-Policy #: 96753355707
-Effective Date: 2020-06-16
-Policyholder Name: NADEEN THOMAS
-Expiry Date: 2025-06-16
-Policyholder Address: 5 SEA DRIFTER CRES BRAMPTON ON L6P4A9
-Cancellation Date: N/A
-Number of Reported Operators: 1
-Number of Private Passenger Vehicles: 2
-Operator: THOMAS NADEEN
-DLN: T3594-57606-55804 Ontario
+2023-08-16 to 2024-08-16
+Certas Home and Auto Insurance Company
+*OVERLAP* 
+Active - driver deleted
+Policy #: XJ343405
+Effective Date: 2023-08-16
+Policyholder Name: NNS LTD
+Expiry Date: 2026-08-16
+Policyholder Address: 10 STURTON ETOBICOKE ON M9P2C6
+Cancellation Date: 2025-08-16
+Number of Reported Operators: 2
+Number of Private Passenger Vehicles: 1
+Operator: TAHMASEBIAN-MALAYERI NAVID
+DLN: T0168-58306-50618 Ontario
 Relationship to Policyholder: Self
 Year of Birth: 1965
 Vehicle #1: Principal Operator
-Vehicle #2: Principal Operator
-Start of the Earliest Term: 2020-06-16
-End of the Latest Term: 2025-06-16
-Vehicle #1: 2017  HONDA - CIVIC LX 4DR - 2HGFC2F58HH019274
+Start of the Earliest Term: 2023-08-16
+End of the Latest Term: 2024-08-16
+Operator: NOUSHIN KHERAD-BAKHSH
+DLN: K3364-60006-95911 Ontario
+Relationship to Policyholder: Self
+Year of Birth: 1969
+Vehicle #1: Other Operator
+Start of the Earliest Term: 2023-08-16
+End of the Latest Term: 2025-08-16
+Vehicle #1: 2024  LEXUS - NX350h 4DR AWD - 2T2GKCEZ6RC021516
 Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
-Vehicle Code: 025100
-Commuting Distance (One-Way / Annual): 0km / 5000km
-Vehicle Location: L6P
-Business Use: 0%
-Vehicle Use: Pleasure
+Vehicle Code: 853800
+Commuting Distance (One-Way / Annual): 10km / 8000km
+Vehicle Location: M9P
+Business Use: 37%
+Vehicle Use: Business
 Branding: None
-Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
-Gross Vehicle Weight: Not available
+Type of Use / Vehicle Class: 07 / Private Passenger Vehicle
+Gross Vehicle Weight: 2380kg
 Driving Record: 7
- 
-Vehicle #2: 2012  HONDA - CIVIC EX 4DR / CIVIC LX 4DR -
-2HGFB2F50CH020785
-Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
-Vehicle Code: 021006
-Commuting Distance (One-Way / Annual): 0km / 5000km
-Vehicle Location: L6P
-Business Use: 0%
-Vehicle Use: Pleasure
-Branding: None
-Type of Use / Vehicle Class: 01 / Private Passenger Vehicle
-Gross Vehicle Weight: Not available
-Driving Record: 7
-Page 2 of 4
+Page 2 of 7
 Policy #2
-2019-06-13 to 2020-06-13
-The Dominion of Canada General Insurance
-Company
-Cancelled - insured's request
-Policy #: APP3889665
-Effective Date: 2019-06-13
-Policyholder Name: Nadeen Thomas
-Expiry Date: 2021-06-13
-Policyholder Address: 5 Sea Drifter Cres,Brampton,ON L6P4A9
-Cancellation Date: 2020-06-13
-Number of Reported Operators: 1
-Number of Private Passenger Vehicles: 2
-Operator: THOMAS NADEEN
-DLN: T3594-57606-55804 Ontario
+2018-10-02 to 2024-10-02
+Certas Home and Auto Insurance Company
+*OVERLAP* 
+Active - driver deleted
+Policy #: XD117730
+Effective Date: 2018-10-02
+Policyholder Name: TAHMASEBIAN-MALAYERI SHAYADOKHT
+Expiry Date: 2025-10-02
+Policyholder Address: 7 MABELLE ETOBICOKE ON M9A0C9
+Cancellation Date: N/A
+Number of Reported Operators: 2
+Number of Private Passenger Vehicles: 1
+Operator: TAHMASEBIAN-MALAYERI NAVID
+DLN: T0168-58306-50618 Ontario
 Relationship to Policyholder: Self
 Year of Birth: 1965
-Vehicle #1: Principal Operator
-Vehicle #2: Principal Operator
-Start of the Earliest Term: 2019-06-13
-End of the Latest Term: 2020-06-13
-Vehicle #1: 2017  HONDA - CIVIC LX 4DR - 2HGFC2F58HH019274
+Start of the Earliest Term: 2018-10-02
+End of the Latest Term: 2024-10-02
+Operator: TAHMASEBIAN-MALAYERI SHAYADOKHT
+DLN: T0168-70409-85709 Ontario
+Relationship to Policyholder: Child
+Year of Birth: 1998
+Start of the Earliest Term: 2022-10-02
+End of the Latest Term: 2025-10-02
+Vehicle #1: 2018  HYUNDAI - SANTA FE SPORT 4DR AWD -
+5NMZUDLA3JH090317
 Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
-Vehicle Use: Commute
-Commuting Distance (One-Way / Annual): 3km / 10000km
-Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Vehicle Code: 158103
+Commuting Distance (One-Way / Annual): 10km / 8000km
+Vehicle Location: M9A
 Business Use: 0%
-Driving Record: 6
- 
-Vehicle #2: 2012  HONDA - CIVIC EX 4DR / CIVIC LX 4DR -
-2HGFB2F50CH020785
-Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
 Vehicle Use: Commute
-Commuting Distance (One-Way / Annual): 3km / 10000km
+Branding: None
 Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
-Business Use: 0%
+Gross Vehicle Weight: Not available
 Driving Record: 6
-Page 3 of 4
+Page 3 of 7
 Policy #3
-2016-06-13 to 2019-06-13
-The Wawanesa Mutual Insurance Company
+2010-10-25 to 2012-08-22
+State Farm Mutual Automobile Insurance
+Company
+*OVERLAP* 
 Cancelled - insured's request
-Policy #: ANC7511612
-Effective Date: 2015-06-13
-Policyholder Name: NADEEN THOMAS
-Expiry Date: 2020-06-13
-Policyholder Address: 5 SEA DRIFTER CRESBRAMPTON ON L6P4A9
-Cancellation Date: 2019-06-13
+Policy #: 0952620 A
+Effective Date: 2010-10-25
+Policyholder Name: NAVID TAHMASEBIAN
+Expiry Date: 2012-10-25
+Policyholder Address: 207-237 AUBURN DR,WATERLOO,ON N2K4G9
+Cancellation Date: 2012-08-22
 Number of Reported Operators: 1
 Number of Private Passenger Vehicles: 1
-Operator: THOMAS NADEEN
-DLN: T3594-57606-55804 Ontario
+Operator: TAHMASEBIAN-MALAYERI NAVID
+DLN: T0168-58306-50618 Ontario
 Relationship to Policyholder: NA
 Year of Birth: 1965
 Vehicle #1: Principal Operator
-Start of the Earliest Term: 2016-06-13
-End of the Latest Term: 2019-06-13
-Vehicle #1: 2012  HONDA - CIVIC EX 4DR / CIVIC LX 4DR -
-2HGFB2F50CH020785
+Vehicle #1: Principal Operator
+Start of the Earliest Term: 2010-10-25
+End of the Latest Term: 2012-08-22
+Vehicle #1: 2010  TOYOTA - CAMRY LE 4DR / CAMRY XLE 4DR / CAMRY SE
+4DR - 4T1BF3EK0AU558150
 Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
 Vehicle Use: Commute
-Commuting Distance (One-Way / Annual): 3km / 10000km
+Commuting Distance (One-Way / Annual): Not available / Not available
 Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
-Business Use: 0%
+Business Use: Not available
 Driving Record: 6
-Page 4 of 4
+Page 4 of 7
+Policy #4
+2007-10-25 to 2011-04-25
+State Farm Mutual Automobile Insurance
+Company
+*OVERLAP* 
+Expired
+Policy #: 0952620 E
+Effective Date: 2007-10-25
+Policyholder Name: NAVID TAHMASEBIAN
+Expiry Date: 2011-04-25
+Policyholder Address: 448 BRIGANTINE DR,WATERLOO,ON N2K4A2
+Cancellation Date: N/A
+Number of Reported Operators: 1
+Number of Private Passenger Vehicles: 2
+Operator: TAHMASEBIAN-MALAYERI NAVID
+DLN: T0168-58306-50618 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1965
+Vehicle #1: Principal Operator
+Vehicle #1: Principal Operator
+Vehicle #2: Principal Operator
+Start of the Earliest Term: 2007-10-25
+End of the Latest Term: 2011-04-25
+Vehicle #1: 2010  TOYOTA - CAMRY LE 4DR / CAMRY XLE 4DR / CAMRY SE
+4DR - 4T1BF3EK0AU558150
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): Not available / Not available
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: Not available
+Driving Record: 6
+ 
+Vehicle #2: 2007  TOYOTA - CAMRY CE 4DR / CAMRY LE 4DR / CAMRY XLE
+4DR / CAMRY SE 4DR - 4T1BE46K87U079135
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): Not available / Not available
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: Not available
+Driving Record: 6
+Page 5 of 7
+Policy #5
+2006-05-27 to 2008-05-27
+Scottish & York Insurance Co. Limited
+*OVERLAP* 
+Expired
+Policy #: 42896109304
+Effective Date: 2006-05-27
+Policyholder Name: NAVID TAHMASEBIAN
+Expiry Date: 2008-05-27
+Policyholder Address: 448 BRIGANTINE DR WATERLOO ON N2K4A2
+Cancellation Date: N/A
+Number of Reported Operators: 1
+Number of Private Passenger Vehicles: 1
+Operator: TAHMASEBIAN-MALAYERI NAVID
+DLN: T0168-58306-50618 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1965
+Vehicle #1: Principal Operator
+Start of the Earliest Term: 2006-05-27
+End of the Latest Term: 2008-05-27
+Vehicle #1: 2007  TOYOTA - CAMRY CE 4DR / CAMRY LE 4DR / CAMRY XLE
+4DR / CAMRY SE 4DR - 4T1BE46K87U079135
+Coverage: AB, AP, TP-BI, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): Not available / Not available
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: Not available
+Driving Record: 2
+Page 6 of 7
+Policy #6
+2004-05-27 to 2005-05-27
+AVIVA General Insurance Company
+Cancelled - insured's request
+Policy #: 01673284NONPL1
+Effective Date: 2004-05-27
+Policyholder Name: Navid Tahmasebian
+Expiry Date: 2007-05-27
+Policyholder Address: 448 Brigantine Dr,Waterloo,ON N2K4A2
+Cancellation Date: 2005-05-27
+Number of Reported Operators: 1
+Number of Private Passenger Vehicles: 1
+Operator: TAHMASEBIAN-MALAYERI NAVID
+DLN: T0168-58306-50618 Ontario
+Relationship to Policyholder: NA
+Year of Birth: 1965
+Vehicle #1: Principal Operator
+Vehicle #1: Principal Operator
+Vehicle #1: Principal Operator
+Vehicle #1: Principal Operator
+Vehicle #1: Principal Operator
+Vehicle #1: Principal Operator
+Vehicle #1: Principal Operator
+Start of the Earliest Term: 2004-05-27
+End of the Latest Term: 2005-05-27
+Vehicle #1: 2005  TOYOTA - COROLLA CE 4DR / COROLLA LE 4DR /
+COROLLA S 4DR - 2T1BR32E95C842325
+Coverage: AB, TP-BI, CL, CM, DCPD, TP-PD
+Vehicle Use: Commute
+Commuting Distance (One-Way / Annual): Not available / Not available
+Type of Use / Vehicle Class: 02 / Private Passenger Vehicle
+Business Use: Not available
+Driving Record: 1
+Page 7 of 7

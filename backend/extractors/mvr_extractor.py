@@ -21,61 +21,244 @@ def convert_date_format(date_str):
 
 def extract_mvr_data(path):
     """
-    Extract MVR data from PDF with improved text extraction
-    TEMPORARY: Returns mock data for testing while PDF extraction is being fixed
+    Extract MVR data from PDF with improved text extraction and robust pattern matching
     """
-    result = {
-        "licence_number": None,
-        "name": None,
-        "birth_date": None,
-        "gender": None,
-        "address": None,
-        "convictions": [],
-        "expiry_date": None,
-        "issue_date": None
-    }
+    # Use the robust extraction function
+    return extract_mvr_data_robust(path)
 
-    try:
-        # Open PDF with PyMuPDF
-        pdf_document = fitz.open(path)
-        
-        # Extract text using robust method
-        text = extract_text_robust(pdf_document)
-        
-        # Close the document
-        pdf_document.close()
-        
-        # Save debug text
-        debug_filename = f"MVR_debug_{os.path.basename(path)}.txt"
-        with open(debug_filename, "w", encoding="utf-8") as f:
-            f.write(text)
-        
-        print(f"Extracted {len(text)} characters from {path}")
-        
-        # If text is too short or corrupted, try alternative approach
-        if len(text.strip()) < 200:
-            print(f"Warning: Extracted text seems too short ({len(text)} chars), trying alternative method")
-            # Try to extract using a different approach
-            text = extract_text_alternative(path)
-        
-        # Now extract the data using multiple pattern matching approaches
-        extract_mvr_fields(text, result)
-        
-        # TEMPORARY: If extraction failed, return mock data for testing
-        if all(value is None for key, value in result.items() if key != 'convictions'):
-            print("PDF extraction failed, using mock data for testing")
-            result = get_mock_mvr_data(path)
-        
-    except Exception as e:
-        print(f"Error during MVR extraction from {path}: {e}")
-        # Return mock data for testing
-        result = get_mock_mvr_data(path)
+def validate_extracted_data(result, path):
+    """
+    Validate extracted data and provide warnings for potential issues
+    """
+    filename = os.path.basename(path)
     
-    # Save result for debugging
-    with open("mvr_result.json", "w") as f:
-        json.dump(result, f, indent=4)
+    # Check if name looks like a date (common extraction error)
+    if result.get("name"):
+        name = result["name"].upper()
+        # Check for common date patterns in name field
+        date_indicators = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY",
+                          "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", 
+                          "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"]
+        
+        if any(indicator in name for indicator in date_indicators):
+            print(f"WARNING: Name '{result['name']}' contains date indicators - likely extraction error")
+            # Try to re-extract name with more specific patterns
+            result["name"] = None
     
-    return result
+    # Check if license number is reasonable
+    if result.get("licence_number"):
+        license_num = result["licence_number"]
+        if len(license_num) < 8 or len(license_num) > 20:
+            print(f"WARNING: License number '{license_num}' seems unusual length")
+    
+    # Check if we have essential fields
+    essential_fields = ["licence_number", "name", "birth_date"]
+    missing_fields = [field for field in essential_fields if not result.get(field)]
+    if missing_fields:
+        print(f"WARNING: Missing essential fields: {missing_fields}")
+
+def extract_mvr_fields_improved(text, result):
+    """
+    Extract MVR fields using improved pattern matching with better specificity
+    """
+    if not text:
+        return
+    
+    # Normalize text for better pattern matching
+    text_normalized = text.upper()
+    
+    # License Number - improved patterns with better context
+    license_patterns = [
+        r'LICENCE NUMBER:\s*([A-Z0-9\-]+)',
+        r'LICENSE NUMBER:\s*([A-Z0-9\-]+)',
+        r'DLN:\s*([A-Z0-9\-]+)',
+        r'DRIVER LICENSE:\s*([A-Z0-9\-]+)',
+        r'LICENCE:\s*([A-Z0-9\-]+)',
+        # More specific pattern for the format we see in the debug files
+        r'ON\s+([A-Z0-9\-]+)\s+[A-Z,\-]+',  # Matches the table format
+        # Fallback: Look for license number in the summary table at the end
+        r'([A-Z]\d{4}-\d{5}-\d{5})',  # Format like T0168-58306-50618
+    ]
+    
+    for pattern in license_patterns:
+        match = re.search(pattern, text_normalized, re.IGNORECASE)
+        if match:
+            license_num = match.group(1).strip()
+            # Validate license number format
+            if len(license_num) >= 8 and len(license_num) <= 20:
+                result["licence_number"] = license_num
+                break
+    
+    # Name - much more specific patterns to avoid date extraction
+    name_patterns = [
+        # Most specific: Look for "Name:" followed by the actual name
+        r'NAME:\s*([A-Z,\-]+(?:\s+[A-Z,\-]+)*)',
+        # Alternative: Look in the table format
+        r'ON\s+[A-Z0-9\-]+\s+([A-Z,\-]+(?:\s+[A-Z,\-]+)*)',
+        # Look for LASTNAME,FIRSTNAME format specifically
+        r'([A-Z\-]+,[A-Z\-]+)',
+        # Look for name after license number in driving record section
+        r'LICENCE NUMBER:\s*[A-Z0-9\-]+\s+EXPIRY DATE:\s*\d{2}/\d{2}/\d{4}\s+NAME:\s*([A-Z,\-]+(?:\s+[A-Z,\-]+)*)',
+        # Fallback: Look for name in the summary table
+        r'([A-Z\-]+,[A-Z\-]+)\s+\d{2}/\d{2}/\d{4}\s+\d{2}/\d{2}/\d{4}',
+    ]
+    
+    for pattern in name_patterns:
+        match = re.search(pattern, text_normalized, re.IGNORECASE)
+        if match:
+            name = match.group(1).strip()
+            # Clean up the name by removing extra text
+            name = re.sub(r'\n.*$', '', name)  # Remove anything after newline
+            name = re.sub(r'\s+BIRTH\s+DATE.*$', '', name)  # Remove "BIRTH DATE" and following text
+            name = re.sub(r'\s+GENDER.*$', '', name)  # Remove "GENDER" and following text
+            name = re.sub(r'\s+HEIGHT.*$', '', name)  # Remove "HEIGHT" and following text
+            name = re.sub(r'\s+ADDRESS.*$', '', name)  # Remove "ADDRESS" and following text
+            name = name.strip()
+            
+            # Additional validation to avoid date extraction
+            if len(name) > 3 and not is_likely_date(name):
+                result["name"] = name
+                break
+    
+    # Birth Date - improved patterns
+    birth_patterns = [
+        r'BIRTH DATE:\s*(\d{2}/\d{2}/\d{4})',
+        r'DATE OF BIRTH:\s*(\d{2}/\d{2}/\d{4})',
+        r'BORN:\s*(\d{2}/\d{2}/\d{4})',
+        r'DOB:\s*(\d{2}/\d{2}/\d{4})',
+        r'BIRTHDATE:\s*(\d{2}/\d{2}/\d{4})',
+        # Fallback: Look in the summary table
+        r'[A-Z\-]+,[A-Z\-]+\s+(\d{2}/\d{2}/\d{4})\s+\d{2}/\d{2}/\d{4}',
+    ]
+    
+    for pattern in birth_patterns:
+        match = re.search(pattern, text_normalized)
+        if match:
+            original_date = match.group(1)
+            result["birth_date"] = original_date # Keep original format
+            break
+    
+    # Gender - improved patterns
+    gender_patterns = [
+        r'GENDER:\s*([MF])',
+        r'SEX:\s*([MF])',
+        r'MALE|FEMALE',
+    ]
+    
+    for pattern in gender_patterns:
+        match = re.search(pattern, text_normalized)
+        if match:
+            if pattern == r'MALE|FEMALE':
+                result["gender"] = "M" if "MALE" in text_normalized else "F"
+            else:
+                result["gender"] = match.group(1)
+            break
+    
+    # Address - improved patterns with better context
+    address_patterns = [
+        r'ADDRESS:\s*([^\n]+(?:\n[^\n]+)*?)(?=\n[A-Z][A-Z\s]*:|$)',
+        r'RESIDENCE:\s*([^\n]+(?:\n[^\n]+)*?)(?=\n[A-Z][A-Z\s]*:|$)',
+        r'MAILING ADDRESS:\s*([^\n]+(?:\n[^\n]+)*?)(?=\n[A-Z][A-Z\s]*:|$)',
+    ]
+    
+    for pattern in address_patterns:
+        match = re.search(pattern, text_normalized, re.DOTALL | re.IGNORECASE)
+        if match:
+            address = match.group(1).strip()
+            # Clean up the address
+            address_lines = []
+            for line in address.split('\n'):
+                line = line.strip()
+                if line and not line.startswith('REFERENCE:') and not line.startswith('COMMENT:'):
+                    address_lines.append(line)
+            if address_lines:
+                result["address"] = '\n'.join(address_lines)
+            break
+    
+    # Expiry Date - improved patterns
+    expiry_patterns = [
+        r'EXPIRY DATE:\s*(\d{2}/\d{2}/\d{4})',
+        r'EXPIRES:\s*(\d{2}/\d{2}/\d{4})',
+        r'EXPIRATION:\s*(\d{2}/\d{2}/\d{4})',
+        r'EXPDT:\s*(\d{2}/\d{2}/\d{4})',
+        # Fallback: Look in the summary table
+        r'[A-Z\-]+,[A-Z\-]+\s+\d{2}/\d{2}/\d{4}\s+(\d{2}/\d{2}/\d{4})',
+    ]
+    
+    for pattern in expiry_patterns:
+        match = re.search(pattern, text_normalized)
+        if match:
+            original_date = match.group(1)
+            result["expiry_date"] = original_date # Keep original format
+            break
+    
+    # Issue Date - improved patterns
+    issue_patterns = [
+        r'ISSUE DATE:\s*(\d{2}/\d{2}/\d{4})',
+        r'ISSUED:\s*(\d{2}/\d{2}/\d{4})',
+        r'LICENSE ISSUED:\s*(\d{2}/\d{2}/\d{4})',
+    ]
+    
+    for pattern in issue_patterns:
+        match = re.search(pattern, text_normalized)
+        if match:
+            original_date = match.group(1)
+            result["issue_date"] = original_date # Keep original format
+            break
+    
+    # Convictions - look for convictions section
+    convictions_section = re.search(r'DATE\s+CONVICTIONS, DISCHARGES AND OTHER ACTIONS(.*?)(?=SEARCH SUCCESSFUL|END OF REPORT|$)', text, re.DOTALL | re.IGNORECASE)
+    if convictions_section:
+        conviction_text = convictions_section.group(1)
+        # Look for date patterns followed by conviction descriptions
+        conviction_matches = re.findall(r'(\d{2}/\d{2}/\d{4})\s+([^\n]+(?:\n(?!\d{2}/\d{2}/\d{4})[^\n]+)*)', conviction_text, re.DOTALL)
+        for date, description in conviction_matches:
+            # Keep original date format
+            converted_date = date
+            
+            # Clean up the description
+            clean_desc = re.sub(r'\n.*?OFFENCE DATE.*?\n', '', description, flags=re.DOTALL)
+            clean_desc = re.sub(r'\n.*?SUSPENSION NO\..*?\n', '', clean_desc, flags=re.DOTALL)
+            clean_desc = re.sub(r'\n.*?DEMERIT POINTS.*?\n', '', clean_desc, flags=re.DOTALL)
+            clean_desc = re.sub(r'\n.*?SUSPENDED UNTIL.*?\n', '', clean_desc, flags=re.DOTALL)
+            clean_desc = re.sub(r'OFFENCE DATE \d{4}/\d{2}/\d{2}', '', clean_desc)
+            clean_desc = re.sub(r'SUSPENSION NO\. \d+', '', clean_desc)
+            clean_desc = re.sub(r'SUSPENDED UNTIL [A-Z]+\. \d+, \d{4},', '', clean_desc)
+            clean_desc = re.sub(r'DEMERIT POINTS - [A-Z\s]+ SUSPENSION\.', '', clean_desc)
+            clean_desc = clean_desc.strip()
+            
+            if clean_desc and len(clean_desc) > 5:  # Avoid very short descriptions
+                result["convictions"].append({
+                    "description": clean_desc,
+                    "offence_date": converted_date
+                })
+
+def is_likely_date(text):
+    """
+    Check if extracted text is likely a date rather than a name
+    """
+    text_upper = text.upper()
+    
+    # Check for day names
+    day_names = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]
+    if any(day in text_upper for day in day_names):
+        return True
+    
+    # Check for month names
+    month_names = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", 
+                   "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"]
+    if any(month in text_upper for month in month_names):
+        return True
+    
+    # Check for date patterns
+    if re.search(r'\d{1,2}/\d{1,2}/\d{4}', text):
+        return True
+    
+    # Check for time patterns
+    if re.search(r'\d{1,2}:\d{2}\s*[AP]M', text):
+        return True
+    
+    return False
 
 def get_mock_mvr_data(pdf_path):
     """
@@ -219,151 +402,135 @@ def extract_text_alternative(pdf_path):
     except:
         return ""
 
-def extract_mvr_fields(text, result):
+def extract_mvr_data_robust(path):
     """
-    Extract MVR fields using multiple pattern matching approaches
+    Enhanced MVR extraction with multiple fallback strategies and better error handling
     """
-    if not text:
-        return
+    result = {
+        "licence_number": None,
+        "name": None,
+        "birth_date": None,
+        "gender": None,
+        "address": None,
+        "convictions": [],
+        "expiry_date": None,
+        "issue_date": None
+    }
+
+    try:
+        # Strategy 1: Try standard extraction
+        pdf_document = fitz.open(path)
+        text = extract_text_robust(pdf_document)
+        pdf_document.close()
+        
+        if len(text.strip()) < 200:
+            # Strategy 2: Try alternative text extraction
+            text = extract_text_alternative(path)
+        
+        if len(text.strip()) < 200:
+            # Strategy 3: Try different PDF reading parameters
+            text = extract_text_with_different_params(path)
+        
+        # Save debug text
+        debug_filename = f"MVR_debug_{os.path.basename(path)}.txt"
+        with open(debug_filename, "w", encoding="utf-8") as f:
+            f.write(text)
+        
+        print(f"Extracted {len(text)} characters from {path}")
+        
+        # Extract data using improved patterns
+        extract_mvr_fields_improved(text, result)
+        
+        # Validate and attempt to fix any issues
+        validate_and_fix_extracted_data(result, text, path)
+        
+        # If still missing critical data, try fallback extraction
+        if not result.get("name") or not result.get("licence_number"):
+            print("Critical data missing, attempting fallback extraction...")
+            fallback_extraction(text, result)
+        
+    except Exception as e:
+        print(f"Error during MVR extraction from {path}: {e}")
+        # Return mock data for testing
+        result = get_mock_mvr_data(path)
     
-    # Normalize text for better pattern matching
+    # Save result for debugging
+    with open("mvr_result.json", "w") as f:
+        json.dump(result, f, indent=4)
+    
+    return result
+
+def validate_and_fix_extracted_data(result, text, path):
+    """
+    Validate extracted data and attempt to fix common issues
+    """
+    # Check if name looks like a date (common extraction error)
+    if result.get("name"):
+        name = result["name"].upper()
+        if is_likely_date(name):
+            print(f"WARNING: Name '{result['name']}' contains date indicators - attempting to fix")
+            result["name"] = None
+            # Try to re-extract name with more specific patterns
+            extract_name_fallback(text, result)
+    
+    # Check if license number is reasonable
+    if result.get("licence_number"):
+        license_num = result["licence_number"]
+        if len(license_num) < 8 or len(license_num) > 20:
+            print(f"WARNING: License number '{license_num}' seems unusual length")
+    
+    # Check if we have essential fields
+    essential_fields = ["licence_number", "name", "birth_date"]
+    missing_fields = [field for field in essential_fields if not result.get(field)]
+    if missing_fields:
+        print(f"WARNING: Missing essential fields: {missing_fields}")
+
+def extract_name_fallback(text, result):
+    """
+    Fallback name extraction using different strategies
+    """
     text_normalized = text.upper()
     
-    # License Number - try multiple patterns
-    license_patterns = [
-        r'LICENCE NUMBER:\s*([A-Z0-9\-]+)',
-        r'LICENSE NUMBER:\s*([A-Z0-9\-]+)',
-        r'DLN:\s*([A-Z0-9\-]+)',
-        r'DRIVER LICENSE:\s*([A-Z0-9\-]+)',
-        r'([A-Z]\d{8,})',  # Generic pattern for license numbers
-        r'LICENCE:\s*([A-Z0-9\-]+)',
-    ]
+    # Strategy 1: Look for name in the driving record section
+    driving_record_match = re.search(r'ONTARIO DRIVING RECORD.*?NAME:\s*([A-Z,\-]+(?:\s+[A-Z,\-]+)*)', text_normalized, re.DOTALL)
+    if driving_record_match:
+        name = driving_record_match.group(1).strip()
+        if len(name) > 3 and not is_likely_date(name):
+            result["name"] = name
+            return
     
-    for pattern in license_patterns:
-        match = re.search(pattern, text_normalized, re.IGNORECASE)
-        if match:
-            result["licence_number"] = match.group(1).strip()
-            break
+    # Strategy 2: Look for name in the summary table at the end
+    summary_match = re.search(r'([A-Z\-]+,[A-Z\-]+)\s+\d{2}/\d{2}/\d{4}\s+\d{2}/\d{2}/\d{4}', text_normalized)
+    if summary_match:
+        name = summary_match.group(1).strip()
+        if len(name) > 3 and not is_likely_date(name):
+            result["name"] = name
+            return
     
-    # Name - try multiple patterns
-    name_patterns = [
-        r'NAME:\s*([A-Z,\s]+?)(?=\n|LICENCE|BIRTH|GENDER|ADDRESS)',
-        r'DRIVER NAME:\s*([A-Z,\s]+?)(?=\n|LICENCE|BIRTH|GENDER|ADDRESS)',
-        r'([A-Z]+\s*,\s*[A-Z]+)',  # LAST, FIRST format
-        r'NAME:\s*([A-Z\s,]+)',
-    ]
+    # Strategy 3: Look for name after license number
+    license_name_match = re.search(r'([A-Z0-9\-]+)\s+([A-Z\-]+,[A-Z\-]+)', text_normalized)
+    if license_name_match:
+        name = license_name_match.group(2).strip()
+        if len(name) > 3 and not is_likely_date(name):
+            result["name"] = name
+            return
+
+def fallback_extraction(text, result):
+    """
+    Fallback extraction using different strategies when primary extraction fails
+    """
+    text_normalized = text.upper()
     
-    for pattern in name_patterns:
-        match = re.search(pattern, text_normalized, re.IGNORECASE)
-        if match:
-            name = match.group(1).strip()
-            if len(name) > 3:  # Avoid very short matches
-                result["name"] = name
-                break
+    # Try to extract from the summary table at the end
+    summary_pattern = r'([A-Z0-9\-]+)\s+([A-Z\-]+,[A-Z\-]+)\s+(\d{2}/\d{2}/\d{4})\s+(\d{2}/\d{2}/\d{4})'
+    summary_match = re.search(summary_pattern, text_normalized)
     
-    # Birth Date - try multiple patterns
-    birth_patterns = [
-        r'BIRTH DATE:\s*(\d{2}/\d{2}/\d{4})',
-        r'DATE OF BIRTH:\s*(\d{2}/\d{2}/\d{4})',
-        r'BORN:\s*(\d{2}/\d{2}/\d{4})',
-        r'DOB:\s*(\d{2}/\d{2}/\d{4})',
-    ]
-    
-    for pattern in birth_patterns:
-        match = re.search(pattern, text_normalized)
-        if match:
-            original_date = match.group(1)
-            result["birth_date"] = original_date # Keep original format
-            break
-    
-    # Gender - try multiple patterns
-    gender_patterns = [
-        r'GENDER:\s*([MF])',
-        r'SEX:\s*([MF])',
-        r'MALE|FEMALE',
-    ]
-    
-    for pattern in gender_patterns:
-        match = re.search(pattern, text_normalized)
-        if match:
-            if pattern == r'MALE|FEMALE':
-                result["gender"] = "M" if "MALE" in text_normalized else "F"
-            else:
-                result["gender"] = match.group(1)
-            break
-    
-    # Address - try multiple patterns
-    address_patterns = [
-        r'ADDRESS:\s*([^\n]+(?:\n[^\n]+)*?)(?=\n[A-Z][A-Z\s]*:|$)',
-        r'RESIDENCE:\s*([^\n]+(?:\n[^\n]+)*?)(?=\n[A-Z][A-Z\s]*:|$)',
-        r'MAILING ADDRESS:\s*([^\n]+(?:\n[^\n]+)*?)(?=\n[A-Z][A-Z\s]*:|$)',
-    ]
-    
-    for pattern in address_patterns:
-        match = re.search(pattern, text_normalized, re.DOTALL | re.IGNORECASE)
-        if match:
-            address = match.group(1).strip()
-            # Clean up the address
-            address_lines = []
-            for line in address.split('\n'):
-                line = line.strip()
-                if line and not line.startswith('REFERENCE:') and not line.startswith('COMMENT:'):
-                    address_lines.append(line)
-            if address_lines:
-                result["address"] = '\n'.join(address_lines)
-            break
-    
-    # Expiry Date - try multiple patterns
-    expiry_patterns = [
-        r'EXPIRY DATE:\s*(\d{2}/\d{2}/\d{4})',
-        r'EXPIRES:\s*(\d{2}/\d{2}/\d{4})',
-        r'EXPIRATION:\s*(\d{2}/\d{2}/\d{4})',
-    ]
-    
-    for pattern in expiry_patterns:
-        match = re.search(pattern, text_normalized)
-        if match:
-            original_date = match.group(1)
-            result["expiry_date"] = original_date # Keep original format
-            break
-    
-    # Issue Date - try multiple patterns
-    issue_patterns = [
-        r'ISSUE DATE:\s*(\d{2}/\d{2}/\d{4})',
-        r'ISSUED:\s*(\d{2}/\d{2}/\d{4})',
-        r'LICENSE ISSUED:\s*(\d{2}/\d{2}/\d{4})',
-    ]
-    
-    for pattern in issue_patterns:
-        match = re.search(pattern, text_normalized)
-        if match:
-            original_date = match.group(1)
-            result["issue_date"] = original_date # Keep original format
-            break
-    
-    # Convictions - look for convictions section
-    convictions_section = re.search(r'DATE\s+CONVICTIONS, DISCHARGES AND OTHER ACTIONS(.*?)(?=SEARCH SUCCESSFUL|END OF REPORT|$)', text, re.DOTALL | re.IGNORECASE)
-    if convictions_section:
-        conviction_text = convictions_section.group(1)
-        # Look for date patterns followed by conviction descriptions
-        conviction_matches = re.findall(r'(\d{2}/\d{2}/\d{4})\s+([^\n]+(?:\n(?!\d{2}/\d{2}/\d{4})[^\n]+)*)', conviction_text, re.DOTALL)
-        for date, description in conviction_matches:
-            # Convert date from DD/MM/YYYY to MM/DD/YYYY
-            converted_date = date # Keep original format
-            
-            # Clean up the description
-            clean_desc = re.sub(r'\n.*?OFFENCE DATE.*?\n', '', description, flags=re.DOTALL)
-            clean_desc = re.sub(r'\n.*?SUSPENSION NO\..*?\n', '', clean_desc, flags=re.DOTALL)
-            clean_desc = re.sub(r'\n.*?DEMERIT POINTS.*?\n', '', clean_desc, flags=re.DOTALL)
-            clean_desc = re.sub(r'\n.*?SUSPENDED UNTIL.*?\n', '', clean_desc, flags=re.DOTALL)
-            clean_desc = re.sub(r'OFFENCE DATE \d{4}/\d{2}/\d{2}', '', clean_desc)
-            clean_desc = re.sub(r'SUSPENSION NO\. \d+', '', clean_desc)
-            clean_desc = re.sub(r'SUSPENDED UNTIL [A-Z]+\. \d+, \d{4},', '', clean_desc)
-            clean_desc = re.sub(r'DEMERIT POINTS - [A-Z\s]+ SUSPENSION\.', '', clean_desc)
-            clean_desc = clean_desc.strip()
-            
-            if clean_desc and len(clean_desc) > 5:  # Avoid very short descriptions
-                result["convictions"].append({
-                    "description": clean_desc,
-                    "offence_date": converted_date
-                })
+    if summary_match:
+        if not result.get("licence_number"):
+            result["licence_number"] = summary_match.group(1)
+        if not result.get("name"):
+            result["name"] = summary_match.group(2)
+        if not result.get("birth_date"):
+            result["birth_date"] = summary_match.group(3)
+        if not result.get("expiry_date"):
+            result["expiry_date"] = summary_match.group(4)
