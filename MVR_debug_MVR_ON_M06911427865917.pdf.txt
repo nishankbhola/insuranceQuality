@@ -1,59 +1,70 @@
 MVR Abstracts
-Friday, April 11, 2025 09:44 AM
+Thursday, July 24, 2025 04:49 PM
+Duplicate request. Abstract found.
+The request was submitted by Nina Rusanova on 23/07/2025
+Username nrusanova@westlandinsurance.ca
 Province
 Licence
+Name
+Birthdate
+Reference
+Request Date
 Release Date
-Messages
+ 
 ON
-F73305777785612
-11-04-2025
-Receipt Number : 579590379
-Totals:   1
-Abstracts:   1
-Errors:   0
+M06911427865917
+MARTINS,CRISTINA,OLIVEIRA
+17/09/1986
+nb
+23/07/2025
+23/07/2025
+ 
 ONTARIO Driving Record
 ***Number of Convictions: 0 ***
 Licence Number:
-F7330-57777-85612
+M0691-14278-65917
 Expiry Date:
-12/06/2026
+17/09/2027
+XREF From:
+M2128-14278-65917
 Name:
-FREITAS,NANCY,ROCHA
+MARTINS,CRISTINA,OLIVEIRA
 Birth Date:
-12/06/1978
+17/09/1986
 Gender:
 F
 Height:
-168 CM
+170 CM
 Address:
-676 LANSDOWNE AVE
-TORONTO, ON
-M6H 3Y8
+79 WALLASEY AVE
+NORTH YORK, ON
+M9M 1E3
 Reference:
+nb
  
  
 Comment:
  
  
 Demerit Points: 00
-Class: G***
+Class: GM**
 Conditions: */N
 Status:
 LICENCED
 Issue Date:
-27/11/2000
+18/09/2002
 Requested By:
-Bhola, Nishank
+Rusanova, Nina
 User ID:
-nishankb@vieirainsurance.com
+nrusanova@westlandinsurance.ca
 Requested On:
-11-04-2025
+23/07/2025
 Reply Date:
-11-04-2025
+23/07/2025
 Print Date:
-11-04-2025
+23/07/2025
 Reprint Date:
-11-04-2025
+23/07/2025
 SEARCH SUCCESSFUL - NO PUBLIC RECORD
 *** END OF REPORT / FIN DU RAPPORT ***
 Licence Number
@@ -62,15 +73,14 @@ BirDt
 ExpDt
 Class
 Pt
-F7330-57777-85612
-11-04-2025
-12/06/1978
-12/06/2026
-G***
+M0691-14278-65917
+23/07/2025
+17/09/1986
+17/09/2027
+GM**
 00
 *** END OF REPORT / FIN DU RAPPORT ***
-Receipt Number : 579590379
-*** END OF REPORT ***
+Receipt Number : 585868117
 © CGI Inc.
 Use of this site signifies your agreement to the terms of use.
 L’utilisation de ce site indique que vous acceptez les termes d’utilisation.

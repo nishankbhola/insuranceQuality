@@ -1,8 +1,0 @@
-Defaulting to user installation because normal site-packages is not writeable
-Collecting pytesseract
-  Using cached pytesseract-0.3.13-py3-none-any.whl.metadata (11 kB)
-Requirement already satisfied: packaging>=21.3 in c:\users\nisha\appdata\local\packages\pythonsoftwarefoundation.python.3.12_qbz5n2kfra8p0\localcache\local-packages\python312\site-packages (from pytesseract) (24.2)
-Requirement already satisfied: Pillow>=8.0.0 in c:\users\nisha\appdata\local\packages\pythonsoftwarefoundation.python.3.12_qbz5n2kfra8p0\localcache\local-packages\python312\site-packages (from pytesseract) (11.3.0)
-Using cached pytesseract-0.3.13-py3-none-any.whl (14 kB)
-Installing collected packages: pytesseract
-Successfully installed pytesseract-0.3.13

@@ -1,0 +1,7 @@
+deploy.bat
+
+ssh root@31.97.113.225 "journalctl -u quality-app -f"
+
+ssh root@31.97.113.225 "journalctl -u quality-app -n 50"
+
+SuccessInsurance007#

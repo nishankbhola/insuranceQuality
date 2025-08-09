@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, FileText, Download, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { API_ENDPOINTS } from '../config';
 
 function ApplicationQC() {
   const [file, setFile] = useState(null);
@@ -56,7 +57,7 @@ function ApplicationQC() {
       const formData = new FormData();
       formData.append('application', file);
 
-      const response = await fetch('http://localhost:8000/application-qc', {
+      const response = await fetch(API_ENDPOINTS.applicationQC, {
         method: 'POST',
         body: formData,
       });

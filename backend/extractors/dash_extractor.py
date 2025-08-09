@@ -26,6 +26,7 @@ def extract_dash_data(path):
         "address": None,
         "gender": None,
         "marital_status": None,
+        "report_date": None,  # New field for Report Date
         "policies": [],
         "claims": [],
         "policy_gaps": []  # New field for tracking policy gaps
@@ -44,8 +45,10 @@ def extract_dash_data(path):
 
     # Name - Look for the main driver name after DRIVER REPORT
     name_patterns = [
-        r'DRIVER REPORT\s*\n([A-Za-z\s]+?)\s*\n',
-        r'DRIVER REPORT\s*\n([A-Za-z\s]+)\s+DLN:'
+        r'DRIVER REPORT\s*\n([A-Za-z\s\-]+?)\s*\n',
+        r'DRIVER REPORT\s*\n([A-Za-z\s\-]+)\s+DLN:',
+        r'DRIVER REPORT\s*\n([A-Za-z\s\-]+?)(?=\s*\n\s*DLN:)',
+        r'DRIVER REPORT\s*\n([A-Za-z\s\-]+?)(?=\s*\n\s*Date of Birth:)'
     ]
     for pattern in name_patterns:
         name_match = re.search(pattern, text)
@@ -57,6 +60,18 @@ def extract_dash_data(path):
     dob_match = re.search(r'Date of Birth:\s*(\d{4}-\d{2}-\d{2})', text)
     if dob_match:
         result["date_of_birth"] = dob_match.group(1)
+
+    # Report Date - extract the date the DASH report was generated
+    report_date_patterns = [
+        r'Report Date:\s*(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s+[A-Z]{3})',
+        r'Report Date:\s*(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})',
+        r'Report Date:\s*(\d{4}-\d{2}-\d{2})'
+    ]
+    for pattern in report_date_patterns:
+        report_date_match = re.search(pattern, text)
+        if report_date_match:
+            result["report_date"] = report_date_match.group(1)
+            break
 
     # Address - more specific pattern
     address_patterns = [

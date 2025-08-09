@@ -68,6 +68,7 @@ def extract_mvr_fields_improved(text, result):
     text_normalized = text.upper()
     
     # License Number - improved patterns with better context
+    # Priority 1: Actual License Number field (this is the primary license number)
     license_patterns = [
         r'LICENCE NUMBER:\s*([A-Z0-9\-]+)',
         r'LICENSE NUMBER:\s*([A-Z0-9\-]+)',
@@ -89,7 +90,22 @@ def extract_mvr_fields_improved(text, result):
                 result["licence_number"] = license_num
                 break
     
-    # Name - much more specific patterns to avoid date extraction
+    # Priority 2: If no actual license number found, try XREF From field as fallback
+    if not result.get("licence_number"):
+        xref_patterns = [
+            r'XREF FROM:\s*([A-Z0-9\-]+)',
+            r'XREF:\s*([A-Z0-9\-]+)',
+        ]
+        
+        for pattern in xref_patterns:
+            match = re.search(pattern, text_normalized, re.IGNORECASE)
+            if match:
+                xref_num = match.group(1).strip()
+                if len(xref_num) >= 8 and len(xref_num) <= 20:
+                    result["licence_number"] = xref_num
+                    break
+    
+        # Name - much more specific patterns to avoid date extraction
     name_patterns = [
         # Most specific: Look for "Name:" followed by the actual name
         r'NAME:\s*([A-Z,\-]+(?:\s+[A-Z,\-]+)*)',
@@ -204,6 +220,48 @@ def extract_mvr_fields_improved(text, result):
         if match:
             original_date = match.group(1)
             result["issue_date"] = original_date # Keep original format
+            break
+    
+    # Status - extract license status
+    status_patterns = [
+        r'STATUS:\s*([A-Z]+)',
+        r'LICENSE STATUS:\s*([A-Z]+)',
+        r'DRIVER STATUS:\s*([A-Z]+)',
+    ]
+    
+    for pattern in status_patterns:
+        match = re.search(pattern, text_normalized)
+        if match:
+            status = match.group(1).strip()
+            result["status"] = status
+            break
+    
+    # Release Date - extract the date the MVR report was released/generated
+    release_date_patterns = [
+        r'RELEASE DATE:\s*(\d{2}/\d{2}/\d{4})',
+        r'RELEASE DATE:\s*(\d{2}-\d{2}-\d{4})',
+        r'RELEASED:\s*(\d{2}/\d{2}/\d{4})',
+        r'RELEASED:\s*(\d{2}-\d{2}-\d{4})',
+        r'REPORT DATE:\s*(\d{2}/\d{2}/\d{4})',
+        r'REPORT DATE:\s*(\d{2}-\d{2}-\d{4})',
+        r'DATE RELEASED:\s*(\d{2}/\d{2}/\d{4})',
+        r'DATE RELEASED:\s*(\d{2}-\d{2}-\d{4})',
+        r'GENERATED:\s*(\d{2}/\d{2}/\d{4})',
+        r'GENERATED:\s*(\d{2}-\d{2}-\d{4})',
+        r'REPORT GENERATED:\s*(\d{2}/\d{2}/\d{4})',
+        r'REPORT GENERATED:\s*(\d{2}-\d{2}-\d{4})',
+        # Look for the specific format in MVR abstracts section
+        r'ON\s+[A-Z0-9\-]+\s+(\d{2}-\d{2}-\d{4})'
+    ]
+    
+    for pattern in release_date_patterns:
+        match = re.search(pattern, text_normalized)
+        if match:
+            original_date = match.group(1)
+            # Convert DD-MM-YYYY to DD/MM/YYYY format for consistency
+            if '-' in original_date:
+                original_date = original_date.replace('-', '/')
+            result["release_date"] = original_date  # Keep DD/MM/YYYY format
             break
     
     # Convictions - look for convictions section
@@ -414,7 +472,9 @@ def extract_mvr_data_robust(path):
         "address": None,
         "convictions": [],
         "expiry_date": None,
-        "issue_date": None
+        "issue_date": None,
+        "status": None,
+        "release_date": None  # New field for Release Date
     }
 
     try:
@@ -428,8 +488,8 @@ def extract_mvr_data_robust(path):
             text = extract_text_alternative(path)
         
         if len(text.strip()) < 200:
-            # Strategy 3: Try different PDF reading parameters
-            text = extract_text_with_different_params(path)
+            # Strategy 3: Try alternative text extraction again
+            text = extract_text_alternative(path)
         
         # Save debug text
         debug_filename = f"MVR_debug_{os.path.basename(path)}.txt"
@@ -521,7 +581,12 @@ def fallback_extraction(text, result):
     """
     text_normalized = text.upper()
     
-    # Try to extract from the summary table at the end
+    # Priority 1: Try to extract XREF From field
+    xref_match = re.search(r'XREF FROM:\s*([A-Z0-9\-]+)', text_normalized, re.IGNORECASE)
+    if xref_match and not result.get("licence_number"):
+        result["licence_number"] = xref_match.group(1).strip()
+    
+    # Priority 2: Try to extract from the summary table at the end
     summary_pattern = r'([A-Z0-9\-]+)\s+([A-Z\-]+,[A-Z\-]+)\s+(\d{2}/\d{2}/\d{4})\s+(\d{2}/\d{2}/\d{4})'
     summary_match = re.search(summary_pattern, text_normalized)
     

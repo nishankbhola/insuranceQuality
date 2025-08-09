@@ -5,15 +5,15 @@ import {
   Shield, 
   AlertTriangle, 
   CheckCircle, 
-  XCircle, 
   Loader2,
   X
 } from 'lucide-react';
 
-function FileUpload({ onFileUpload, isLoading }) {
+function FileUpload({ onFileUpload, onCompactValidation, isLoading }) {
   const [files, setFiles] = useState({ quote: null, mvr: [], dash: [] });
   const [errors, setErrors] = useState({ quote: '', mvr: '', dash: '' });
   const [dragActive, setDragActive] = useState(false);
+  const [validationType, setValidationType] = useState('standard'); // 'standard' or 'compact'
   const fileInputRef = useRef(null);
 
   // Auto-detect file type based on filename and content
@@ -169,7 +169,12 @@ function FileUpload({ onFileUpload, isLoading }) {
       formData.append('dash', file);
     });
     
-    onFileUpload(formData);
+    // Call appropriate handler based on validation type
+    if (validationType === 'compact' && onCompactValidation) {
+      onCompactValidation(formData);
+    } else {
+      onFileUpload(formData);
+    }
   };
 
   const getFileTypeLabel = (fileType) => {
@@ -402,6 +407,42 @@ function FileUpload({ onFileUpload, isLoading }) {
         </div>
       </div>
 
+      {/* Validation Type Selector */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Validation Report Type</h3>
+        <div className="flex space-x-4">
+          <label className="flex items-center space-x-3 cursor-pointer">
+            <input
+              type="radio"
+              name="validationType"
+              value="standard"
+              checked={validationType === 'standard'}
+              onChange={(e) => setValidationType(e.target.value)}
+              className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+            />
+            <div>
+              <span className="font-medium text-gray-900">Standard Report</span>
+              <p className="text-sm text-gray-600">Detailed validation report with comprehensive analysis</p>
+            </div>
+          </label>
+          
+          <label className="flex items-center space-x-3 cursor-pointer">
+            <input
+              type="radio"
+              name="validationType"
+              value="compact"
+              checked={validationType === 'compact'}
+              onChange={(e) => setValidationType(e.target.value)}
+              className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+            />
+            <div>
+              <span className="font-medium text-gray-900">Compact Report</span>
+              <p className="text-sm text-gray-600">One-page professional report with charts and analytics</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
       {/* Submit Button */}
       <div className="flex justify-center">
         <button
@@ -421,7 +462,7 @@ function FileUpload({ onFileUpload, isLoading }) {
           ) : (
             <>
               <Shield className="w-5 h-5" />
-              <span>Start Validation</span>
+              <span>Start {validationType === 'compact' ? 'Compact ' : ''}Validation</span>
             </>
           )}
         </button>

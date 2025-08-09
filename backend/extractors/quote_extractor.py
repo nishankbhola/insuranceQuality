@@ -58,51 +58,14 @@ def extract_quote_data(path, mvr_data_list=None):
             result["address"] = f"{address_match.group(1).strip()}, {address_match.group(2).strip()}"
             break
 
-    # Extract drivers more carefully
-    found_drivers = set()
-    
-    # Pattern 1: Look for "Driver X of Y | NAME" format
-    driver_section_matches = re.findall(r"Driver (\d+) of (\d+) \| ([A-Za-z\s]+)", text)
-    for driver_num, total_drivers, name in driver_section_matches:
-        driver_name = name.strip()
-        if driver_name and len(driver_name.split()) >= 2 and driver_name not in found_drivers:
-            found_drivers.add(driver_name)
+    # Extract drivers - simple approach
+    driver_matches = re.findall(r"Driver \d+ of \d+ \| ([A-Za-z\s\-]+)", text)
+    for driver_name in driver_matches:
+        driver_name = driver_name.strip()
+        if driver_name and len(driver_name.split()) >= 2:
             driver_details = _extract_driver_details(text, driver_name)
             if driver_details:
                 result["drivers"].append(driver_details)
-
-    # If no drivers found, try alternative patterns
-    if not result["drivers"]:
-        # Look for license numbers and nearby names
-        license_matches = re.findall(r"([A-Z]\d{4}\d{5}\d{5})", text)
-        for license_num in license_matches:
-            license_index = text.find(license_num)
-            if license_index > 0:
-                # Look in a reasonable window around the license number
-                window_start = max(0, license_index - 200)
-                window_end = min(len(text), license_index + 200)
-                window_text = text[window_start:window_end]
-                
-                # Look for proper names (first and last name)
-                name_patterns = [
-                    r"([A-Z][a-z]+\s+[A-Z][a-z]+)",
-                    r"Driver.*?\|\s*([A-Za-z]+\s+[A-Za-z]+)"
-                ]
-                
-                for pattern in name_patterns:
-                    name_matches = re.findall(pattern, window_text)
-                    for name in name_matches:
-                        driver_name = name.strip()
-                        if (driver_name and len(driver_name.split()) >= 2 and 
-                            driver_name not in found_drivers and
-                            not any(word.lower() in ['driver', 'licence', 'number', 'province'] for word in driver_name.lower().split())):
-                            found_drivers.add(driver_name)
-                            driver_details = _extract_driver_details(text, driver_name, license_num)
-                            if driver_details:
-                                result["drivers"].append(driver_details)
-                            break
-                    if result["drivers"]:
-                        break
 
     # Extract applicant from drivers if not found elsewhere
     if result["drivers"] and not result["applicant"].get("first_name"):
@@ -532,9 +495,9 @@ def _extract_vehicle_details(vehicle_text):
     return vehicle_info
 
 def _extract_driver_details(text, driver_name, license_num=None):
-    """Extract detailed information for a specific driver using PyMuPDF's better text structure"""
+    """Extract detailed information for a specific driver"""
     driver_info = {
-        "full_name": driver_name,
+        "full_name": driver_name.strip(),
         "birth_date": None,
         "single": None,
         "marital_status": None,

@@ -3,25 +3,25 @@ import {
   LayoutDashboard, 
   Upload, 
   FileText, 
-  BarChart3, 
   Users, 
   Database, 
   TrendingUp, 
-  Settings, 
   HelpCircle,
   ClipboardCheck,
   X,
-  Menu
+  Menu,
+  BarChart3
 } from 'lucide-react';
-import Header from './components/Header';
 import FileUpload from './components/FileUpload';
 import ValidationReport from './components/ValidationReport';
+import CompactValidationReport from './components/CompactValidationReport';
 import ApplicationQC from './components/ApplicationQC';
+import { API_ENDPOINTS } from './config';
 import './App.css';
 
 function App() {
-  const [uploadedFiles, setUploadedFiles] = useState(null);
   const [validationData, setValidationData] = useState(null);
+  const [compactValidationData, setCompactValidationData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -29,7 +29,7 @@ function App() {
   const handleFileUpload = async (formData) => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/validate', {
+      const response = await fetch(API_ENDPOINTS.validate, {
         method: 'POST',
         body: formData,
       });
@@ -50,10 +50,35 @@ function App() {
     }
   };
 
+  const handleCompactValidation = async (formData) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(API_ENDPOINTS.validateCompact, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      setCompactValidationData(data.compact_report);
+      setActiveTab('compact_validation');
+    } catch (error) {
+      console.error('Error uploading files for compact validation:', error);
+      alert('Error uploading files. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const navigationItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, active: true },
     { id: 'upload', label: 'File Upload', icon: Upload },
     { id: 'validation', label: 'Validation Reports', icon: ClipboardCheck },
+    { id: 'compact_validation', label: 'Compact Reports', icon: BarChart3 },
     { id: 'application_qc', label: 'Application QC', icon: Users },
   ];
 
@@ -196,9 +221,11 @@ function App() {
           </div>
         );
       case 'upload':
-        return <FileUpload onFileUpload={handleFileUpload} isLoading={isLoading} />;
+        return <FileUpload onFileUpload={handleFileUpload} onCompactValidation={handleCompactValidation} isLoading={isLoading} />;
       case 'validation':
         return validationData ? <ValidationReport data={validationData} /> : <div className="p-6">No validation data available</div>;
+      case 'compact_validation':
+        return compactValidationData ? <CompactValidationReport reportData={compactValidationData} /> : <div className="p-6">No compact validation data available</div>;
       case 'application_qc':
         return <ApplicationQC />;
       default:
