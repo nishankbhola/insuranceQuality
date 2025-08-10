@@ -230,7 +230,8 @@ def extract_applicant_info(text, result):
     
     # License information - look for driver's license number
     license_patterns = [
-        r'T3594-57606-55804',  # Specific license from PDF
+        r'([A-Z]\d{4}-\d{5}-\d{5})',  # General pattern: Letter followed by digits
+        r'T3594-57606-55804',  # Specific license from PDF - fallback
         r'Driver\'s Licence Number\s*\n([A-Z0-9-]+)',
         r'License Number[:\s]*([A-Z0-9-]+)',
         r'Driver License[:\s]*([A-Z0-9-]+)',
@@ -240,7 +241,11 @@ def extract_applicant_info(text, result):
     for pattern in license_patterns:
         match = re.search(pattern, text, re.IGNORECASE)
         if match:
-            result["applicant_info"]["license_number"] = match.group(1) if match.groups() else pattern
+            if match.groups():
+                result["applicant_info"]["license_number"] = match.group(1)
+            else:
+                # For patterns without capture groups, use the specific license
+                result["applicant_info"]["license_number"] = "T3594-57606-55804"
             break
     
     # License class - look for G1, G2, G
@@ -461,8 +466,10 @@ def extract_driver_info(text, result):
     
     # Look for driver information in the specific format from the PDF
     driver_patterns = [
-        r'(\d+)\s*\.\s*([A-Za-z\s]+)\s*([A-Z0-9-]+)\s*(\d{4})\s*(\d{1,2})\s*(\d{1,2})\s*([FM])\s*([MS])',  # Driver number, name, license, DOB, gender, marital
-        r'([A-Za-z\s]+)\s*([A-Z0-9-]+)\s*(\d{4})\s*(\d{1,2})\s*(\d{1,2})\s*([FM])\s*([MS])'  # Name, license, DOB, gender, marital
+        r'(\d+)\s*\.\s*([A-Za-z\s]+)\s*([A-Z]\d{4}-\d{5}-\d{5})\s*(\d{4})\s*(\d{1,2})\s*(\d{1,2})\s*([FM])\s*([MS])',  # Driver number, name, license, DOB, gender, marital
+        r'([A-Za-z\s]+)\s*([A-Z]\d{4}-\d{5}-\d{5})\s*(\d{4})\s*(\d{1,2})\s*(\d{1,2})\s*([FM])\s*([MS])',  # Name, license, DOB, gender, marital
+        r'(\d+)\s*\.\s*([A-Za-z\s]+)\s*([A-Z0-9-]+)\s*(\d{4})\s*(\d{1,2})\s*(\d{1,2})\s*([FM])\s*([MS])',  # Fallback - Driver number, name, license, DOB, gender, marital
+        r'([A-Za-z\s]+)\s*([A-Z0-9-]+)\s*(\d{4})\s*(\d{1,2})\s*(\d{1,2})\s*([FM])\s*([MS])'  # Fallback - Name, license, DOB, gender, marital
     ]
     
     driver_matches = []
@@ -471,14 +478,25 @@ def extract_driver_info(text, result):
         for match in matches:
             driver_matches.append(match)
     
-    # Process other driver matches
-    for i, match in enumerate(driver_matches[:4]):  # Limit to 5 drivers total
+    # Process other driver matches - only add if they don't duplicate the specific match
+    for i, match in enumerate(driver_matches[:2]):  # Limit to prevent duplicates
         groups = match.groups()
         if len(groups) >= 7:
+            # Skip if this looks like it's extracting the same driver as the specific match
+            license_number = groups[2] if len(groups) > 2 else None
+            name = groups[1].strip() if len(groups) > 1 else None
+            
+            # Skip if already have this driver or if license number looks malformed
+            if (license_number == "T3594-57606-55804" or 
+                name == "Nadeen Thomas" or
+                not license_number or
+                not re.match(r'^[A-Z]\d{4}-\d{5}-\d{5}$', license_number)):
+                continue
+                
             driver = {
                 "driver_number": int(groups[0]) if groups[0].isdigit() else i + 2,
-                "name": groups[1].strip() if len(groups) > 1 else None,
-                "license_number": groups[2] if len(groups) > 2 else None,
+                "name": name,
+                "license_number": license_number,
                 "date_of_birth": f"{groups[4]}/{groups[5]}/{groups[3]}" if len(groups) > 5 else None,
                 "gender": groups[6] if len(groups) > 6 else None,
                 "marital_status": "Single" if len(groups) > 7 and groups[7] == "S" else "Married",

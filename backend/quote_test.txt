@@ -1,13 +1,14 @@
 Vieira & Associates Insurance Brokers Ltd
-(A)
-Unit 18 - 2 Orchard Heights Blvd
-Aurora, ON L4G 6T5
-Phone: (905)727-0700    Fax: (416)531-1146
+55 Horner Ave, Suite 201
+Etobicoke, ON M8Z 4X6
+Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Mobile: (416)473-8171
-7 Torino Place
-Concord, ON L4K 2L4
+Home: (905)851-6060
+Work:
+(905)851-6060
+5 SEA DRIFTER CRES
+BRAMPTON, ON L6P 4A9
 Policy Information
  
 Property Policy Type
@@ -20,9 +21,9 @@ Property Policy
 Date
  
 Occupied Since
-Combined Policy / Multi-Line
+Disable
 Policy Discount
-Yes
+No
 All Carriers
  
 Company Name
@@ -31,11 +32,11 @@ Term Length
 Applicant Information
  
 Salutation
-Mina
+Nadeen
 First Name
  
 Middle
-Elahi
+Thomas
 Last Name
  
 Suffix
@@ -50,16 +51,15 @@ Middle
 Last Name
  
 Suffix
-Mina Elahi
+Nadeen Thomas
 Drivers
 Coverages
-Vehicle 1 of 1 | Private Passenger - 2024 NISSAN ROGUE S 4DR AWD (147800)
+Vehicle 1 of 2 | Private Passenger - 2012 HONDA CIVIC LX 4DR (025100)
 Private Passenger
 Vehicle Type
-JN8BT3AB2RW286448
+2HGFB2F50CH020785
 VIN
-SUV - Small and Medium (Hard
-Top)
+4 Door Sedan/Hard Top
 Body Style
 Gasoline
 Fuel Type
@@ -67,19 +67,19 @@ No
 Hybrid
 Pleasure
 Primary Use
-11000
+5000
 Annual km
  
 Business km
-4
+0
 Daily km
-CONCORD L4K2L4
+BRAMPTON L6P4A9
 Garaging Location
 No
 Single Vehicle MVD
-Yes
+No
 Leased
-3
+4
 Cylinders
  
 Anti-Theft - Device Type
@@ -90,48 +90,107 @@ Anti-Theft - Engraving
 New
 Purchase
 Condition
-08/19/2024
+05/01/2012
 Purchase Date
  
 km at Purchase
-35330
+18995
 List Price New
-31000
+18995
 Purchase Price
-No
+Yes
 Winter Tires
  
 Parking at Night
-Mina Elahi (Prn)
+Nadeen Thomas (Prn)
 Bodily Injury (1,000,000)
 Property Damage (1,000,000)
 Direct Compensation (0)
 Accident Benefits (Standard)
 All Perils (1,000)
 Uninsured Automobile
-#5a Rent or Lease
-#20 Loss of Use (3,000)
+#20 Loss of Use (2,000)
 #27 Liab to Unowned Veh. (75,000)
-Waiver of Deductible - Claim Specific
-#43RL Limited Waiver
-#43a Limited Waiver (48 Months)
 #44 Family Protection (1,000,000)
 Accident Waiver
 Minor Conviction Protection
-Prepared 08/01/2025 by Reza Komeili
-Effective Date: 08/19/2025
+Drivers
+Coverages
+Vehicle 2 of 2 | Private Passenger - 2017 HONDA CIVIC LX 4DR (025100)
+Private Passenger
+Vehicle Type
+2HGFC2F58HH019274
+VIN
+4 Door Sedan/Hard Top
+Body Style
+Gasoline
+Fuel Type
+No
+Hybrid
+Pleasure
+Primary Use
+5000
+Annual km
+ 
+Business km
+0
+Daily km
+BRAMPTON L6P4A9
+Garaging Location
+No
+Single Vehicle MVD
+No
+Leased
+4
+Cylinders
+ 
+Anti-Theft - Device Type
+ 
+Anti-Theft - Manufacturer
+ 
+Anti-Theft - Engraving
+Used
+Purchase
+Condition
+06/01/2019
+Purchase Date
+ 
+km at Purchase
+20937
+List Price New
+20937
+Purchase Price
+Yes
+Winter Tires
+ 
+Parking at Night
+Nadeen Thomas (Prn)
+Bodily Injury (1,000,000)
+Property Damage (1,000,000)
+Direct Compensation (0)
+Accident Benefits (Standard)
+All Perils (500)
+Uninsured Automobile
+#20 Loss of Use (2,000)
+#23a Mortgage
+#27 Liab to Unowned Veh. (75,000)
+#44 Family Protection (1,000,000)
+Accident Waiver
+Minor Conviction Protection
+Prepared 05/21/2025 by Nishank Bhola
+Effective Date: 06/16/2025
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
 Lapses
 Disclaimer: Coverages shown reflect user entry. For details on the coverages quoted please refer to the Carrier Detail printout.
-Driver 1 of 1 | Mina Elahi
-09/11/1984
+Driver 1 of 1 | Nadeen Thomas
+08/04/1965
 Birth Date
 Single
 Marital Status
 Female
 Gender
-Applicant
+Insured
 Relationship to Applicant
 No
 Driver Training
@@ -142,28 +201,40 @@ No
 Out of Province / Country Driver
 G
 Licence Class
-10/09/2005
+07/08/2004
 Date G
-10/09/2004
+07/08/2003
 Date G2
-10/09/2003
+07/08/2002
 Date G1
-E50385550845911
+T35945760655804
 Licence Number
 ON
 Licence Province
  
 Occupation
-06/01/2021
+None
+Membership Plan 1 Description
+ 
+Membership Date
+ 
+Membership Number
+None
+Membership Plan 2 Description
+ 
+Membership Date
+ 
+Membership Number
+06/13/2016
 Date Insured
 Aviva
 Current Carrier
-08/19/2024
+06/16/2020
 Date with
 Company
-07/22/2025
+06/13/2016
 Brokerage Insured
-07/22/2025
+06/13/2016
 Date
 Owner/Principal
 No
@@ -178,190 +249,182 @@ Class
  
 Other Licence
 Date
-Other
+No Vehicle Hence No Insurance Required
 Description
-11/02/2023
+06/13/2020
 Date
 0
 Duration months
-11/02/2023
+06/16/2020
 Re-Instate Date
 Vieira & Associates Insurance Brokers Ltd
-(A)
-Unit 18 - 2 Orchard Heights Blvd
-Aurora, ON L4G 6T5
-Phone: (905)727-0700    Fax: (416)531-1146
+55 Horner Ave, Suite 201
+Etobicoke, ON M8Z 4X6
+Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Prepared 08/01/2025 by Reza Komeili
-Applied Ref. # RWS 1015951254, CWS 347416142,
-RBWS 444839441
+Prepared 05/21/2025 by Nishank Bhola
+Applied Ref. # RWS 991999616, CWS 341286051,
+RBWS 429398478
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
-Mobile: (416)473-8171
-7 Torino Place
-Concord, ON L4K 2L4
+Home: (905)851-6060
+Work:
+(905)851-6060
+5 SEA DRIFTER CRES
+BRAMPTON, ON L6P 4A9
 Company
 12 Months
-Aviva - Aviva Journey
-2,748
-Definity Insurance Company
-2,954
-Aviva
-3,013
-Wawanesa Drive Change
-3,572
-Wawanesa Mutual
-3,924
-SGI CANADA
-4,002
-CAA Insurance Company (Future Member)
-4,751
 CAA MyPace
-4,934
+4,767
+Definity Insurance Company
+5,681
+CAA Insurance Company (Future Member)
+6,455
 CAA Insurance Company
-4,998
-Facility Association
-5,056
+6,791
+SGI CANADA
+7,279
+Aviva - Aviva Journey
+7,550
+Wawanesa Drive Change
+7,749
 Dominion of Canada - Single Pay and DPD
-5,551
+7,912
 Intact Insurance - my Drive
-5,641
-Dominion of Canada - IntelliDrive
-5,694
-Dominion of Canada
-5,840
+8,007
+Aviva
+8,339
+Wawanesa Mutual
+8,566
 Intact Insurance
-6,316
+8,827
+Facility Association
+9,488
+Dominion of Canada - IntelliDrive
+9,851
+Dominion of Canada
+10,102
 Echelon
-7,819
+13,139
 Coachman
 0
 JEVCO
 0
 Summary
-Mina Elahi
-1 Vehicle, 1 Driver  |  Effective Date: 08/19/2025
+Nadeen Thomas
+2 Vehicles, 1 Driver  |  Effective Date: 06/16/2025
 Vieira & Associates Insurance Brokers Ltd
-(A)
-Unit 18 - 2 Orchard Heights Blvd
-Aurora, ON L4G 6T5
-Phone: (905)727-0700    Fax: (416)531-1146
+55 Horner Ave, Suite 201
+Etobicoke, ON M8Z 4X6
+Phone: (416)531-1146    Fax: (416)531-1148
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
 Definity Insurance Company
-9248  |  New Business  |  Effective Date: 08/19/2025
-Mobile: (416)473-8171
-7 Torino Place
-Concord, ON L4K 2L4
+6684  |  New Business  |  Effective Date: 06/16/2025
+Home: (905)851-6060
+Work:
+(905)851-6060
+5 SEA DRIFTER CRES
+BRAMPTON, ON L6P 4A9
 Vehicles
 TOTALS
-Private Passenger - 2024 NISSAN ROGUE S 4DR AWD  (147800)
-$2,954
+Private Passenger - 2012 HONDA CIVIC LX 4DR  (025100)
+$2,470
+Private Passenger - 2017 HONDA CIVIC LX 4DR  (025100)
+$3,211
 Annual Premium
-$2,954.00
+$5,681.00
 0% Tax Applied
 $0.00
 Total Premium
-$2,954.00
+$5,681.00
 Totals
-■ Here is your quote number: Q17540696428781941
+■ Here is your quote number: Q1747833234473854
 ■ Account match not found.
-■ https://extranet.id.economical.com/gwpcweb/BrokerQuote.do?JobNumber=m7O8np9NYFrlQM8wdhPQjzoDcigIWJyRsVWPL2cQ8DE%3D
-■ 2024 NISSAN ROGUE S 4DR AWD : To confirm eligibility, all modifications must be declared in Guidewire prior to binding
-■ 2024 NISSAN ROGUE S 4DR AWD : Vehicles with prior Unrepaired Damage may be ineligible. Please confirm eligibility in Guidewire.
+■ https://extranet.id.economical.com/gwpcweb/BrokerQuote.do?JobNumber=foYrdMe5nALjhwqneBTqH4ZRdIMjpKqAOxIDtITH4vE%3D
+■ 2012 HONDA CIVIC LX 4DR : To confirm eligibility, all modifications must be declared in Guidewire prior to binding
+■ 2012 HONDA CIVIC LX 4DR : Vehicles with prior Unrepaired Damage may be ineligible. Please confirm eligibility in Guidewire.
+■ 2017 HONDA CIVIC LX 4DR : To confirm eligibility, all modifications must be declared in Guidewire prior to binding
+■ 2017 HONDA CIVIC LX 4DR : Vehicles with prior Unrepaired Damage may be ineligible. Please confirm eligibility in Guidewire.
 MSG
 RB
 Effective Date
 Book
-CONCORD L4K 2L4 / Territory 143
+BRAMPTON L6P 4A9 / Territory 142
 Territory
 RB
 VRG eff. date
-40
+27
 DCPD
-31
+36
 AB
-40
+27
 Coll
-43
+9
 Comp
 Rates
 MSG
 ■ Accident Rating Waiver: Accident waiver is included if driver is eligible for 6, 8 or 9 driving record.
-■ Transportation Replacement has been selected as 60 days.
+■ Transportation Replacement has been selected as 45 days.
 ■ Legal Liability for Damage to Non-Owned Automobile has been selected as 30 days
 DIS
 ● Conviction Free included - Prn
-● Multi-Policy included - Prn
+● Winter Tires included - Prn
+● Smart Move included - Prn
+● Multi-Vehicle included - Prn
 Operator
 PRIN.
 TOTALS
 Class/Liability/Collision
 /9/9
+Annual Premium
+$2,470
+$2,470
+0% Tax Applied
+$0.00
+$0.00
+Total Premium
+$2,470.00
+$2,470.00
+Breakdown
+Nadeen Thomas
+Policy
+1 of 2  |  2012 HONDA CIVIC LX 4DR  (025100)
+$2,470.00
+Operator
+PRIN.
+TOTALS
 Bodily Injury
 1 M
-406
-406
+661
+661
 Property Damage
 1 M
  
 0
 Direct Compensation
 0
-740
-740
+314
+314
 Accident Benefits
-456
-456
-Annual Premium
-$2,954
-$2,954
-0% Tax Applied
-$0.00
-$0.00
-Total Premium
-$2,954.00
-$2,954.00
-Breakdown
-Mina Elahi
-Policy
-1 of 1  |  2024 NISSAN ROGUE S 4DR AWD  (147800)
-$2,954.00
-Prepared 08/01/2025 by Reza Komeili
-Applied Ref. # RBWS 444839441
-Provided by Applied Rating Services®,
-© 2025 Applied Systems® Canada Inc.
-Operator
-PRIN.
-TOTALS
+1,065
+1,065
 All Perils
 1,000
-995
-995
+301
+301
 Uninsured Automobile
-14
-14
-#5 Rent or Lease
-Inc.
-0
+16
+16
 #20 Loss of Use
-3,000
-105
-105
+2,000
+60
+60
 #27 Liab to Unowned Veh.
 75K
-45
-45
-Waiver of Deductible - Claim Specific
-10
-10
-#43a Limited Waiver (Months)
- 
 0
-#43RL Limited Waiver
-130
-130
+0
 #44 Family Protection
 1 M
 13
@@ -376,11 +439,103 @@ Service Fee
  
 0
 Annual Premium
-$2,954
-$2,954
+$2,470
+$2,470
 0% Tax Applied
 $0.00
 $0.00
 Total Premium
-$2,954.00
-$2,954.00
+$2,470.00
+$2,470.00
+Prepared 05/21/2025 by Nishank Bhola
+Applied Ref. # RBWS 429398478
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
+ 
+RB
+Effective Date
+Book
+BRAMPTON L6P 4A9 / Territory 142
+Territory
+RB
+VRG eff. date
+38
+DCPD
+38
+AB
+38
+Coll
+29
+Comp
+Rates
+MSG
+■ Accident Rating Waiver: Accident waiver is included if driver is eligible for 6, 8 or 9 driving record.
+■ Transportation Replacement has been selected as 45 days.
+DIS
+● Conviction Free included - Prn
+● Winter Tires included - Prn
+● Smart Move included - Prn
+● Multi-Vehicle included - Prn
+Operator
+PRIN.
+TOTALS
+Class/Liability/Collision
+/9/9
+Bodily Injury
+1 M
+674
+674
+Property Damage
+1 M
+ 
+0
+Direct Compensation
+0
+553
+553
+Accident Benefits
+1,185
+1,185
+All Perils
+500
+655
+655
+Uninsured Automobile
+16
+16
+#20 Loss of Use
+2,000
+70
+70
+#23a Mortgage
+Inc.
+0
+#27 Liab to Unowned Veh.
+75K
+45
+45
+#44 Family Protection
+1 M
+13
+13
+Accident Waiver
+ 
+0
+Minor Conviction Protection
+0
+0
+Service Fee
+ 
+0
+Annual Premium
+$3,211
+$3,211
+0% Tax Applied
+$0.00
+$0.00
+Total Premium
+$3,211.00
+$3,211.00
+Breakdown
+2 of 2  |  2017 HONDA CIVIC LX 4DR  (025100)
+$3,211.00

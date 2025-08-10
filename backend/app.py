@@ -11,6 +11,7 @@ from extractors.quote_extractor import extract_quote_data
 from extractors.application_extractor import extract_application_data
 from validator.compare_engine import validate_quote, ValidationEngine
 from quote_comparison_service import compare_quote_with_pdf
+from qc_checklist import QCChecker
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
@@ -374,52 +375,112 @@ def debug_extraction():
 
 @app.route('/api/application-qc', methods=['POST'])
 def application_qc():
-    """Application QC endpoint to extract data from insurance application PDFs"""
+    """Application QC endpoint to extract and compare application and quote PDFs"""
     if 'application' not in request.files:
         return jsonify({"error": "No application file provided"}), 400
     
-    file = request.files['application']
-    if file.filename == '':
-        return jsonify({"error": "No file selected"}), 400
+    if 'quote' not in request.files:
+        return jsonify({"error": "No quote file provided"}), 400
     
-    if not allowed_file(file.filename):
+    application_file = request.files['application']
+    quote_file = request.files['quote']
+    
+    if application_file.filename == '' or quote_file.filename == '':
+        return jsonify({"error": "No files selected"}), 400
+    
+    if not allowed_file(application_file.filename) or not allowed_file(quote_file.filename):
         return jsonify({"error": "Only PDF files are allowed"}), 400
     
     try:
-        filename = secure_filename(file.filename)
-        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(path)
+        # Save application file
+        app_filename = secure_filename(application_file.filename)
+        app_path = os.path.join(app.config['UPLOAD_FOLDER'], app_filename)
+        application_file.save(app_path)
         
-        print(f"Processing application file: {filename}")
+        # Save quote file
+        quote_filename = secure_filename(quote_file.filename)
+        quote_path = os.path.join(app.config['UPLOAD_FOLDER'], quote_filename)
+        quote_file.save(quote_path)
+        
+        print(f"Processing application QC: {app_filename} and {quote_filename}")
         
         # Extract application data
-        application_data = extract_application_data(path)
+        application_data = extract_application_data(app_path)
+        print(f"Application data extracted: {len(str(application_data))} characters")
         
-        # Save to JSON file
-        json_filename = "application_data.json"
-        json_path = os.path.join(app.config['UPLOAD_FOLDER'], json_filename)
+        # Extract quote data
+        quote_data = extract_quote_data(quote_path)
+        print(f"Quote data extracted: {len(str(quote_data))} characters")
         
-        with open(json_path, 'w', encoding='utf-8') as f:
+        # Run QC checklist evaluation
+        qc_checker = QCChecker()
+        qc_results = qc_checker.evaluate_application_qc(application_data, quote_data)
+        
+        # Categorize results - simplified to PASS/FAIL
+        failed_checks = [r for r in qc_results if r["status"] == "FAIL"]
+        passed_checks = [r for r in qc_results if r["status"] == "PASS"]
+        
+        # Generate summary
+        summary = {
+            "total_checks": len(qc_results),
+            "failed_checks": len(failed_checks),
+            "passed_checks": len(passed_checks),
+            "overall_status": "FAIL" if failed_checks else "PASS"
+        }
+        
+        # Save results to JSON files
+        app_json_filename = "application_data.json"
+        quote_json_filename = "quote_data.json"
+        qc_json_filename = "qc_results.json"
+        
+        app_json_path = os.path.join(app.config['UPLOAD_FOLDER'], app_json_filename)
+        quote_json_path = os.path.join(app.config['UPLOAD_FOLDER'], quote_json_filename)
+        qc_json_path = os.path.join(app.config['UPLOAD_FOLDER'], qc_json_filename)
+        
+        with open(app_json_path, 'w', encoding='utf-8') as f:
             json.dump(application_data, f, indent=2, ensure_ascii=False)
         
-        print(f"Application data saved to {json_path}")
+        with open(quote_json_path, 'w', encoding='utf-8') as f:
+            json.dump(quote_data, f, indent=2, ensure_ascii=False)
         
-        # Clean up uploaded PDF file after processing
+        with open(qc_json_path, 'w', encoding='utf-8') as f:
+            json.dump({
+                "summary": summary,
+                "failed_checks": failed_checks,
+                "passed_checks": passed_checks,
+                "all_results": qc_results
+            }, f, indent=2, ensure_ascii=False)
+        
+        print(f"QC evaluation completed: {summary}")
+        
+        # Clean up uploaded PDF files after processing
         cleanup_upload_folder()
         
         return jsonify({
-            "message": "Application data extracted successfully",
-            "filename": json_filename,
-            "data": application_data
+            "message": "Application QC completed successfully",
+            "summary": summary,
+            "qc_results": {
+                "failed_checks": failed_checks,
+                "passed_checks": passed_checks
+            },
+            "extracted_data": {
+                "application": application_data,
+                "quote": quote_data
+            },
+            "files": {
+                "application_data": app_json_filename,
+                "quote_data": quote_json_filename,
+                "qc_results": qc_json_filename
+            }
         })
         
     except Exception as e:
-        print(f"Error processing application: {e}")
+        print(f"Error processing application QC: {e}")
         import traceback
         traceback.print_exc()
         # Clean up files even if processing fails
         cleanup_upload_folder()
-        return jsonify({"error": f"Application processing failed: {str(e)}"}), 500
+        return jsonify({"error": f"Application QC failed: {str(e)}"}), 500
 
 @app.route('/api/cleanup', methods=['POST'])
 def manual_cleanup():
