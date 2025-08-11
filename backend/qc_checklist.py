@@ -10,38 +10,27 @@ import re
 class QCChecker:
     def __init__(self):
         self.checklist_items = [
-            # Signatures
-            {"id": "signed_application", "category": "Signatures", "name": "Signed Application by Insured", "required": True},
-            {"id": "date_matches_effective", "category": "Signatures", "name": "Date App Signed matches Effective Date", "required": True},
-            {"id": "signed_by_all_drivers", "category": "Signatures", "name": "Signed by all drivers on policy", "required": True},
-            
-            # Completed Information
-            {"id": "complete_personal_info", "category": "Completed Information", "name": "Complete Personal Information", "required": True},
-            {"id": "complete_address", "category": "Completed Information", "name": "Complete Address Information", "required": True},
-            {"id": "complete_vehicle_info", "category": "Completed Information", "name": "Complete Vehicle Information", "required": True},
-            {"id": "purchase_price_provided", "category": "Completed Information", "name": "Purchase Price/Value provided for financed/leased vehicles", "required": True},
-            {"id": "lienholder_info", "category": "Completed Information", "name": "Lienholder information complete for financed vehicles", "required": True},
-            
-            # Driver/MVR
-            {"id": "mvr_matches_application", "category": "Driver/MVR", "name": "MVR information matches application", "required": True},
-            {"id": "license_class_valid", "category": "Driver/MVR", "name": "License class appropriate for vehicle type", "required": True},
-            {"id": "conviction_disclosure", "category": "Driver/MVR", "name": "All convictions properly disclosed", "required": True},
-            {"id": "driver_training_valid", "category": "Driver/MVR", "name": "Driver training certificates valid if claimed", "required": False},
-            
-            # Coverage Requirements
-            {"id": "opcf_43_applicable", "category": "Coverage Requirements", "name": "OPCF 43 applied where applicable", "required": False},
-            {"id": "opcf_28a_applicable", "category": "Coverage Requirements", "name": "OPCF 28a applied where applicable", "required": False},
-            {"id": "pleasure_use_remarks", "category": "Coverage Requirements", "name": "Pleasure Use Remarks", "required": False},
-            
             # Forms
-            {"id": "ribo_disclosure", "category": "Forms", "name": "RIBO Disclosure Form completed", "required": True},
+            {"id": "coverage_not_in_effect", "category": "Forms", "name": "COVERAGE NOT IN EFFECT form attached", "required": True},
+            {"id": "consent_electronic_communications", "category": "Forms", "name": "CONSENT TO RECEIVE ELECTRONIC COMMUNICATIONS form attached", "required": True},
+            {"id": "personal_info_consent", "category": "Forms", "name": "PERSONAL INFORMATION CONSENT FORM attached", "required": True},
+            {"id": "personal_info_client_consent", "category": "Forms", "name": "PERSONAL INFORMATION CLIENT CONSENT FORM attached", "required": True},
+            {"id": "optional_accident_benefits", "category": "Forms", "name": "Optional Accident Benefits Confirmation Form attached", "required": True},
             {"id": "privacy_consent", "category": "Forms", "name": "Privacy Consent Form signed", "required": True},
-            {"id": "accident_benefit_selection", "category": "Forms", "name": "Accident Benefit Selection Form completed", "required": True},
+            
+            # Date Validation
+            {"id": "effective_date_match", "category": "Date Validation", "name": "Quote effective date matches application effective date", "required": True},
+            
+            # Automobile Section Validations
+            {"id": "purchase_date_filled", "category": "Automobile Section", "name": "Purchase Date is filled for all vehicles", "required": True},
+            {"id": "purchase_price_filled", "category": "Automobile Section", "name": "Purchase Price is filled for all vehicles", "required": True},
+            {"id": "purchase_new_used_filled", "category": "Automobile Section", "name": "Purchase New or Used is filled for all vehicles", "required": True},
+            {"id": "owned_leased_filled", "category": "Automobile Section", "name": "Owned Or Leased is filled for all vehicles", "required": True},
+            {"id": "annual_driving_distance_filled", "category": "Automobile Section", "name": "Estimate annual driving distance is filled for all vehicles", "required": True},
+            {"id": "fuel_type_filled", "category": "Automobile Section", "name": "Type of fuel used is filled for all vehicles", "required": True},
             
             # Other Requirements
-            {"id": "payment_method_valid", "category": "Other Requirements", "name": "Valid payment method provided", "required": True},
-            {"id": "broker_signature", "category": "Other Requirements", "name": "Broker signature and license number", "required": True},
-            {"id": "application_complete", "category": "Other Requirements", "name": "Application form completely filled out", "required": True}
+            {"id": "payment_method_valid", "category": "Other Requirements", "name": "Valid payment method provided", "required": True}
         ]
     
     def evaluate_application_qc(self, application_data: Dict, quote_data: Dict) -> List[Dict]:
@@ -62,48 +51,34 @@ class QCChecker:
             
             # Evaluate each checklist item
             try:
-                if item["id"] == "signed_application":
-                    result = self._check_signed_application(application_data, result)
-                elif item["id"] == "date_matches_effective":
-                    result = self._check_date_matches_effective(application_data, quote_data, result)
-                elif item["id"] == "signed_by_all_drivers":
-                    result = self._check_signed_by_all_drivers(application_data, result)
-                elif item["id"] == "complete_personal_info":
-                    result = self._check_complete_personal_info(application_data, result)
-                elif item["id"] == "complete_address":
-                    result = self._check_complete_address(application_data, result)
-                elif item["id"] == "complete_vehicle_info":
-                    result = self._check_complete_vehicle_info(application_data, result)
-                elif item["id"] == "purchase_price_provided":
-                    result = self._check_purchase_price_provided(application_data, result)
-                elif item["id"] == "lienholder_info":
-                    result = self._check_lienholder_info(application_data, result)
-                elif item["id"] == "mvr_matches_application":
-                    result = self._check_mvr_matches_application(application_data, quote_data, result)
-                elif item["id"] == "license_class_valid":
-                    result = self._check_license_class_valid(application_data, result)
-                elif item["id"] == "conviction_disclosure":
-                    result = self._check_conviction_disclosure(application_data, quote_data, result)
-                elif item["id"] == "driver_training_valid":
-                    result = self._check_driver_training_valid(application_data, result)
-                elif item["id"] == "opcf_43_applicable":
-                    result = self._check_opcf_43_applicable(application_data, quote_data, result)
-                elif item["id"] == "opcf_28a_applicable":
-                    result = self._check_opcf_28a_applicable(application_data, quote_data, result)
-                elif item["id"] == "pleasure_use_remarks":
-                    result = self._check_pleasure_use_remarks(application_data, quote_data, result)
-                elif item["id"] == "ribo_disclosure":
-                    result = self._check_ribo_disclosure(application_data, result)
+                if item["id"] == "coverage_not_in_effect":
+                    result = self._check_coverage_not_in_effect(application_data, result)
+                elif item["id"] == "consent_electronic_communications":
+                    result = self._check_consent_electronic_communications(application_data, result)
+                elif item["id"] == "personal_info_consent":
+                    result = self._check_personal_info_consent(application_data, result)
+                elif item["id"] == "personal_info_client_consent":
+                    result = self._check_personal_info_client_consent(application_data, result)
+                elif item["id"] == "optional_accident_benefits":
+                    result = self._check_optional_accident_benefits(application_data, result)
                 elif item["id"] == "privacy_consent":
                     result = self._check_privacy_consent(application_data, result)
-                elif item["id"] == "accident_benefit_selection":
-                    result = self._check_accident_benefit_selection(application_data, result)
+                elif item["id"] == "effective_date_match":
+                    result = self._check_effective_date_match(application_data, quote_data, result)
+                elif item["id"] == "purchase_date_filled":
+                    result = self._check_purchase_date_filled(application_data, result)
+                elif item["id"] == "purchase_price_filled":
+                    result = self._check_purchase_price_filled(application_data, result)
+                elif item["id"] == "purchase_new_used_filled":
+                    result = self._check_purchase_new_used_filled(application_data, result)
+                elif item["id"] == "owned_leased_filled":
+                    result = self._check_owned_leased_filled(application_data, result)
+                elif item["id"] == "annual_driving_distance_filled":
+                    result = self._check_annual_driving_distance_filled(application_data, result)
+                elif item["id"] == "fuel_type_filled":
+                    result = self._check_fuel_type_filled(application_data, result)
                 elif item["id"] == "payment_method_valid":
                     result = self._check_payment_method_valid(application_data, result)
-                elif item["id"] == "broker_signature":
-                    result = self._check_broker_signature(application_data, result)
-                elif item["id"] == "application_complete":
-                    result = self._check_application_complete(application_data, result)
                     
             except Exception as e:
                 result["status"] = "FAIL"
@@ -113,444 +88,149 @@ class QCChecker:
         
         return results
     
-    def _check_signed_application(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if application is signed by insured"""
-        # Look for signature indicators in the application
-        applicant_info = application_data.get("applicant_info", {})
-        if not applicant_info.get("full_name"):
-            result["status"] = "FAIL"
-            result["remarks"] = "No applicant name found - cannot verify signature"
-            return result
-        
-        # This would need to be enhanced with actual signature detection
-        # For now, we assume if we have applicant info, it's signed
-        result["status"] = "PASS"
-        result["remarks"] = f"Application verified for applicant: {applicant_info.get('full_name', 'N/A')} - contains complete applicant information"
-        return result
-    
-    def _check_date_matches_effective(self, application_data: Dict, quote_data: Dict, result: Dict) -> Dict:
-        """Check if application signature date matches effective date"""
-        app_date = application_data.get("application_info", {}).get("application_date")
-        effective_date = quote_data.get("quote_effective_date")
-        
-        if not app_date:
-            result["status"] = "FAIL"
-            result["remarks"] = "Application date not found"
-            return result
-        
-        if not effective_date:
-            result["status"] = "FAIL"
-            result["remarks"] = "Effective date not found in quote"
-            return result
-        
-        # Compare dates (basic comparison)
-        if self._normalize_date(app_date) != self._normalize_date(effective_date):
-            result["status"] = "FAIL"
-            result["remarks"] = f"Application date {app_date} does not match effective date {effective_date}"
+    def _check_coverage_not_in_effect(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if COVERAGE NOT IN EFFECT form is attached"""
+        # Check if the form is present in the extracted forms data
+        forms = application_data.get("forms", {})
+        if forms.get("coverage_not_in_effect", False):
+            result["status"] = "PASS"
+            result["remarks"] = "COVERAGE NOT IN EFFECT form verified as attached"
         else:
-            result["status"] = "PASS"
-            result["remarks"] = f"Application date verified: App={app_date} matches Quote={effective_date}"
-        
+            # Fallback to text search if forms data not available
+            if self._form_text_present(application_data, "COVERAGE NOT IN EFFECT"):
+                result["status"] = "PASS"
+                result["remarks"] = "COVERAGE NOT IN EFFECT form verified as attached"
+            else:
+                result["status"] = "FAIL"
+                result["remarks"] = "COVERAGE NOT IN EFFECT form not found - must be attached. This form is required to confirm that coverage is not currently in effect for the applicant."
         return result
     
-    def _check_signed_by_all_drivers(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if all drivers have signed the application"""
-        drivers = application_data.get("drivers", [])
-        
-        if not drivers:
-            result["status"] = "FAIL"
-            result["remarks"] = "No driver information found"
-            return result
-        
-        unsigned_drivers = []
-        for driver in drivers:
-            # This is a placeholder - would need actual signature verification
-            if not driver.get("name"):
-                unsigned_drivers.append("Unknown Driver")
-        
-        if unsigned_drivers:
-            result["status"] = "FAIL"
-            result["remarks"] = f"Missing signatures from: {', '.join(unsigned_drivers)}"
+    def _check_consent_electronic_communications(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if CONSENT TO RECEIVE ELECTRONIC COMMUNICATIONS form is attached"""
+        # Check if the form is present in the extracted forms data
+        forms = application_data.get("forms", {})
+        if forms.get("consent_electronic_communications", False):
+            result["status"] = "PASS"
+            result["remarks"] = "CONSENT TO RECEIVE ELECTRONIC COMMUNICATIONS form verified as attached"
         else:
-            driver_names = [driver.get("name", "Unknown") for driver in drivers]
-            result["status"] = "PASS"
-            result["remarks"] = f"All {len(drivers)} drivers verified: {', '.join(driver_names)}"
-        
+            # Fallback to text search if forms data not available
+            if self._form_text_present(application_data, "CONSENT TO RECEIVE ELECTRONIC COMMUNICATIONS"):
+                result["status"] = "PASS"
+                result["remarks"] = "CONSENT TO RECEIVE ELECTRONIC COMMUNICATIONS form verified as attached"
+            else:
+                result["status"] = "FAIL"
+                result["remarks"] = "CONSENT TO RECEIVE ELECTRONIC COMMUNICATIONS form not found - must be attached. This form is required to authorize electronic communications with the client."
         return result
     
-    def _check_complete_personal_info(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if personal information is complete"""
-        applicant = application_data.get("applicant_info", {})
-        missing_fields = []
-        
-        required_fields = ["full_name", "date_of_birth", "gender", "marital_status"]
-        for field in required_fields:
-            if not applicant.get(field):
-                missing_fields.append(field.replace("_", " ").title())
-        
-        if missing_fields:
-            result["status"] = "FAIL"
-            result["remarks"] = f"Missing required personal information: {', '.join(missing_fields)}"
+    def _check_personal_info_consent(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if PERSONAL INFORMATION CONSENT FORM is attached"""
+        # Check if the form is present in the extracted forms data
+        forms = application_data.get("forms", {})
+        if forms.get("personal_info_consent", False):
+            result["status"] = "PASS"
+            result["remarks"] = "PERSONAL INFORMATION CONSENT FORM verified as attached"
         else:
-            result["status"] = "PASS"
-            result["remarks"] = f"Personal information verified: Name={applicant.get('full_name', 'N/A')}, DOB={applicant.get('date_of_birth', 'N/A')}, Gender={applicant.get('gender', 'N/A')}, Marital Status={applicant.get('marital_status', 'N/A')}"
-        
+            # Fallback to text search if forms data not available
+            if self._form_text_present(application_data, "PERSONAL INFORMATION CONSENT FORM"):
+                result["status"] = "PASS"
+                result["remarks"] = "PERSONAL INFORMATION CONSENT FORM verified as attached"
+            else:
+                result["status"] = "FAIL"
+                result["remarks"] = "PERSONAL INFORMATION CONSENT FORM not found - must be attached. This form is required to authorize the collection and use of personal information."
         return result
     
-    def _check_complete_address(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if address information is complete"""
-        address = application_data.get("applicant_info", {}).get("address", {})
-        missing_fields = []
-        
-        required_fields = ["street", "city", "province", "postal_code"]
-        for field in required_fields:
-            if not address.get(field):
-                missing_fields.append(field.replace("_", " ").title())
-        
-        if missing_fields:
-            result["status"] = "FAIL"
-            result["remarks"] = f"Missing required address information: {', '.join(missing_fields)}"
+    def _check_personal_info_client_consent(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if PERSONAL INFORMATION CLIENT CONSENT FORM is attached"""
+        # Check if the form is present in the extracted forms data
+        forms = application_data.get("forms", {})
+        if forms.get("personal_info_client_consent", False):
+            result["status"] = "PASS"
+            result["remarks"] = "PERSONAL INFORMATION CLIENT CONSENT FORM verified as attached"
         else:
-            result["status"] = "PASS"
-            result["remarks"] = f"Address verified: {address.get('street', 'N/A')}, {address.get('city', 'N/A')}, {address.get('province', 'N/A')} {address.get('postal_code', 'N/A')}"
-        
+            # Fallback to text search if forms data not available
+            if self._form_text_present(application_data, "PERSONAL INFORMATION CLIENT CONSENT FORM"):
+                result["status"] = "PASS"
+                result["remarks"] = "PERSONAL INFORMATION CLIENT CONSENT FORM verified as attached"
+            else:
+                result["status"] = "FAIL"
+                result["remarks"] = "PERSONAL INFORMATION CLIENT CONSENT FORM not found - must be attached. This form is required to authorize the sharing of personal information with third parties."
         return result
     
-    def _check_complete_vehicle_info(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if vehicle information is complete"""
-        vehicles = application_data.get("vehicles", [])
-        
-        if not vehicles:
-            result["status"] = "FAIL"
-            result["remarks"] = "No vehicle information found"
-            return result
-        
-        incomplete_vehicles = []
-        for i, vehicle in enumerate(vehicles):
-            missing_fields = []
-            required_fields = ["year", "make", "model", "vin"]
-            
-            for field in required_fields:
-                if not vehicle.get(field):
-                    missing_fields.append(field)
-            
-            if missing_fields:
-                incomplete_vehicles.append(f"Vehicle {i+1}: {', '.join(missing_fields)}")
-        
-        if incomplete_vehicles:
-            result["status"] = "FAIL"
-            result["remarks"] = f"Incomplete vehicle information: {'; '.join(incomplete_vehicles)}"
+    def _check_optional_accident_benefits(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if Optional Accident Benefits Confirmation Form is attached"""
+        # Check if the form is present in the extracted forms data
+        forms = application_data.get("forms", {})
+        if forms.get("optional_accident_benefits", False):
+            result["status"] = "PASS"
+            result["remarks"] = "Optional Accident Benefits Confirmation Form verified as attached"
         else:
-            vehicle_details = []
-            for i, vehicle in enumerate(vehicles):
-                vehicle_details.append(f"Vehicle {i+1}: {vehicle.get('year', 'N/A')} {vehicle.get('make', 'N/A')} {vehicle.get('model', 'N/A')} (VIN: {vehicle.get('vin', 'N/A')})")
-            result["status"] = "PASS"
-            result["remarks"] = f"Vehicle information verified for {len(vehicles)} vehicle(s): {'; '.join(vehicle_details)}"
-        
+            # Fallback to text search if forms data not available
+            if self._form_text_present(application_data, "Optional Accident Benefits Confirmation Form"):
+                result["status"] = "PASS"
+                result["remarks"] = "Optional Accident Benefits Confirmation Form verified as attached"
+            else:
+                result["status"] = "FAIL"
+                result["remarks"] = "Optional Accident Benefits Confirmation Form not found - must be attached. This form is required to confirm the client's selection of optional accident benefits coverage."
         return result
     
-    def _check_purchase_price_provided(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if purchase price is provided for financed/leased vehicles"""
-        vehicles = application_data.get("vehicles", [])
+    def _form_text_present(self, application_data: Dict, form_name: str) -> bool:
+        """Helper method to check if a specific form text is present in the application data"""
+        # Convert application data to string for text search
+        app_text = str(application_data).upper()
+        form_text = form_name.upper()
         
-        if not vehicles:
-            result["status"] = "PASS"
-            result["remarks"] = "No vehicles to check"
-            return result
-        
-        missing_price_vehicles = []
-        for i, vehicle in enumerate(vehicles):
-            # Check if vehicle is financed or leased (this would need enhancement)
-            is_financed_or_leased = vehicle.get("usage") == "financed" or "lease" in str(vehicle).lower()
-            
-            if is_financed_or_leased and not vehicle.get("list_price"):
-                missing_price_vehicles.append(f"Vehicle {i+1}")
-        
-        if missing_price_vehicles:
-            result["status"] = "FAIL"
-            result["remarks"] = f"Purchase price missing for financed/leased vehicles: {', '.join(missing_price_vehicles)}"
-        else:
-            price_details = []
-            for i, vehicle in enumerate(vehicles):
-                if vehicle.get("list_price"):
-                    price_details.append(f"Vehicle {i+1}: ${vehicle.get('list_price', 'N/A')}")
-            result["status"] = "PASS"
-            result["remarks"] = f"Purchase price information verified: {'; '.join(price_details) if price_details else 'All vehicles have complete price information'}"
-        
-        return result
-    
-    def _check_lienholder_info(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if lienholder information is complete for financed vehicles"""
-        vehicles = application_data.get("vehicles", [])
-        
-        if not vehicles:
-            result["status"] = "PASS"
-            result["remarks"] = "No vehicles to check"
-            return result
-        
-        # This would need enhancement to detect financed vehicles and check lienholder info
-        result["status"] = "PASS"
-        result["remarks"] = "Lienholder information check passed"
-        return result
-    
-    def _check_mvr_matches_application(self, application_data: Dict, quote_data: Dict, result: Dict) -> Dict:
-        """Check if MVR information matches application"""
-        app_drivers = application_data.get("drivers", [])
-        quote_drivers = quote_data.get("drivers", [])
-        
-        if not app_drivers or not quote_drivers:
-            result["status"] = "FAIL"
-            result["remarks"] = "Cannot compare - missing driver information in application or quote"
-            return result
-        
-        def normalize_license(license_str):
-            """Normalize license number by removing hyphens and spaces"""
-            if not license_str:
-                return ""
-            return str(license_str).replace("-", "").replace(" ", "").upper()
-        
-        mismatches = []
-        for app_driver in app_drivers:
-            app_license = app_driver.get("license_number")
-            app_name = app_driver.get("name", "Unknown")
-            
-            if app_license:
-                # Find matching driver in quote by license number (normalized)
-                matching_quote_driver = None
-                normalized_app_license = normalize_license(app_license)
-                
-                for quote_driver in quote_drivers:
-                    # Try both field names and normalize
-                    quote_license = quote_driver.get("licence_number") or quote_driver.get("license_number")
-                    if quote_license and normalize_license(quote_license) == normalized_app_license:
-                        matching_quote_driver = quote_driver
-                        break
-                
-                if not matching_quote_driver:
-                    mismatches.append(f"Driver {app_name} not found in quote")
-                else:
-                    # Compare details
-                    app_dob = app_driver.get("date_of_birth")
-                    quote_dob = matching_quote_driver.get("birth_date")
-                    
-                    if app_dob and quote_dob:
-                        # Normalize both dates for comparison
-                        normalized_app_dob = self._normalize_date(app_dob)
-                        normalized_quote_dob = self._normalize_date(quote_dob)
-                        
-                        if normalized_app_dob != normalized_quote_dob:
-                            mismatches.append(f"Birth date mismatch for {app_name}: App={app_dob}, Quote={quote_dob}")
-        
-        if mismatches:
-            result["status"] = "FAIL"
-            result["remarks"] = "; ".join(mismatches)
-        else:
-            # Build detailed comparison information
-            comparison_details = []
-            for app_driver in app_drivers:
-                app_name = app_driver.get("name", "Unknown")
-                app_license = app_driver.get("license_number", "N/A")
-                app_dob = app_driver.get("date_of_birth", "N/A")
-                
-                # Find matching quote driver
-                matching_quote_driver = None
-                normalized_app_license = normalize_license(app_license)
-                for quote_driver in quote_drivers:
-                    quote_license = quote_driver.get("licence_number") or quote_driver.get("license_number")
-                    if quote_license and normalize_license(quote_license) == normalized_app_license:
-                        matching_quote_driver = quote_driver
-                        break
-                
-                if matching_quote_driver:
-                    quote_dob = matching_quote_driver.get("birth_date", "N/A")
-                    comparison_details.append(f"{app_name}: License={app_license} (App) matches {matching_quote_driver.get('licence_number') or matching_quote_driver.get('license_number', 'N/A')} (Quote), DOB={app_dob} (App) matches {quote_dob} (Quote)")
-            
-            result["status"] = "PASS"
-            result["remarks"] = f"MVR information verified: {'; '.join(comparison_details)}"
-        
-        return result
-    
-    def _check_license_class_valid(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if license class is appropriate for vehicle type"""
-        drivers = application_data.get("drivers", [])
-        vehicles = application_data.get("vehicles", [])
-        
-        if not drivers or not vehicles:
-            result["status"] = "FAIL"
-            result["remarks"] = "Cannot verify - missing driver or vehicle information"
-            return result
-        
-        invalid_licenses = []
-        for driver in drivers:
-            license_class = driver.get("license_class")
-            if license_class not in ["G", "G1", "G2"]:
-                invalid_licenses.append(f"Driver {driver.get('name', 'Unknown')}: {license_class}")
-        
-        if invalid_licenses:
-            result["status"] = "FAIL"
-            result["remarks"] = f"Invalid license classes: {', '.join(invalid_licenses)}"
-        else:
-            license_details = [f"{driver.get('name', 'Unknown')}: {driver.get('license_class', 'N/A')}" for driver in drivers]
-            result["status"] = "PASS"
-            result["remarks"] = f"License classes verified: {'; '.join(license_details)}"
-        
-        return result
-    
-    def _check_conviction_disclosure(self, application_data: Dict, quote_data: Dict, result: Dict) -> Dict:
-        """Check if all convictions are properly disclosed"""
-        app_convictions = application_data.get("convictions", [])
-        quote_convictions = quote_data.get("convictions", [])
-        
-        # Count meaningful convictions (exclude placeholder entries)
-        meaningful_app_convictions = [c for c in app_convictions if c.get("description") and "No convictions" not in c.get("description", "")]
-        meaningful_quote_convictions = [c for c in quote_convictions if c.get("description")]
-        
-        if len(meaningful_app_convictions) != len(meaningful_quote_convictions):
-            result["status"] = "FAIL"
-            result["remarks"] = f"Conviction count mismatch: App has {len(meaningful_app_convictions)}, Quote has {len(meaningful_quote_convictions)}"
-        else:
-            result["status"] = "PASS"
-            app_conviction_details = [f"{c.get('description', 'N/A')}" for c in meaningful_app_convictions] if meaningful_app_convictions else ["No convictions"]
-            quote_conviction_details = [f"{c.get('description', 'N/A')}" for c in meaningful_quote_convictions] if meaningful_quote_convictions else ["No convictions"]
-            result["remarks"] = f"Convictions verified: App={', '.join(app_conviction_details)}, Quote={', '.join(quote_conviction_details)}"
-        
-        return result
-    
-    def _check_driver_training_valid(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if driver training certificates are valid if claimed"""
-        drivers = application_data.get("drivers", [])
-        
-        training_issues = []
-        for driver in drivers:
-            training = driver.get("driver_training")
-            training_date = driver.get("driver_training_date")
-            
-            if training == "Yes" and not training_date:
-                training_issues.append(f"Driver {driver.get('name', 'Unknown')}: Training claimed but no date provided")
-        
-        if training_issues:
-            result["status"] = "FAIL"
-            result["remarks"] = "; ".join(training_issues)
-        else:
-            result["status"] = "PASS"
-            result["remarks"] = "Driver training documentation appears valid"
-        
-        return result
-    
-
-    
-    def _check_opcf_43_applicable(self, application_data: Dict, quote_data: Dict, result: Dict) -> Dict:
-        """Check if OPCF 43 is applied where applicable"""
-        # This is a placeholder - would need specific business rules
-        result["status"] = "PASS"
-        result["remarks"] = "OPCF 43 applicability verified"
-        return result
-    
-    def _check_opcf_28a_applicable(self, application_data: Dict, quote_data: Dict, result: Dict) -> Dict:
-        """Check if OPCF 28a is applied where applicable"""
-        # This is a placeholder - would need specific business rules
-        result["status"] = "PASS"
-        result["remarks"] = "OPCF 28a applicability verified"
-        return result
-    
-    def _check_pleasure_use_remarks(self, application_data: Dict, quote_data: Dict, result: Dict) -> Dict:
-        """Check pleasure use remarks"""
-        vehicles = quote_data.get("vehicles", [])
-        
-        pleasure_vehicles_missing_remarks = []
-        for i, vehicle in enumerate(vehicles):
-            if vehicle.get("primary_use") == "Pleasure":
-                # Check if remarks are provided (this would need enhancement)
-                if not vehicle.get("remarks"):
-                    pleasure_vehicles_missing_remarks.append(f"Vehicle {i+1}")
-        
-        if pleasure_vehicles_missing_remarks:
-            result["status"] = "FAIL"
-            result["remarks"] = f"Pleasure use selected but remarks missing for: {', '.join(pleasure_vehicles_missing_remarks)}"
-        else:
-            result["status"] = "PASS"
-            result["remarks"] = "Pleasure use remarks complete"
-        
-        return result
-    
-    def _check_ribo_disclosure(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if RIBO disclosure form is completed"""
-        # This would need enhancement to detect actual RIBO form
-        # For now, we assume it's complete if we have application data
-        result["status"] = "PASS"
-        result["remarks"] = "RIBO disclosure form verified as completed in application"
-        return result
+        # Check if the form name is present in the application text
+        return form_text in app_text
     
     def _check_privacy_consent(self, application_data: Dict, result: Dict) -> Dict:
         """Check if privacy consent form is signed"""
-        # This would need enhancement to detect actual privacy consent
-        # For now, we assume it's complete if we have application data
-        result["status"] = "PASS"
-        result["remarks"] = "Privacy consent form verified as signed in application"
+        # Check if the form is present in the extracted forms data
+        forms = application_data.get("forms", {})
+        if forms.get("privacy_consent", False):
+            result["status"] = "PASS"
+            result["remarks"] = "Privacy consent form verified as attached"
+        else:
+            # Fallback to text search if forms data not available
+            if self._form_text_present(application_data, "Privacy Consent"):
+                result["status"] = "PASS"
+                result["remarks"] = "Privacy consent form verified as signed in application"
+            else:
+                result["status"] = "FAIL"
+                result["remarks"] = "Privacy consent form not found - must be attached. This form is required to authorize the collection, use, and disclosure of personal information in accordance with privacy laws."
         return result
     
-    def _check_accident_benefit_selection(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if accident benefit selection form is completed"""
-        # This would need enhancement to detect actual accident benefit form
-        # For now, we assume it's complete if we have application data
-        result["status"] = "PASS"
-        result["remarks"] = "Accident benefit selection form verified as completed in application"
+    def _check_effective_date_match(self, application_data: Dict, quote_data: Dict, result: Dict) -> Dict:
+        """Check if quote effective date matches application effective date"""
+        app_effective_date_str = application_data.get("policy_info", {}).get("effective_date")
+        quote_effective_date_str = quote_data.get("quote_effective_date")
+
+        if not app_effective_date_str or not quote_effective_date_str:
+            result["status"] = "FAIL"
+            result["remarks"] = "Application or Quote effective date missing."
+            return result
+
+        app_effective_date = self._normalize_date(app_effective_date_str)
+        quote_effective_date = self._normalize_date(quote_effective_date_str)
+
+        if app_effective_date == quote_effective_date:
+            result["status"] = "PASS"
+            result["remarks"] = "Quote effective date matches application effective date."
+        else:
+            result["status"] = "FAIL"
+            result["remarks"] = f"Quote effective date ({quote_effective_date}) does not match application effective date ({app_effective_date}). This is a required validation."
         return result
     
     def _check_payment_method_valid(self, application_data: Dict, result: Dict) -> Dict:
         """Check if valid payment method is provided"""
-        payment_info = application_data.get("payment_info", {})
+        policy_info = application_data.get("policy_info", {})
         
-        if not payment_info.get("payment_method"):
+        if not policy_info.get("payment_frequency"):
             result["status"] = "FAIL"
             result["remarks"] = "No payment method specified"
         else:
-            payment_method = payment_info.get("payment_method")
+            payment_method = policy_info.get("payment_frequency")
             result["status"] = "PASS"
             result["remarks"] = f"Payment method verified: {payment_method}"
-        
-        return result
-    
-    def _check_broker_signature(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if broker signature and license number are present"""
-        broker_info = application_data.get("broker_info", {})
-        
-        if not broker_info.get("broker_name") or not broker_info.get("broker_license"):
-            result["status"] = "FAIL"
-            result["remarks"] = "Missing broker signature or license number"
-        else:
-            result["status"] = "PASS"
-            result["remarks"] = f"Broker verified: {broker_info.get('broker_name', 'N/A')} (License: {broker_info.get('broker_license', 'N/A')})"
-        
-        return result
-    
-    def _check_application_complete(self, application_data: Dict, result: Dict) -> Dict:
-        """Check if application form is completely filled out"""
-        # Check for key sections
-        sections = {
-            "applicant_info": application_data.get("applicant_info"),
-            "drivers": application_data.get("drivers"),
-            "vehicles": application_data.get("vehicles"),
-            "coverage_info": application_data.get("coverage_info")
-        }
-        
-        missing_sections = [section for section, data in sections.items() if not data]
-        
-        if missing_sections:
-            result["status"] = "FAIL"
-            result["remarks"] = f"Missing required sections: {', '.join(missing_sections)}"
-        else:
-            section_details = []
-            for section, data in sections.items():
-                if isinstance(data, list):
-                    section_details.append(f"{section}: {len(data)} items")
-                elif isinstance(data, dict):
-                    section_details.append(f"{section}: {len(data)} fields")
-                else:
-                    section_details.append(f"{section}: present")
-            
-            result["status"] = "PASS"
-            result["remarks"] = f"Application completeness verified: {'; '.join(section_details)}"
         
         return result
     
@@ -578,3 +258,148 @@ class QCChecker:
             return date_str
         except:
             return date_str
+
+    def _check_purchase_date_filled(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if Purchase Date is filled for all vehicles"""
+        vehicles = application_data.get("vehicles", [])
+        if not vehicles:
+            result["status"] = "FAIL"
+            result["remarks"] = "No vehicles found in application - Purchase Date validation cannot be performed"
+            return result
+        
+        missing_dates = []
+        for i, vehicle in enumerate(vehicles):
+            vehicle_num = i + 1
+            purchase_date = vehicle.get("purchase_date")
+            if not purchase_date:
+                missing_dates.append(f"Vehicle {vehicle_num}")
+        
+        if missing_dates:
+            result["status"] = "FAIL"
+            result["remarks"] = f"Purchase Date missing for: {', '.join(missing_dates)}. Purchase Date is required for all vehicles."
+        else:
+            result["status"] = "PASS"
+            result["remarks"] = "Purchase Date verified for all vehicles"
+        
+        return result
+    
+    def _check_purchase_price_filled(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if Purchase Price is filled for all vehicles"""
+        vehicles = application_data.get("vehicles", [])
+        if not vehicles:
+            result["status"] = "FAIL"
+            result["remarks"] = "No vehicles found in application - Purchase Price validation cannot be performed"
+            return result
+        
+        missing_prices = []
+        for i, vehicle in enumerate(vehicles):
+            vehicle_num = i + 1
+            purchase_price = vehicle.get("purchase_price") or vehicle.get("list_price")
+            if not purchase_price:
+                missing_prices.append(f"Vehicle {vehicle_num}")
+        
+        if missing_prices:
+            result["status"] = "FAIL"
+            result["remarks"] = f"Purchase Price missing for: {', '.join(missing_prices)}. Purchase Price is required for all vehicles."
+        else:
+            result["status"] = "PASS"
+            result["remarks"] = "Purchase Price verified for all vehicles"
+        
+        return result
+    
+    def _check_purchase_new_used_filled(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if Purchase New or Used is filled for all vehicles"""
+        vehicles = application_data.get("vehicles", [])
+        if not vehicles:
+            result["status"] = "FAIL"
+            result["remarks"] = "No vehicles found in application - Purchase New or Used validation cannot be performed"
+            return result
+        
+        missing_conditions = []
+        for i, vehicle in enumerate(vehicles):
+            vehicle_num = i + 1
+            purchase_condition = vehicle.get("purchase_condition")
+            if not purchase_condition:
+                missing_conditions.append(f"Vehicle {vehicle_num}")
+        
+        if missing_conditions:
+            result["status"] = "FAIL"
+            result["remarks"] = f"Purchase New or Used missing for: {', '.join(missing_conditions)}. Purchase condition is required for all vehicles."
+        else:
+            result["status"] = "PASS"
+            result["remarks"] = "Purchase New or Used verified for all vehicles"
+        
+        return result
+    
+    def _check_owned_leased_filled(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if Owned Or Leased is filled for all vehicles"""
+        vehicles = application_data.get("vehicles", [])
+        if not vehicles:
+            result["status"] = "FAIL"
+            result["remarks"] = "No vehicles found in application - Owned Or Leased validation cannot be performed"
+            return result
+        
+        missing_ownership = []
+        for i, vehicle in enumerate(vehicles):
+            vehicle_num = i + 1
+            owned = vehicle.get("owned")
+            leased = vehicle.get("leased")
+            if owned is None and leased is None:
+                missing_ownership.append(f"Vehicle {vehicle_num}")
+        
+        if missing_ownership:
+            result["status"] = "FAIL"
+            result["remarks"] = f"Owned Or Leased missing for: {', '.join(missing_ownership)}. Ownership status is required for all vehicles."
+        else:
+            result["status"] = "PASS"
+            result["remarks"] = "Owned Or Leased verified for all vehicles"
+        
+        return result
+    
+    def _check_annual_driving_distance_filled(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if Estimate annual driving distance is filled for all vehicles"""
+        vehicles = application_data.get("vehicles", [])
+        if not vehicles:
+            result["status"] = "FAIL"
+            result["remarks"] = "No vehicles found in application - Annual driving distance validation cannot be performed"
+            return result
+        
+        missing_distances = []
+        for i, vehicle in enumerate(vehicles):
+            vehicle_num = i + 1
+            annual_km = vehicle.get("annual_km") or vehicle.get("estimated_annual_driving_distance")
+            if not annual_km:
+                missing_distances.append(f"Vehicle {vehicle_num}")
+        
+        if missing_distances:
+            result["status"] = "FAIL"
+            result["remarks"] = f"Annual driving distance missing for: {', '.join(missing_distances)}. Annual driving distance is required for all vehicles."
+        else:
+            result["status"] = "PASS"
+            result["remarks"] = "Annual driving distance verified for all vehicles"
+        
+        return result
+    
+    def _check_fuel_type_filled(self, application_data: Dict, result: Dict) -> Dict:
+        """Check if Type of fuel used is filled for all vehicles"""
+        vehicles = application_data.get("vehicles", [])
+        if not vehicles:
+            result["status"] = "FAIL"
+            result["remarks"] = "No vehicles found in application - Fuel type validation cannot be performed"
+            return result
+        
+        missing_fuel_types = []
+        for i, vehicle in enumerate(vehicles):
+            vehicle_num = i + 1
+            fuel_type = vehicle.get("fuel_type") or vehicle.get("type_of_fuel")
+            if not fuel_type:
+                missing_fuel_types.append(f"Vehicle {vehicle_num}")
+        
+        if missing_fuel_types:
+            result["status"] = "FAIL"
+            result["remarks"] = f"Fuel type missing for: {', '.join(missing_fuel_types)}. Fuel type is required for all vehicles."
+        else:
+            result["status"] = "PASS"
+            result["remarks"] = "Fuel type verified for all vehicles"
+        
+        return result

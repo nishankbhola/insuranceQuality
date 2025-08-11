@@ -11,237 +11,13 @@ def create_qc_checklist_excel():
     
     # Current QC checklist data
     checklist_data = [
-        # Signatures
-        {
-            "ID": "signed_application",
-            "Category": "Signatures", 
-            "Checklist Item": "Signed Application by Insured",
-            "Current Logic": "Check if applicant name exists in application",
-            "Application Data Used": "applicant_info.full_name",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "date_matches_effective",
-            "Category": "Signatures",
-            "Checklist Item": "Date App Signed matches Effective Date", 
-            "Current Logic": "Compare application date vs quote effective date (exact match)",
-            "Application Data Used": "application_info.application_date",
-            "Quote Data Used": "quote_effective_date",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "signed_by_all_drivers",
-            "Category": "Signatures",
-            "Checklist Item": "Signed by all drivers on policy",
-            "Current Logic": "Check if all drivers have names/signatures",
-            "Application Data Used": "drivers[].name",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        
-        # Completed Information
-        {
-            "ID": "complete_personal_info",
-            "Category": "Completed Information",
-            "Checklist Item": "Complete Personal Information",
-            "Current Logic": "Check required fields: full_name, date_of_birth, gender, marital_status",
-            "Application Data Used": "applicant_info.{full_name, date_of_birth, gender, marital_status}",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "complete_address",
-            "Category": "Completed Information",
-            "Checklist Item": "Complete Address Information",
-            "Current Logic": "Check required fields: street, city, province, postal_code",
-            "Application Data Used": "applicant_info.address.{street, city, province, postal_code}",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "complete_vehicle_info",
-            "Category": "Completed Information",
-            "Checklist Item": "Complete Vehicle Information",
-            "Current Logic": "Check required fields: year, make, model, vin",
-            "Application Data Used": "vehicles[].{year, make, model, vin}",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "purchase_price_provided",
-            "Category": "Completed Information",
-            "Checklist Item": "Purchase Price/Value provided for financed/leased vehicles",
-            "Current Logic": "Check if purchase price exists for financed/leased vehicles",
-            "Application Data Used": "vehicles[].list_price (if financed)",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "lienholder_info",
-            "Category": "Completed Information",
-            "Checklist Item": "Lienholder information complete for financed vehicles",
-            "Current Logic": "Currently placeholder - needs implementation",
-            "Application Data Used": "Currently placeholder",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        
-        # Driver/MVR
-        {
-            "ID": "mvr_matches_application",
-            "Category": "Driver/MVR",
-            "Checklist Item": "MVR information matches application",
-            "Current Logic": "Compare driver details: license_number, date_of_birth, name",
-            "Application Data Used": "drivers[].{license_number, date_of_birth, name}",
-            "Quote Data Used": "drivers[].{licence_number, birth_date, full_name}",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "license_class_valid",
-            "Category": "Driver/MVR",
-            "Checklist Item": "License class appropriate for vehicle type",
-            "Current Logic": "Check if license class is G, G1, or G2",
-            "Application Data Used": "drivers[].license_class",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "conviction_disclosure",
-            "Category": "Driver/MVR",
-            "Checklist Item": "All convictions properly disclosed",
-            "Current Logic": "Compare conviction count between application and quote",
-            "Application Data Used": "convictions[]",
-            "Quote Data Used": "convictions[]",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "driver_training_valid",
-            "Category": "Driver/MVR",
-            "Checklist Item": "Driver training certificates valid if claimed",
-            "Current Logic": "If training=Yes, check if training_date exists",
-            "Application Data Used": "drivers[].{driver_training, driver_training_date}",
-            "Quote Data Used": "Not used",
-            "Current Status": "Warning (Required=False)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        
-        # Coverage Requirements
-        {
-            "ID": "coverage_limits_appropriate",
-            "Category": "Coverage Requirements",
-            "Checklist Item": "Coverage limits appropriate for risk",
-            "Current Logic": "Check for minimum $1M liability coverage",
-            "Application Data Used": "Not used",
-            "Quote Data Used": "coverages[].{type, limit}",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "opcf_43_applicable",
-            "Category": "Coverage Requirements",
-            "Checklist Item": "OPCF 43 applied where applicable",
-            "Current Logic": "Currently placeholder - needs business rules",
-            "Application Data Used": "Placeholder",
-            "Quote Data Used": "Placeholder",
-            "Current Status": "Warning (Required=False)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "opcf_28a_applicable",
-            "Category": "Coverage Requirements",
-            "Checklist Item": "OPCF 28a applied where applicable",
-            "Current Logic": "Currently placeholder - needs business rules",
-            "Application Data Used": "Placeholder",
-            "Quote Data Used": "Placeholder",
-            "Current Status": "Warning (Required=False)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "pleasure_use_remarks",
-            "Category": "Coverage Requirements",
-            "Checklist Item": "Pleasure Use Remarks",
-            "Current Logic": "Check if remarks exist for pleasure use vehicles",
-            "Application Data Used": "Not used",
-            "Quote Data Used": "vehicles[].{primary_use, remarks}",
-            "Current Status": "Warning (Required=False)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        
         # Forms
-        {
-            "ID": "ribo_disclosure",
-            "Category": "Forms",
-            "Checklist Item": "RIBO Disclosure Form completed",
-            "Current Logic": "Currently placeholder - needs implementation",
-            "Application Data Used": "Placeholder",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
         {
             "ID": "privacy_consent",
             "Category": "Forms",
             "Checklist Item": "Privacy Consent Form signed",
             "Current Logic": "Currently placeholder - needs implementation",
             "Application Data Used": "Placeholder",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "accident_benefit_selection",
-            "Category": "Forms",
-            "Checklist Item": "Accident Benefit Selection Form completed",
-            "Current Logic": "Check if accident_benefits field exists",
-            "Application Data Used": "coverage_info.accident_benefits",
             "Quote Data Used": "Not used",
             "Current Status": "Critical (Required=True)",
             "Keep/Remove/Modify": "REVIEW",
@@ -256,30 +32,6 @@ def create_qc_checklist_excel():
             "Checklist Item": "Valid payment method provided",
             "Current Logic": "Check if payment_frequency field exists",
             "Application Data Used": "policy_info.payment_frequency",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "broker_signature",
-            "Category": "Other Requirements",
-            "Checklist Item": "Broker signature and license number",
-            "Current Logic": "Check if broker_name exists",
-            "Application Data Used": "application_info.broker_name",
-            "Quote Data Used": "Not used",
-            "Current Status": "Critical (Required=True)",
-            "Keep/Remove/Modify": "REVIEW",
-            "Your Comments": "",
-            "New Logic (if different)": ""
-        },
-        {
-            "ID": "application_complete",
-            "Category": "Other Requirements",
-            "Checklist Item": "Application form completely filled out",
-            "Current Logic": "Check if key sections exist: applicant_info, vehicles, drivers",
-            "Application Data Used": "{applicant_info, vehicles, drivers} exist",
             "Quote Data Used": "Not used",
             "Current Status": "Critical (Required=True)",
             "Keep/Remove/Modify": "REVIEW",
@@ -324,9 +76,7 @@ def create_qc_checklist_excel():
             
             # Color code based on category
             if col_num == 2:  # Category column
-                if value == "Signatures":
-                    cell.fill = PatternFill(start_color="E3F2FD", end_color="E3F2FD", fill_type="solid")
-                elif value == "Completed Information":
+                if value == "Completed Information":
                     cell.fill = PatternFill(start_color="F3E5F5", end_color="F3E5F5", fill_type="solid")
                 elif value == "Driver/MVR":
                     cell.fill = PatternFill(start_color="E8F5E8", end_color="E8F5E8", fill_type="solid")
@@ -398,7 +148,6 @@ def create_qc_checklist_excel():
         ["", ""],
         ["CATEGORIES EXPLAINED:", ""],
         ["", ""],
-        ["Signatures:", "Checking for proper signatures and date matching"],
         ["Completed Information:", "Ensuring all required fields are filled"],
         ["Driver/MVR:", "Validating driver information and MVR consistency"],
         ["Coverage Requirements:", "Checking coverage limits and endorsements"],

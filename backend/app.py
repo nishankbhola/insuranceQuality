@@ -473,6 +473,103 @@ def application_qc():
                 "qc_results": qc_json_filename
             }
         })
+    
+    except Exception as e:
+        print(f"Error in application QC: {e}")
+        return jsonify({"error": f"Application QC failed: {str(e)}"}), 500
+
+@app.route('/api/application-qc-existing-quote', methods=['POST'])
+def application_qc_existing_quote():
+    """Application QC endpoint using existing quote_result.json file"""
+    if 'application' not in request.files:
+        return jsonify({"error": "No application file provided"}), 400
+    
+    application_file = request.files['application']
+    
+    if application_file.filename == '':
+        return jsonify({"error": "No file selected"}), 400
+    
+    if not allowed_file(application_file.filename):
+        return jsonify({"error": "Only PDF files are allowed"}), 400
+    
+    try:
+        # Save application file
+        app_filename = secure_filename(application_file.filename)
+        app_path = os.path.join(app.config['UPLOAD_FOLDER'], app_filename)
+        application_file.save(app_path)
+        
+        print(f"Processing application QC with existing quote: {app_filename}")
+        
+        # Extract application data
+        application_data = extract_application_data(app_path)
+        print(f"Application data extracted: {len(str(application_data))} characters")
+        
+        # Load existing quote data
+        quote_path = "quote_result.json"
+        if not os.path.exists(quote_path):
+            return jsonify({"error": "quote_result.json not found"}), 400
+        
+        with open(quote_path, "r") as f:
+            quote_data = json.load(f)
+        
+        print(f"Quote data loaded from: {quote_path}")
+        
+        # Run QC checklist evaluation
+        qc_checker = QCChecker()
+        qc_results = qc_checker.evaluate_application_qc(application_data, quote_data)
+        
+        # Categorize results - simplified to PASS/FAIL
+        failed_checks = [r for r in qc_results if r["status"] == "FAIL"]
+        passed_checks = [r for r in qc_results if r["status"] == "PASS"]
+        
+        # Generate summary
+        summary = {
+            "total_checks": len(qc_results),
+            "failed_checks": len(failed_checks),
+            "passed_checks": len(passed_checks),
+            "overall_status": "FAIL" if failed_checks else "PASS"
+        }
+        
+        # Save results to JSON files
+        app_json_filename = "application_data.json"
+        qc_json_filename = "qc_results_existing_quote.json"
+        
+        app_json_path = os.path.join(app.config['UPLOAD_FOLDER'], app_json_filename)
+        qc_json_path = os.path.join(app.config['UPLOAD_FOLDER'], qc_json_filename)
+        
+        with open(app_json_path, 'w', encoding='utf-8') as f:
+            json.dump(application_data, f, indent=2, ensure_ascii=False)
+        
+        with open(qc_json_path, 'w', encoding='utf-8') as f:
+            json.dump({
+                "summary": summary,
+                "failed_checks": failed_checks,
+                "passed_checks": passed_checks,
+                "all_results": qc_results,
+                "quote_data_used": quote_data
+            }, f, indent=2, ensure_ascii=False)
+        
+        print(f"QC evaluation completed: {summary}")
+        
+        # Clean up uploaded PDF files after processing
+        cleanup_upload_folder()
+        
+        return jsonify({
+            "message": "Application QC with existing quote completed successfully",
+            "summary": summary,
+            "qc_results": {
+                "failed_checks": failed_checks,
+                "passed_checks": passed_checks
+            },
+            "extracted_data": {
+                "application": application_data,
+                "quote": quote_data
+            },
+            "files": {
+                "application_data": app_json_filename,
+                "qc_results": qc_json_filename
+            }
+        })
         
     except Exception as e:
         print(f"Error processing application QC: {e}")

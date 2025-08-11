@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, FileText, Download, CheckCircle, AlertCircle, Loader, X, ExternalLink, AlertTriangle } from 'lucide-react';
+import { Upload, FileText, Download, CheckCircle, AlertCircle, Loader, X, ExternalLink, AlertTriangle, ChevronDown, ChevronUp, Code } from 'lucide-react';
 import { API_ENDPOINTS } from '../config';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -11,6 +11,7 @@ function ApplicationQC() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [editableRemarks, setEditableRemarks] = useState({});
+  const [showExtractedData, setShowExtractedData] = useState(false);
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -243,6 +244,51 @@ function ApplicationQC() {
       URL.revokeObjectURL(url);
   };
 
+  const downloadExtractedData = (dataType) => {
+    if (!result || !result.extracted_data) return;
+    
+    let data;
+    let filename;
+    
+    if (dataType === 'application') {
+      data = result.extracted_data.application;
+      filename = 'extracted_application_data.json';
+    } else if (dataType === 'quote') {
+      data = result.extracted_data.quote;
+      filename = 'extracted_quote_data.json';
+    } else {
+      return;
+    }
+    
+    const jsonString = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const formatJSON = (data) => {
+    try {
+      return JSON.stringify(data, null, 2);
+    } catch (error) {
+      return 'Error formatting JSON data';
+    }
+  };
+
+  const highlightJSON = (jsonString) => {
+    return jsonString
+      .replace(/"([^"]+)":/g, '<span class="text-blue-400">"$1"</span>:')
+      .replace(/: "([^"]*)"/g, ': <span class="text-green-400">"$1"</span>')
+      .replace(/: (\d+)/g, ': <span class="text-yellow-400">$1</span>')
+      .replace(/: (true|false|null)/g, ': <span class="text-purple-400">$1</span>')
+      .replace(/(\{|\}|\[|\])/g, '<span class="text-gray-300">$1</span>');
+  };
+
   const getStatusIcon = (status) => {
     switch (status) {
       case 'FAIL':
@@ -421,6 +467,158 @@ function ApplicationQC() {
     );
   };
 
+  const renderExtractedData = () => {
+    if (!result || !result.extracted_data) return null;
+
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+            <Code className="w-5 h-5 mr-2 text-blue-600" />
+            Extracted Data for Manual Inspection
+          </h3>
+          <button
+            onClick={() => setShowExtractedData(!showExtractedData)}
+            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            {showExtractedData ? (
+              <>
+                <ChevronUp className="w-4 h-4 mr-1" />
+                Hide Data
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-4 h-4 mr-1" />
+                Show Data
+              </>
+            )}
+          </button>
+        </div>
+        
+        {showExtractedData && (
+          <div className="space-y-6">
+            {/* Quick Summary */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="font-medium text-blue-900 mb-3">Quick Summary of Extracted Data</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <h5 className="font-medium text-blue-800 mb-2">Application Data:</h5>
+                  <ul className="space-y-1 text-blue-700">
+                    <li>• Applicant: {result.extracted_data.application?.applicant_info?.full_name || 'Not found'}</li>
+                    <li>• License: {result.extracted_data.application?.applicant_info?.license_number || 'Not found'}</li>
+                    <li>• Vehicles: {result.extracted_data.application?.vehicles?.length || 0} found</li>
+                    <li>• Drivers: {result.extracted_data.application?.drivers?.length || 0} found</li>
+                    <li>• Effective Date: {result.extracted_data.application?.policy_info?.effective_date || 'Not found'}</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium text-blue-800 mb-2">Quote Data:</h5>
+                  <ul className="space-y-1 text-blue-700">
+                    <li>• Quote Effective: {result.extracted_data.quote?.quote_effective_date || 'Not found'}</li>
+                    <li>• Premium: {result.extracted_data.quote?.premium_amount || 'Not found'}</li>
+                    <li>• Coverage: {result.extracted_data.quote?.coverage_type || 'Not found'}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Application Data */}
+            <div className="border border-gray-200 rounded-lg">
+              <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+                <h4 className="font-medium text-gray-900">Application Data (application_extractor.py output)</h4>
+                <button
+                  onClick={() => downloadExtractedData('application')}
+                  className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center"
+                >
+                  <Download className="w-4 h-4 mr-1" />
+                  Download JSON
+                </button>
+              </div>
+              <div className="p-4 bg-gray-900 rounded-b-lg">
+                <pre className="text-green-400 text-sm overflow-x-auto whitespace-pre-wrap" 
+                     dangerouslySetInnerHTML={{ 
+                       __html: highlightJSON(formatJSON(result.extracted_data.application)) 
+                     }} />
+              </div>
+            </div>
+
+            {/* Quote Data */}
+            <div className="border border-gray-200 rounded-lg">
+              <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+                <h4 className="font-medium text-gray-900">Quote Data (quote_extractor.py output)</h4>
+                <button
+                  onClick={() => downloadExtractedData('quote')}
+                  className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center"
+                >
+                  <Download className="w-4 h-4 mr-1" />
+                  Download JSON
+                </button>
+              </div>
+              <div className="p-4 bg-gray-900 rounded-b-lg">
+                <pre className="text-green-400 text-sm overflow-x-auto whitespace-pre-wrap" 
+                     dangerouslySetInnerHTML={{ 
+                       __html: highlightJSON(formatJSON(result.extracted_data.quote)) 
+                     }} />
+              </div>
+            </div>
+
+            {/* QC Results */}
+            <div className="border border-gray-200 rounded-lg">
+              <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+                <h4 className="font-medium text-gray-900">QC Results (qc_checklist.py output)</h4>
+                <button
+                  onClick={() => {
+                    const qcData = {
+                      summary: result.summary,
+                      qc_results: result.qc_results
+                    };
+                    const jsonString = JSON.stringify(qcData, null, 2);
+                    const blob = new Blob([jsonString], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'qc_results.json';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center"
+                >
+                  <Download className="w-4 h-4 mr-1" />
+                  Download JSON
+                </button>
+              </div>
+              <div className="p-4 bg-gray-900 rounded-b-lg">
+                <pre className="text-green-400 text-sm overflow-x-auto whitespace-pre-wrap" 
+                     dangerouslySetInnerHTML={{ 
+                       __html: highlightJSON(formatJSON({
+                         summary: result.summary,
+                         qc_results: result.qc_results
+                       })) 
+                     }} />
+              </div>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-start space-x-3">
+                <AlertTriangle className="w-5 h-5 text-blue-600 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-blue-900">Manual Inspection Guide</h4>
+                  <p className="text-sm text-blue-700 mt-1">
+                    Use this extracted data to manually verify what the application_extractor.py extracted from your PDF. 
+                    You can download each dataset as JSON files for detailed analysis. This is useful for debugging 
+                    extraction issues or verifying specific field values.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="p-6">
       <div className="mb-8">
@@ -487,7 +685,12 @@ function ApplicationQC() {
       </div>
 
       {/* Results Section */}
-      {result && renderQCResults()}
+      {result && (
+        <>
+          {renderQCResults()}
+          {renderExtractedData()}
+        </>
+      )}
     </div>
   );
 }

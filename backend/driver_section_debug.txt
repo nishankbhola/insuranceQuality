@@ -1,12 +1,12 @@
-Driver: Nadeen Thomas
+Driver: Noushin Kherad-Bakhsh
 Section: 
-08/04/1965
+09/11/1969
 Birth Date
-Single
+Married
 Marital Status
 Female
 Gender
-Insured
+Spouse
 Relationship to Applicant
 No
 Driver Training
@@ -17,40 +17,28 @@ No
 Out of Province / Country Driver
 G
 Licence Class
-07/08/2004
+08/19/1989
 Date G
-07/08/2003
+ 
 Date G2
-07/08/2002
+ 
 Date G1
-T35945760655804
+K33646000695911
 Licence Number
 ON
 Licence Province
  
 Occupation
-None
-Membership Plan 1 Description
- 
-Membership Date
- 
-Membership Number
-None
-Membership Plan 2 Description
- 
-Membership Date
- 
-Membership Number
-06/13/2016
+07/28/2014
 Date Insured
-Aviva
+Desjardins Assurances
 Current Carrier
-06/16/2020
+08/16/2023
 Date with
 Company
-06/13/2016
+ 
 Brokerage Insured
-06/13/2016
+ 
 Date
 Owner/Principal
 No
@@ -65,20 +53,76 @@ Class
  
 Other Licence
 Date
-No 
-Extracted dates - G: 07/08/2004, G2: 07/08/2003, G1: 07/08/2002
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
+Vieira & Associates Insurance Brokers Ltd
+(A)
+Unit 18 - 2 Orchard Heights Blvd
+Aurora, ON L4G 6T5
+Phone: (905)727-0700    Fax: (416)531-1146
+Email: info@vieirainsurance.com
+Website: www.vieirainsurance.com
+Prepared 08/03/2025 by Saman Razavi
+Applied Ref. # RWS 1016186202, CWS 347472039,
+RBWS 445007851
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
+10 Sturton Rd
+Etobicoke, ON M9P 2C6
+Company
+12 Months
+SGI CANADA
+2,291
+CAA Insurance Company (Future Member)
+2,611
+CAA MyPace
+2,698
+CAA Insurance Company
+2,746
+Intact Insurance - my Drive
+3,663
+Aviva - Aviva Journey
+3,952
+Intact Insurance
+4,040
+Wawanesa Drive Change
+4,301
+Aviva
+4,353
+Definity Insurance Company
+4,472
+Wawanesa Mutual
+4,727
+Facility Association
+5,628
+Dominion of Canada - Single Pay and DPD
+6,619
+Dominion of Canada - IntelliDrive
+8,236
+Dominion of Canada
+8,444
+Echelon
+9,198
+Coachman
+0
+JEVCO
+0
+Summary
+Navid Tahmasebian-Malayeri
+1 
+Extracted dates - G: 08/19/1989, G2: None, G1: None
 
 === DETAILED DEBUG ===
 Testing all date patterns:
-Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['07/08/2004', '07/08/2003', '07/08/2002']
-Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['07/08/2004', '07/08/2003', '07/08/2002']
-Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: ['07/08/2003']
-Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: ['07/08/2003']
-Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: ['07/08/2002']
-Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: ['07/08/2002']
+Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['08/19/1989']
+Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['08/19/1989']
+Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: []
+Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: []
+Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: []
+Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: []
 
 All date patterns found:
-All dates: ['08/04/1965', '07/08/2004', '07/08/2003', '07/08/2002', '06/13/2016', '06/16/2020', '06/13/2016', '06/13/2016']
+All dates: ['09/11/1969', '08/19/1989', '07/28/2014', '08/16/2023', '08/03/2025']
 
 Looking for 'Date G1' specifically:
 Date G1 context: 'Date G1'

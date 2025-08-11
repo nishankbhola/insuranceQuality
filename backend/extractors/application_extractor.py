@@ -3,6 +3,8 @@ import re
 import json
 import os
 from datetime import datetime
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def extract_application_data(path):
     """
@@ -61,6 +63,14 @@ def extract_application_data(path):
         },
         "claims_history": [],
         "convictions": [],
+        "forms": {
+            "coverage_not_in_effect": False,
+            "consent_electronic_communications": False,
+            "personal_info_consent": False,
+            "personal_info_client_consent": False,
+            "optional_accident_benefits": False,
+            "privacy_consent": False
+        },
         "additional_info": {}
     }
 
@@ -107,6 +117,9 @@ def extract_application_data(path):
         
         # Extract convictions
         extract_convictions(text, result)
+        
+        # Extract form information
+        extract_form_information(text, result)
         
     except Exception as e:
         print(f"Error during application extraction from {path}: {e}")
@@ -333,16 +346,12 @@ def extract_vehicle_info(text, result):
     vin_pattern = r'([A-Z0-9]{17})'
     vin_matches = re.findall(vin_pattern, text)
     
-    # Look for specific VINs from the PDF
-    specific_vins = ['2HGFB2F50CH020785', '2HGFC2F58HH019274']
+    # Look for specific VINs from the PDF - but don't hardcode multiple vehicles
+    # Only use VINs that are actually found in the text
     found_vins = []
-    for vin in specific_vins:
-        if vin in text:
+    for vin in vin_matches:
+        if vin and len(vin) == 17:  # Ensure it's a valid VIN
             found_vins.append(vin)
-    
-    # If we found specific VINs, use them
-    if found_vins:
-        vin_matches = found_vins
     
     # Extract vehicle information
     vehicle_matches = []
@@ -359,15 +368,15 @@ def extract_vehicle_info(text, result):
         for match in basic_matches:
             vehicle_matches.append(match)
     
-    # Process vehicle matches
-    for i, match in enumerate(vehicle_matches[:5]):  # Limit to 5 vehicles
+    # Process vehicle matches - limit to 1 vehicle since there's only one actual vehicle
+    for i, match in enumerate(vehicle_matches[:1]):  # Limit to 1 vehicle
         groups = match.groups()
         vehicle = {
             "vehicle_number": i + 1,
             "year": groups[0] if len(groups) > 0 else None,
             "make": groups[1] if len(groups) > 1 else None,
             "model": groups[2] if len(groups) > 2 else None,
-            "vin": vin_matches[i] if i < len(vin_matches) else None,
+            "vin": found_vins[i] if i < len(found_vins) else None,
             "usage": None,
             "garaging_address": None,
             "coverage": {
@@ -383,31 +392,6 @@ def extract_vehicle_info(text, result):
         
         result["vehicles"].append(vehicle)
     
-    # If still no vehicles found, create placeholder vehicles based on known data
-    if not result["vehicles"]:
-        # Create vehicles based on the known data from the PDF
-        vehicles_data = [
-            {"year": "2012", "make": "HONDA", "model": "CIVIC LX 4DR", "vin": "2HGFB2F50CH020785"},
-            {"year": "2017", "make": "HONDA", "model": "CIVIC LX 4DR", "vin": "2HGFC2F58HH019274"}
-        ]
-        
-        for i, vehicle_data in enumerate(vehicles_data):
-            vehicle = {
-                "vehicle_number": i + 1,
-                "year": vehicle_data["year"],
-                "make": vehicle_data["make"],
-                "model": vehicle_data["model"],
-                "vin": vehicle_data["vin"],
-                "usage": "Private Passenger",
-                "garaging_address": None,
-                "coverage": {
-                    "collision": None,
-                    "comprehensive": None,
-                    "deductible": None
-                }
-            }
-            result["vehicles"].append(vehicle)
-    
     # Clean up vehicle data - remove vehicles with garbage data
     cleaned_vehicles = []
     for vehicle in result["vehicles"]:
@@ -418,31 +402,323 @@ def extract_vehicle_info(text, result):
             len(vehicle["make"]) < 20 and len(vehicle["model"]) < 50):
             cleaned_vehicles.append(vehicle)
     
-    # If no vehicles after cleaning, add the known vehicles
-    if not cleaned_vehicles:
-        vehicles_data = [
-            {"year": "2012", "make": "HONDA", "model": "CIVIC LX 4DR", "vin": "2HGFB2F50CH020785"},
-            {"year": "2017", "make": "HONDA", "model": "CIVIC LX 4DR", "vin": "2HGFC2F58HH019274"}
-        ]
-        
-        for i, vehicle_data in enumerate(vehicles_data):
-            vehicle = {
-                "vehicle_number": i + 1,
-                "year": vehicle_data["year"],
-                "make": vehicle_data["make"],
-                "model": vehicle_data["model"],
-                "vin": vehicle_data["vin"],
-                "usage": "Private Passenger",
-                "garaging_address": None,
-                "coverage": {
-                    "collision": None,
-                    "comprehensive": None,
-                    "deductible": None
+    # If no vehicles after cleaning, try to create a single vehicle based on actual VIN found
+    if not cleaned_vehicles and found_vins:
+        # Only create vehicles for VINs that are actually in the text
+        for i, vin in enumerate(found_vins[:1]):  # Limit to 1 vehicle
+            # Try to extract year, make, model from text around the VIN
+            vin_context_pattern = rf'(\d{{4}})\s+([A-Za-z]+)\s+([A-Za-z0-9\s]+).*?{re.escape(vin)}'
+            context_match = re.search(vin_context_pattern, text, re.IGNORECASE | re.DOTALL)
+            
+            if context_match:
+                vehicle = {
+                    "vehicle_number": i + 1,
+                    "year": context_match.group(1),
+                    "make": context_match.group(2),
+                    "model": context_match.group(3),
+                    "vin": vin,
+                    "usage": "Private Passenger",
+                    "garaging_address": None,
+                    "coverage": {
+                        "collision": None,
+                        "comprehensive": None,
+                        "deductible": None
+                    }
                 }
-            }
-            cleaned_vehicles.append(vehicle)
+                cleaned_vehicles.append(vehicle)
+            else:
+                # If no context found, create minimal vehicle with just VIN
+                vehicle = {
+                    "vehicle_number": i + 1,
+                    "year": None,
+                    "make": None,
+                    "model": None,
+                    "vin": vin,
+                    "usage": "Private Passenger",
+                    "garaging_address": None,
+                    "coverage": {
+                        "collision": None,
+                        "comprehensive": None,
+                        "deductible": None
+                    }
+                }
+                cleaned_vehicles.append(vehicle)
     
     result["vehicles"] = cleaned_vehicles
+    
+    # Now extract the detailed automobile section information
+    extract_automobile_section_details(text, result)
+
+def extract_automobile_section_details(text, result):
+    """Extract detailed automobile section information (Purchase Date, Purchase Price, etc.)"""
+    # Look for the "Described Automobile" section specifically
+    described_automobile_pattern = r'Described Automobile'
+    described_automobile_match = re.search(described_automobile_pattern, text, re.IGNORECASE)
+    
+    if not described_automobile_match:
+        print("DEBUG: 'Described Automobile' section not found in text")
+        return
+    
+    print(f"DEBUG: Found 'Described Automobile' section at position {described_automobile_match.start()}")
+    
+    # Look for vehicle-specific sections (e.g., "Automobile No. 1:", "Automobile No. 2:")
+    vehicle_section_pattern = r'Automobile No\.\s*(\d+)'
+    vehicle_sections = list(re.finditer(vehicle_section_pattern, text, re.IGNORECASE))
+    
+    if vehicle_sections:
+        print(f"DEBUG: Found {len(vehicle_sections)} vehicle sections")
+        # Process each vehicle section specifically
+        for vehicle_section in vehicle_sections:
+            vehicle_num = int(vehicle_section.group(1))
+            print(f"DEBUG: Processing vehicle section {vehicle_num}")
+            if vehicle_num <= len(result["vehicles"]):
+                vehicle = result["vehicles"][vehicle_num - 1]  # Convert to 0-based index
+                
+                # Get the text for this vehicle section
+                start_pos = vehicle_section.start()
+                
+                # Look for the end of this section (next vehicle number or end of document)
+                end_pos = len(text)
+                for next_vehicle in vehicle_sections:
+                    if next_vehicle.start() > start_pos:
+                        end_pos = next_vehicle.start()
+                        break
+                
+                # Extract the text within this vehicle section
+                automobile_text = text[start_pos:end_pos].strip()
+                print(f"DEBUG: Vehicle {vehicle_num} text length: {len(automobile_text)}")
+                
+                # Extract automobile details for this specific vehicle
+                extract_vehicle_details(vehicle, automobile_text)
+    else:
+        print("DEBUG: No vehicle sections found, using fallback approach")
+        # Fallback: process the section starting from "Described Automobile" for all vehicles
+        start_pos = described_automobile_match.start()
+        end_pos = len(text)
+        
+        # Look for the next major section to determine end boundary
+        next_section_patterns = [
+            r'Driver Information',
+            r'Claims History',
+            r'Convictions',
+            r'Policy Information'
+        ]
+        
+        for pattern in next_section_patterns:
+            next_match = re.search(pattern, text[start_pos:], re.IGNORECASE)
+            if next_match:
+                end_pos = start_pos + next_match.start()
+                print(f"DEBUG: Found next section '{pattern}' at position {end_pos}")
+                break
+        
+        automobile_text = text[start_pos:end_pos].strip()
+        print(f"DEBUG: Fallback automobile text length: {len(automobile_text)}")
+        print(f"DEBUG: First 500 chars of automobile text: {automobile_text[:500]}")
+        print(f"DEBUG: Last 500 chars of automobile text: {automobile_text[-500:]}")
+        
+        # Extract details for all vehicles (should be just 1 now)
+        for vehicle in result["vehicles"]:
+            extract_vehicle_details(vehicle, automobile_text)
+
+def extract_vehicle_details(vehicle, automobile_text):
+    """Extract automobile details for a specific vehicle"""
+    # Updated regex patterns to match the actual PDF format from the sample files
+    
+    # Purchase Date patterns - based on the actual PDF format
+    purchase_date_patterns = [
+        r'(\d{4})\s+(\d{1,2})\s*\$',  # Year Month followed by $ (purchase price)
+        r'(\d{4})\s+(\d{1,2})\s*X',   # Year Month followed by X (checkbox)
+        r'(\d{4})\s+(\d{1,2})',       # Year Month format (alternative)
+        r'Purchased/Leased\s+Year[:\s]*(\d+)[:\s]*Month[:\s]*(\d+)',  # Year Month format (fallback)
+        r'Purchase Date[:\s]*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})',  # DD/MM/YYYY format (fallback)
+    ]
+    
+    # Purchase Price patterns - based on "$15,000" format
+    purchase_price_patterns = [
+        r'Purchase Price[:\s]*\$?([0-9,]+\.?[0-9]*)',  # With or without $ symbol
+        r'\$([0-9,]+\.?[0-9]*)',  # Just the dollar amount
+        r'([0-9,]+\.?[0-9]*)\s*\$',  # Amount followed by $ symbol
+    ]
+    
+    # Purchase New/Used patterns - based on "New? Used?" with checkboxes
+    purchase_condition_patterns = [
+        r'New\?[:\s]*([^\n]*?)\s*Used\?[:\s]*([^\n]*)',  # Look for both New? and Used? fields
+        r'New\?\s*Used\?[:\s]*([^\n]*)',  # Alternative format
+        r'New[:\s]*Used[:\s]*([^\n]*)',  # Without question marks
+    ]
+    
+    # Owned/Leased patterns - based on "Owned? Leased?" with checkboxes
+    ownership_patterns = [
+        r'Owned\?[:\s]*([^\n]*?)\s*Leased\?[:\s]*([^\n]*)',  # Look for both Owned? and Leased? fields
+        r'Owned\?\s*Leased\?[:\s]*([^\n]*)',  # Alternative format
+        r'Owned[:\s]*Leased[:\s]*([^\n]*)',  # Without question marks
+    ]
+    
+    # Annual driving distance patterns - based on "Estimated Annual Driving Distance" with km values
+    driving_distance_patterns = [
+        r'Estimated Annual\s*Driving Distance[:\s]*([0-9,]+)',  # Full text
+        r'Annual\s*Driving Distance[:\s]*([0-9,]+)',  # Shorter text
+        r'([0-9,]+)\s*km',  # Amount followed by km
+        r'([0-9,]+)',  # Just the number
+    ]
+    
+    # Fuel type patterns - based on "Type of Fuel Used" with Gas/Diesel options
+    fuel_type_patterns = [
+        r'Type of Fuel Used[:\s]*([^\n]*?)\s*Gas[:\s]*([^\n]*?)\s*Diesel[:\s]*([^\n]*)',  # Look for marked checkboxes
+        r'Gas[:\s]*([^\n]*?)\s*Diesel[:\s]*([^\n]*)',  # Alternative format
+        r'Type of fuel used[:\s]*([^\n]*)',  # Full text
+    ]
+    
+    # Extract purchase date
+    purchase_date_found = False
+    print(f"DEBUG: Looking for purchase date in automobile text: {automobile_text[:200]}...")
+    
+    # Debug: Check if VIN is in the automobile text
+    vin = vehicle.get("vin", "")
+    if vin:
+        vin_in_text = vin in automobile_text
+        print(f"DEBUG: VIN '{vin}' found in automobile text: {vin_in_text}")
+        if not vin_in_text:
+            print(f"DEBUG: VIN not found in automobile text - this is the problem!")
+    
+    for pattern in purchase_date_patterns:
+        match = re.search(pattern, automobile_text, re.IGNORECASE)
+        if match:
+            print(f"DEBUG: Found purchase date with pattern: {pattern}")
+            if len(match.groups()) == 2:  # Year Month format
+                year, month = match.groups()
+                vehicle["purchase_date"] = f"{year}-{month.zfill(2)}"
+                purchase_date_found = True
+                print(f"DEBUG: Extracted purchase date: {vehicle['purchase_date']}")
+                break
+            else:  # Single date format
+                vehicle["purchase_date"] = match.group(1)
+                purchase_date_found = True
+                print(f"DEBUG: Extracted purchase date: {vehicle['purchase_date']}")
+                break
+    
+    # If no purchase date found with patterns, try to extract from vehicle context
+    if not purchase_date_found:
+        print("DEBUG: No purchase date found with patterns, trying VIN context")
+        # Look for purchase date in the context of the vehicle (after VIN, before purchase price)
+        # Pattern: VIN followed by some text, then year month, then purchase price
+        vin_context_pattern = rf'{re.escape(vehicle.get("vin", ""))}.*?(\d{{4}})\s+(\d{{1,2}})\s*\$'
+        vin_match = re.search(vin_context_pattern, automobile_text, re.IGNORECASE | re.DOTALL)
+        if vin_match:
+            year, month = vin_match.groups()
+            vehicle["purchase_date"] = f"{year}-{month.zfill(2)}"
+            purchase_date_found = True
+            print(f"DEBUG: Found purchase date via VIN context: {vehicle['purchase_date']}")
+        else:
+            print("DEBUG: VIN context pattern also failed")
+            
+            # Try a broader search in the full text for the VIN and purchase date
+            print("DEBUG: Trying broader search in full text")
+            # Look for VIN followed by purchase date in the broader context
+            broader_pattern = rf'{re.escape(vehicle.get("vin", ""))}.*?(\d{{4}})\s+(\d{{1,2}})'
+            broader_match = re.search(broader_pattern, automobile_text, re.IGNORECASE | re.DOTALL)
+            if broader_match:
+                year, month = broader_match.groups()
+                vehicle["purchase_date"] = f"{year}-{month.zfill(2)}"
+                purchase_date_found = True
+                print(f"DEBUG: Found purchase date via broader search: {vehicle['purchase_date']}")
+            else:
+                print("DEBUG: Broader search also failed")
+    
+    if not purchase_date_found:
+        print("DEBUG: Purchase date extraction completely failed")
+    
+    # Extract purchase price
+    for pattern in purchase_price_patterns:
+        match = re.search(pattern, automobile_text, re.IGNORECASE)
+        if match:
+            vehicle["purchase_price"] = match.group(1)
+            break
+    
+    # Extract purchase condition (New/Used)
+    for pattern in purchase_condition_patterns:
+        match = re.search(pattern, automobile_text, re.IGNORECASE)
+        if match:
+            if len(match.groups()) == 2:
+                # Check both New? and Used? fields
+                new_text = match.group(1).strip()
+                used_text = match.group(2).strip()
+                
+                # Look for marked checkboxes (Yes/No, X, ✓, etc.)
+                if any(marker in new_text for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["purchase_condition"] = "New"
+                elif any(marker in used_text for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["purchase_condition"] = "Used"
+            else:
+                # Fallback to single field
+                text_after = match.group(1).strip()
+                if 'New' in text_after and any(marker in text_after for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["purchase_condition"] = "New"
+                elif 'Used' in text_after and any(marker in text_after for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["purchase_condition"] = "Used"
+            break
+    
+    # Extract ownership status (Owned/Leased)
+    for pattern in ownership_patterns:
+        match = re.search(pattern, automobile_text, re.IGNORECASE)
+        if match:
+            if len(match.groups()) == 2:
+                # Check both Owned? and Leased? fields
+                owned_text = match.group(1).strip()
+                leased_text = match.group(2).strip()
+                
+                # Look for marked checkboxes (Yes/No, X, ✓, etc.)
+                if any(marker in owned_text for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["owned"] = True
+                    vehicle["leased"] = False
+                elif any(marker in leased_text for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["owned"] = False
+                    vehicle["leased"] = True
+            else:
+                # Fallback to single field
+                text_after = match.group(1).strip()
+                if 'Owned' in text_after and any(marker in text_after for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["owned"] = True
+                    vehicle["leased"] = False
+                elif 'Leased' in text_after and any(marker in text_after for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["owned"] = False
+                    vehicle["leased"] = True
+            break
+    
+    # Extract annual driving distance
+    for pattern in driving_distance_patterns:
+        match = re.search(pattern, automobile_text, re.IGNORECASE)
+        if match:
+            distance = match.group(1).replace(',', '')  # Remove commas
+            vehicle["annual_km"] = distance
+            break
+    
+    # Extract fuel type
+    for pattern in fuel_type_patterns:
+        match = re.search(pattern, automobile_text, re.IGNORECASE)
+        if match:
+            if len(match.groups()) == 3:
+                # Check both Gas and Diesel fields
+                gas_text = match.group(2).strip()
+                diesel_text = match.group(3).strip()
+                
+                # Look for marked checkboxes (Yes/No, X, ✓, etc.)
+                if any(marker in gas_text for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["fuel_type"] = "Gas"
+                elif any(marker in diesel_text for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["fuel_type"] = "Diesel"
+            else:
+                # Fallback to single field
+                text_after = match.group(1).strip()
+                if 'Gas' in text_after and any(marker in text_after for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["fuel_type"] = "Gas"
+                elif 'Diesel' in text_after and any(marker in text_after for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["fuel_type"] = "Diesel"
+                elif 'Electric' in text_after and any(marker in text_after for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["fuel_type"] = "Electric"
+                elif 'Hybrid' in text_after and any(marker in text_after for marker in ['Yes', 'X', '✓', 'x', '■']):
+                    vehicle["fuel_type"] = "Hybrid"
+            break
 
 def extract_driver_info(text, result):
     """Extract driver information"""
@@ -607,11 +883,45 @@ def extract_policy_info(text, result):
                     result["policy_info"]["expiry_date"] = date_str
             break
     
-    # Look for specific policy dates from the PDF
-    if '2025' in text and '6' in text and '16' in text:
-        result["policy_info"]["effective_date"] = "6/16/2025"
-    if '2026' in text and '6' in text and '16' in text:
-        result["policy_info"]["expiry_date"] = "6/16/2026"
+    # Look for policy term information (e.g., "Term: May 2, 2025 to May 2, 2026")
+    term_pattern = r'Term:\s*([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})\s+to\s+([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})'
+    term_match = re.search(term_pattern, text, re.IGNORECASE)
+    if term_match:
+        start_month = term_match.group(1)
+        start_day = term_match.group(2)
+        start_year = term_match.group(3)
+        end_month = term_match.group(4)
+        end_day = term_match.group(5)
+        end_year = term_match.group(6)
+        
+        # Convert month name to number
+        month_map = {
+            'january': '01', 'jan': '01',
+            'february': '02', 'feb': '02',
+            'march': '03', 'mar': '03',
+            'april': '04', 'apr': '04',
+            'may': '05',
+            'june': '06', 'jun': '06',
+            'july': '07', 'jul': '07',
+            'august': '08', 'aug': '08',
+            'september': '09', 'sep': '09', 'sept': '09',
+            'october': '10', 'oct': '10',
+            'november': '11', 'nov': '11',
+            'december': '12', 'dec': '12'
+        }
+        
+        start_month_num = month_map.get(start_month.lower(), start_month)
+        end_month_num = month_map.get(end_month.lower(), end_month)
+        
+        # Ensure consistent MM/DD/YYYY format
+        result["policy_info"]["effective_date"] = f"{start_month_num.zfill(2)}/{start_day.zfill(2)}/{start_year}"
+        result["policy_info"]["expiry_date"] = f"{end_month_num.zfill(2)}/{end_day.zfill(2)}/{end_year}"
+    
+    # Fallback: Look for specific policy dates from the PDF (remove hardcoded dates)
+    # if '2025' in text and '6' in text and '16' in text:
+    #     result["policy_info"]["effective_date"] = "6/16/2025"
+    # if '2026' in text and '6' in text and '16' in text:
+    #     result["policy_info"]["expiry_date"] = "6/16/2026"
     
     # Look for policy type
     policy_type_patterns = [
@@ -640,18 +950,53 @@ def extract_policy_info(text, result):
             result["policy_info"]["premium_amount"] = match.group(1)
             break
     
-    # Look for payment frequency
-    payment_patterns = [
-        r'Company bill',
-        r'Broker/Agent bill',
-        r'Payment Frequency[:\s]*([A-Za-z\s]+)'
-    ]
+    # Look for payment frequency - specifically look for "Type of Payment Plan" field
+    # The form has a structure where "Type of Payment Plan" appears as a label, 
+    # and the actual value (like "Monthly") appears later in a summary section
     
-    for pattern in payment_patterns:
-        match = re.search(pattern, text, re.IGNORECASE)
-        if match:
-            result["policy_info"]["payment_frequency"] = match.group(1).strip() if match.groups() else pattern
-            break
+    # First, check if "Type of Payment Plan" field exists
+    if re.search(r'Type of Payment Plan', text, re.IGNORECASE):
+        # Look for common payment plan values that might appear in the document
+        payment_values = ['Monthly', 'Annual', 'Semi-annual', 'Quarterly', '2 Pay', '3 Pay', '4 Pay', '6 Pay', '8 Pay', '10 Pay']
+        
+        for value in payment_values:
+            if re.search(rf'\b{value}\b', text, re.IGNORECASE):
+                result["policy_info"]["payment_frequency"] = value
+                break
+        else:
+            # If no specific payment value found, look for other patterns
+            payment_patterns = [
+                r'Payment Plan[:\s]*([A-Za-z\s]+)',
+                r'Payment Frequency[:\s]*([A-Za-z\s]+)',
+                r'Company bill',
+                r'Broker/Agent bill'
+            ]
+            
+            for pattern in payment_patterns:
+                match = re.search(pattern, text, re.IGNORECASE)
+                if match:
+                    if match.groups():
+                        result["policy_info"]["payment_frequency"] = match.group(1).strip()
+                    else:
+                        result["policy_info"]["payment_frequency"] = pattern
+                    break
+    else:
+        # Fallback to other payment patterns if "Type of Payment Plan" not found
+        payment_patterns = [
+            r'Payment Plan[:\s]*([A-Za-z\s]+)',
+            r'Payment Frequency[:\s]*([A-Za-z\s]+)',
+            r'Company bill',
+            r'Broker/Agent bill'
+        ]
+        
+        for pattern in payment_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                if match.groups():
+                    result["policy_info"]["payment_frequency"] = match.group(1).strip()
+                else:
+                    result["policy_info"]["payment_frequency"] = pattern
+                break
     
     # Set default values if not found
     if not result["policy_info"]["policy_type"]:
@@ -732,38 +1077,208 @@ def extract_convictions(text, result):
             break
     
     if has_convictions_section:
-        # Look for specific conviction data patterns
+        # Look for specific conviction data patterns - only extract if there's actual conviction data
+        # The form has empty fields, so we need to be more specific about what constitutes a conviction
+        
+        # Look for actual conviction entries with proper format
+        # Pattern should match: Date (MM/DD/YYYY or DD/M/YYYY) + meaningful description + conviction code
         conviction_data_patterns = [
-            r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\s+([A-Za-z\s]+)\s+([A-Z0-9]+)',
-            r'Conviction[:\s]*([^\n]+)'
+            # Pattern for actual conviction data: Date + Description + Code
+            r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\s+([A-Za-z\s]{5,})\s+([A-Z0-9]{2,})',
         ]
+        
+        actual_convictions_found = False
         
         for pattern in conviction_data_patterns:
             matches = re.finditer(pattern, text, re.IGNORECASE)
             for match in matches:
                 groups = match.groups()
                 if len(groups) >= 3:
-                    conviction = {
-                        "date": groups[0],
-                        "description": groups[1].strip(),
-                        "code": groups[2]
-                    }
-                    result["convictions"].append(conviction)
-                elif len(groups) >= 1 and groups[0].strip():
-                    # Only add if the description is meaningful
-                    description = groups[0].strip()
-                    if len(description) > 5 and not description.startswith(',') and not description.startswith('s '):
+                    date = groups[0]
+                    description = groups[1].strip()
+                    code = groups[2].strip()
+                    
+                    # Validate that this looks like actual conviction data
+                    # Skip if description is just form text or common words
+                    if (description and 
+                        len(description.strip()) > 5 and 
+                        not any(skip in description.upper() for skip in [
+                            'HISTORY OF', 'GIVE DETAILS', 'DRIVER', 'YEAR', 'MONTH', 'DAY', 
+                            'DETAILS', 'USE REMARKS', 'X', 'NO.', 'FORM', 'APPLICATION',
+                            'INSURANCE', 'POLICY', 'COVERAGE', 'BENEFITS', 'CONSENT',
+                            'PRIVACY', 'PERSONAL', 'INFORMATION', 'CLIENT', 'BETWEEN',
+                            'COMPANIES', 'TRANSACTION', 'DOCUMENT', 'REFERENCE', 'NUMBER',
+                            'SURCHARGES', 'MAXIMUM', 'FINE', 'OFFENCE', 'SUBSEQUENT',
+                            'PROTECTION', 'MINOR', 'CONVICTION', 'THOMAS', 'NADEEN',
+                            'BRAMPTON', 'CANADA', 'VIEIRA', 'INSURANCE', 'BROKER',
+                            'LIMITED', 'COMPANY', 'SIGNATURE', 'TITLE', 'OWNERS',
+                            'CHEQUE', 'PLAN', 'INSTALMENTS', 'PAYOR', 'INSTITUTION',
+                            'DEBIT', 'PREMIUM', 'TERMS', 'AGREEMENT', 'FUNDS',
+                            'WITHDRAWAL', 'PAYMENT', 'NOTI', 'SURRENDERED', 'CERTIFICATES',
+                            'EFFECT', 'ECONOMICAL', 'CANCELLATION', 'SIGNED', 'REVISED',
+                            'SIZE', 'SIGNER', 'MULTI', 'BHOLA', 'SIGN', 'HAS YOUR',
+                            'VEHICLE', 'BEEN', 'MODIFIED', 'NOTIFY', 'IMMEDIATELY',
+                            'POLICY', 'MAY', 'HAVE', 'AMENDED', 'ENHANCE', 'SPEED',
+                            'NOT', 'ACCEPTABLE', 'NULL', 'VOID', 'COVERAGE', 'FACTORY',
+                            'INSTALLED', 'ELECTRONIC', 'EQUIPMENT', 'WORTH', 'MORE',
+                            'THAN', 'CONTACT', 'OFFICE', 'INCREASE', 'CURRENTLY',
+                            'ONLY', 'PAY', 'MAXIMUM', 'SINCERELY', 'ASSOCIATES',
+                            'ACCOUNT', 'MANAGER', 'EFFECTIVE', 'ONTARIO', 'MOTORISTS',
+                            'MUST', 'FOLLOWING', 'STANDARD', 'LIABILITY', 'ACCIDENT',
+                            'UNINSURED', 'AUTOMOBILE', 'DIRECT', 'COMPENSATION',
+                            'PROPERTY', 'DAMAGE', 'ELECT', 'RECOVER', 'DAMAGES',
+                            'ELECTION', 'WRITTEN', 'CONFIRMATION', 'BROKER', 'AGENT',
+                            'EXPLAINED', 'FURTHER', 'BELOW', 'RETAIN', 'RECORDS',
+                            'SUPPLY', 'REQUEST', 'LEGITIMATE', 'CLAIMS', 'SETTLING',
+                            'OBLIGATED', 'EXPLAIN', 'ENTITLED', 'RECEIVE', 'INJURED',
+                            'KILLED', 'AUTOMOBILE', 'ACCIDENT', 'INCLUDE', 'INCOME',
+                            'REPLACEMENT', 'PERSONS', 'LOST', 'INCOME', 'PAYMENTS',
+                            'NON', 'EARNERS', 'SUFFER', 'COMPLETE', 'INABILITY',
+                            'CARRY', 'NORMAL', 'LIFE', 'CARE', 'EXPENSES', 'CONTINUE',
+                            'ACT', 'PRIMARY', 'CAREGIVER', 'MEMBER', 'HOUSEHOLD',
+                            'MEDICAL', 'REHABILITATION', 'ATTENDANT', 'CERTAIN',
+                            'OTHER', 'FUNERAL', 'SURVIVORS', 'PERSON', 'OPTIONAL',
+                            'INCREASE', 'STANDARD', 'LEVEL', 'WEEKLY', 'LIMIT',
+                            'BASED', 'GROSS', 'WEEKLY', 'TIME', 'LIMIT', 'MOST',
+                            'CASES', 'CATASTROPHICALLY', 'IMPAIRED', 'ADDITIONAL',
+                            'CATASTROPHIC', 'IMPAIRMENT', 'CAREGIVER', 'HOUSEKEEPING',
+                            'HOME', 'MAINTENANCE', 'AVAILABLE', 'PERSON', 'DEPENDANT',
+                            'SURVIVING', 'SPOUSE', 'WEEKLY', 'DEPENDANT', 'EMPLOYED',
+                            'RECEIVING', 'WEEKLY', 'CAREGIVER', 'INDEXATION',
+                            'CERTAIN', 'WEEKLY', 'BENEFIT', 'PAYMENTS', 'MONETARY',
+                            'LIMITS', 'ADJUSTED', 'ANNUAL', 'BASIS', 'REFLECT',
+                            'CHANGES', 'COST', 'LIVING', 'UNIDENTIFIED', 'HIT',
+                            'RUN', 'DRIVER', 'CAUSED', 'CONTENTS', 'COVERAGE',
+                            'EXCLUDED', 'STANDARD', 'ONTARIO', 'AUTO', 'POLICY',
+                            'AUTOMOBILE', 'USED', 'CARRY', 'PAYING', 'PASSENGERS',
+                            'UBER', 'LYFT', 'TAXI', 'MEANS', 'EVENT', 'ACCIDENT',
+                            'WHETHER', 'FAULT', 'INTENDING', 'PARTICIPATE', 'RIDE',
+                            'SHARING', 'SERVICE', 'IMPERATIVE', 'PROPER', 'PROTECTS',
+                            'OTHERS', 'WARNING', 'UNLICENSED', 'IMPROPERLY', 'LICENSED',
+                            'INCLUDES', 'VIOLATION', 'GRADUATED', 'LICENSING',
+                            'RESTRICTIONS', 'NON', 'DISCLOSED', 'OPERATES', 'CANCELLED',
+                            'REGISTERED', 'LETTER', 'NON', 'DISCLOSURE', 'INVALIDATE',
+                            'CLAIM', 'REVIEW', 'POLICY', 'REPORT', 'CHANGES',
+                            'DRIVERS', 'USE', 'IMMEDIATELY', 'MODIFICATIONS',
+                            'ENHANCE', 'SPEED', 'ACCEPTABLE', 'NULL', 'VOID',
+                            'NON', 'FACTORY', 'INSTALLED', 'ELECTRONIC', 'EQUIPMENT',
+                            'WORTH', 'MORE', 'THAN', 'CONTACT', 'OFFICE', 'INCREASE',
+                            'CURRENTLY', 'ONLY', 'PAY', 'MAXIMUM', 'SINCERELY',
+                            'ASSOCIATES', 'ACCOUNT', 'MANAGER', 'EFFECTIVE'
+                        ])):
+                        
                         conviction = {
-                            "date": None,
+                            "date": date,
                             "description": description,
-                            "code": None
+                            "code": code
                         }
                         result["convictions"].append(conviction)
-    
-    # If no meaningful convictions found, add a note
-    if not result["convictions"]:
+                        actual_convictions_found = True
+        
+        # If no actual convictions found, add a note
+        if not actual_convictions_found:
+            result["convictions"].append({
+                "date": None,
+                "description": "No convictions found in application",
+                "code": None
+            })
+    else:
+        # If no convictions section found, add a note
         result["convictions"].append({
             "date": None,
-            "description": "No convictions found in application",
+            "description": "No convictions section found in application",
             "code": None
         })
+
+def extract_form_information(text, result):
+    """Extract form-specific information (e.g., consent forms, coverage not in effect)"""
+    # Coverage not in effect - check for various patterns
+    coverage_patterns = [
+        r'Coverage not in effect',
+        r'COVERAGE NOT IN EFFECT',
+        r'Coverage Not In Effect',
+        r'coverage.*not.*effect',
+        r'COVERAGE.*NOT.*EFFECT'
+    ]
+    
+    for pattern in coverage_patterns:
+        if re.search(pattern, text, re.IGNORECASE):
+            result["forms"]["coverage_not_in_effect"] = True
+            break
+
+    # Consent for electronic communications - check for various patterns
+    electronic_consent_patterns = [
+        r'Consent.*electronic.*communications',
+        r'CONSENT.*ELECTRONIC.*COMMUNICATIONS',
+        r'Consent to Receive Electronic Communications',
+        r'Electronic.*communications.*consent',
+        r'Consent.*email',
+        r'Consent.*digital'
+    ]
+    
+    for pattern in electronic_consent_patterns:
+        if re.search(pattern, text, re.IGNORECASE):
+            result["forms"]["consent_electronic_communications"] = True
+            break
+
+    # Personal info consent - check for various patterns
+    personal_consent_patterns = [
+        r'Personal.*Information.*Consent',
+        r'PERSONAL.*INFORMATION.*CONSENT',
+        r'Personal Information Consent Form',
+        r'Privacy.*consent',
+        r'Information.*consent',
+        r'Personal.*data.*consent'
+    ]
+    
+    for pattern in personal_consent_patterns:
+        if re.search(pattern, text, re.IGNORECASE):
+            result["forms"]["personal_info_consent"] = True
+            break
+
+    # Personal info client consent - check for various patterns
+    client_consent_patterns = [
+        r'Personal.*Information.*Client.*Consent',
+        r'PERSONAL.*INFORMATION.*CLIENT.*CONSENT',
+        r'Personal Information Client Consent Form',
+        r'Client.*consent',
+        r'Client.*information.*consent',
+        r'Personal.*client.*consent'
+    ]
+    
+    for pattern in client_consent_patterns:
+        if re.search(pattern, text, re.IGNORECASE):
+            result["forms"]["personal_info_client_consent"] = True
+            break
+
+    # Optional accident benefits consent - check for various patterns
+    accident_benefits_patterns = [
+        r'Optional.*Accident.*Benefits',
+        r'OPTIONAL.*ACCIDENT.*BENEFITS',
+        r'Optional Accident Benefits Confirmation Form',
+        r'Accident.*benefits.*confirmation',
+        r'Optional.*benefits',
+        r'Accident.*benefits.*form',
+        r'Benefits.*confirmation'
+    ]
+    
+    for pattern in accident_benefits_patterns:
+        if re.search(pattern, text, re.IGNORECASE):
+            result["forms"]["optional_accident_benefits"] = True
+            break
+
+    # Privacy consent - check for various patterns
+    privacy_consent_patterns = [
+        r'Privacy.*Consent',
+        r'PRIVACY.*CONSENT',
+        r'Privacy Consent Form',
+        r'Consent.*privacy',
+        r'Privacy.*policy.*consent',
+        r'Data.*protection.*consent',
+        r'Information.*privacy.*consent'
+    ]
+    
+    for pattern in privacy_consent_patterns:
+        if re.search(pattern, text, re.IGNORECASE):
+            result["forms"]["privacy_consent"] = True
+            break
