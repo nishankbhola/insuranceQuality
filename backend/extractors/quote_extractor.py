@@ -100,8 +100,10 @@ def extract_quote_data(path, mvr_data_list=None):
 
     # INTEGRATE MVR CONVICTIONS - This is the key fix!
     if mvr_data_list:
+        print(f"Quote extractor: Processing {len(mvr_data_list)} MVR records for conviction integration")
         for mvr_data in mvr_data_list:
             if mvr_data and mvr_data.get("convictions"):
+                print(f"Quote extractor: Found {len(mvr_data['convictions'])} convictions in MVR for {mvr_data.get('name', 'Unknown')}")
                 for conviction in mvr_data["convictions"]:
                     # Convert MVR date format (dd/mm/yyyy) to quote format (mm/dd/yyyy)
                     mvr_date = conviction.get("offence_date")
@@ -118,6 +120,7 @@ def extract_quote_data(path, mvr_data_list=None):
                                 "source": "MVR",
                                 "driver_license": mvr_data.get("licence_number")
                             })
+                            print(f"Quote extractor: Integrated MVR conviction: {conviction.get('description', '')} on {quote_date}")
                         except:
                             # If date conversion fails, use original date
                             result["convictions"].append({
@@ -126,6 +129,9 @@ def extract_quote_data(path, mvr_data_list=None):
                                 "source": "MVR",
                                 "driver_license": mvr_data.get("licence_number")
                             })
+                            print(f"Quote extractor: Integrated MVR conviction (date conversion failed): {conviction.get('description', '')} on {mvr_date}")
+    else:
+        print("Quote extractor: No MVR data provided for conviction integration")
 
     # Convictions - Much more specific extraction from quote PDF itself
     # Look for actual conviction patterns in dedicated sections
@@ -170,6 +176,10 @@ def extract_quote_data(path, mvr_data_list=None):
             seen_convictions.add(conv_key)
             unique_convictions.append(conv)
     result["convictions"] = unique_convictions
+    
+    print(f"Quote extractor: Final conviction count: {len(result['convictions'])} (after deduplication)")
+    for i, conv in enumerate(result["convictions"]):
+        print(f"Quote extractor: Conviction {i+1}: {conv.get('description', '')} on {conv.get('date', '')} from {conv.get('source', 'Unknown')}")
 
     # Enhanced Convictions and Suspensions Extraction
     # Look for the specific structure found in the PDF

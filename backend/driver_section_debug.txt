@@ -1,12 +1,12 @@
-Driver: Noushin Kherad-Bakhsh
+Driver: Mina Elahi
 Section: 
-09/11/1969
+09/11/1984
 Birth Date
-Married
+Single
 Marital Status
 Female
 Gender
-Spouse
+Applicant
 Relationship to Applicant
 No
 Driver Training
@@ -17,28 +17,28 @@ No
 Out of Province / Country Driver
 G
 Licence Class
-08/19/1989
+10/09/2005
 Date G
- 
+10/09/2004
 Date G2
- 
+10/09/2003
 Date G1
-K33646000695911
+E50385550845911
 Licence Number
 ON
 Licence Province
  
 Occupation
-07/28/2014
+06/01/2021
 Date Insured
-Desjardins Assurances
+Aviva
 Current Carrier
-08/16/2023
+08/19/2024
 Date with
 Company
- 
+07/22/2025
 Brokerage Insured
- 
+07/22/2025
 Date
 Owner/Principal
 No
@@ -53,8 +53,14 @@ Class
  
 Other Licence
 Date
-Provided by Applied Rating Services®,
-© 2025 Applied Systems® Canada Inc.
+Other
+Description
+11/02/2023
+Date
+0
+Duration months
+11/02/2023
+Re-Instate Date
 Vieira & Associates Insurance Brokers Ltd
 (A)
 Unit 18 - 2 Orchard Heights Blvd
@@ -62,67 +68,68 @@ Aurora, ON L4G 6T5
 Phone: (905)727-0700    Fax: (416)531-1146
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Prepared 08/03/2025 by Saman Razavi
-Applied Ref. # RWS 1016186202, CWS 347472039,
-RBWS 445007851
+Prepared 08/01/2025 by Reza Komeili
+Applied Ref. # RWS 1015951254, CWS 347416142,
+RBWS 444839441
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
-10 Sturton Rd
-Etobicoke, ON M9P 2C6
+Mobile: (416)473-8171
+7 Torino Place
+Concord, ON L4K 2L4
 Company
 12 Months
-SGI CANADA
-2,291
-CAA Insurance Company (Future Member)
-2,611
-CAA MyPace
-2,698
-CAA Insurance Company
-2,746
-Intact Insurance - my Drive
-3,663
 Aviva - Aviva Journey
-3,952
-Intact Insurance
-4,040
-Wawanesa Drive Change
-4,301
-Aviva
-4,353
+2,748
 Definity Insurance Company
-4,472
+2,954
+Aviva
+3,013
+Wawanesa Drive Change
+3,572
 Wawanesa Mutual
-4,727
+3,924
+SGI CANADA
+4,002
+CAA Insurance Company (Future Member)
+4,751
+CAA MyPace
+4,934
+CAA Insurance Company
+4,998
 Facility Association
-5,628
+5,056
 Dominion of Canada - Single Pay and DPD
-6,619
+5,551
+Intact Insurance - my Drive
+5,641
 Dominion of Canada - IntelliDrive
-8,236
+5,694
 Dominion of Canada
-8,444
+5,840
+Intact Insurance
+6,316
 Echelon
-9,198
+7,819
 Coachman
 0
 JEVCO
 0
 Summary
-Navid Tahmasebian-Malayeri
+Mina Elahi
 1 
-Extracted dates - G: 08/19/1989, G2: None, G1: None
+Extracted dates - G: 10/09/2005, G2: 10/09/2004, G1: 10/09/2003
 
 === DETAILED DEBUG ===
 Testing all date patterns:
-Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['08/19/1989']
-Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['08/19/1989']
-Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: []
-Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: []
-Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: []
-Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: []
+Pattern 1 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G -> Found: ['10/09/2005', '10/09/2004', '10/09/2003']
+Pattern 2 (date_g): (\d{1,2}/\d{1,2}/\d{4})\s*Date G -> Found: ['10/09/2005', '10/09/2004', '10/09/2003']
+Pattern 3 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G2 -> Found: ['10/09/2004']
+Pattern 4 (date_g2): (\d{1,2}/\d{1,2}/\d{4})\s*Date G2 -> Found: ['10/09/2004']
+Pattern 5 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*\n\s*Date G1 -> Found: ['10/09/2003']
+Pattern 6 (date_g1): (\d{1,2}/\d{1,2}/\d{4})\s*Date G1 -> Found: ['10/09/2003']
 
 All date patterns found:
-All dates: ['09/11/1969', '08/19/1989', '07/28/2014', '08/16/2023', '08/03/2025']
+All dates: ['09/11/1984', '10/09/2005', '10/09/2004', '10/09/2003', '06/01/2021', '08/19/2024', '07/22/2025', '07/22/2025', '11/02/2023', '11/02/2023', '08/01/2025']
 
 Looking for 'Date G1' specifically:
 Date G1 context: 'Date G1'

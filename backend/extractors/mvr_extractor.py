@@ -2,6 +2,7 @@ import fitz  # PyMuPDF
 import re
 import json
 import os
+from datetime import datetime
 
 def convert_date_format(date_str):
     """
@@ -208,11 +209,35 @@ def extract_mvr_fields_improved(text, result):
             result["expiry_date"] = original_date # Keep original format
             break
     
-    # Issue Date - improved patterns
+    # Issue Date - improved patterns with fallback logic
     issue_patterns = [
         r'ISSUE DATE:\s*(\d{2}/\d{2}/\d{4})',
         r'ISSUED:\s*(\d{2}/\d{2}/\d{4})',
         r'LICENSE ISSUED:\s*(\d{2}/\d{2}/\d{4})',
+        r'FIRST ISSUED:\s*(\d{2}/\d{2}/\d{4})',
+        r'ORIGINAL ISSUE:\s*(\d{2}/\d{2}/\d{4})',
+        r'LICENSE DATE:\s*(\d{2}/\d{2}/\d{4})',
+        r'DRIVER LICENSE DATE:\s*(\d{2}/\d{2}/\d{4})',
+                # Look for dates in the license history section
+        r'LICENSE HISTORY.*?(\d{2}/\d{2}/\d{4})',
+        # Look for dates in the abstract section that might be issue dates
+        r'ON\s+[A-Z0-9\-]+\s+(\d{2}/\d{2}/\d{4})',
+        # Look for dates in the abstract summary section
+        r'ABSTRACT.*?(\d{2}/\d{2}/\d{4})',
+        # Look for dates in the driver abstract section
+        r'DRIVER ABSTRACT.*?(\d{2}/\d{2}/\d{4})',
+        # Look for dates in the license abstract section
+        r'LICENSE ABSTRACT.*?(\d{2}/\d{2}/\d{4})',
+        # Look for dates in the summary table that might be issue dates
+        r'[A-Z\-]+,[A-Z\-]+\s+(\d{2}/\d{2}/\d{4})\s+\d{2}/\d{2}/\d{4}',
+        # Look for dates in the driver information section
+        r'DRIVER INFORMATION.*?(\d{2}/\d{2}/\d{4})',
+        # Look for dates near license number
+        r'LICENCE NUMBER:\s*[A-Z0-9\-]+\s+(\d{2}/\d{2}/\d{4})',
+        # Look for dates in the abstract summary
+        r'ABSTRACT.*?(\d{2}/\d{2}/\d{4})',
+        # Look for dates in the license status section
+        r'LICENSE STATUS.*?(\d{2}/\d{2}/\d{4})',
     ]
     
     for pattern in issue_patterns:
@@ -221,6 +246,59 @@ def extract_mvr_fields_improved(text, result):
             original_date = match.group(1)
             result["issue_date"] = original_date # Keep original format
             break
+    
+    # If no issue date found, try to infer from other available dates
+    if not result.get("issue_date"):
+        # Look for the earliest date in the document as a potential issue date
+        all_dates = re.findall(r'(\d{2}/\d{2}/\d{4})', text_normalized)
+        if all_dates:
+            # Parse all dates and find the earliest one (likely the issue date)
+            try:
+                parsed_dates = []
+                for date_str in all_dates:
+                    try:
+                        day, month, year = date_str.split('/')
+                        parsed_date = datetime(int(year), int(month), int(day))
+                        parsed_dates.append((parsed_date, date_str))
+                    except:
+                        continue
+                
+                if parsed_dates:
+                    # Sort by date and take the earliest
+                    parsed_dates.sort(key=lambda x: x[0])
+                    earliest_date = parsed_dates[0][1]
+                    result["issue_date"] = earliest_date
+                    print(f"DEBUG: Inferred issue date from earliest date found: {earliest_date}")
+            except Exception as e:
+                print(f"DEBUG: Error inferring issue date: {e}")
+        
+        # Additional fallback: Look for dates in the abstract section with specific context
+        if not result.get("issue_date"):
+            # Look for dates that appear to be license-related in the abstract
+            abstract_section = re.search(r'ABSTRACT(.*?)(?=SEARCH SUCCESSFUL|END OF REPORT|$)', text, re.DOTALL | re.IGNORECASE)
+            if abstract_section:
+                abstract_text = abstract_section.group(1)
+                # Look for dates that might be license issue dates
+                abstract_dates = re.findall(r'(\d{2}/\d{2}/\d{4})', abstract_text)
+                if abstract_dates:
+                    # Take the earliest date from the abstract section
+                    try:
+                        parsed_abstract_dates = []
+                        for date_str in abstract_dates:
+                            try:
+                                day, month, year = date_str.split('/')
+                                parsed_date = datetime(int(year), int(month), int(day))
+                                parsed_abstract_dates.append((parsed_date, date_str))
+                            except:
+                                continue
+                        
+                        if parsed_abstract_dates:
+                            parsed_abstract_dates.sort(key=lambda x: x[0])
+                            earliest_abstract_date = parsed_abstract_dates[0][1]
+                            result["issue_date"] = earliest_abstract_date
+                            print(f"DEBUG: Inferred issue date from abstract section: {earliest_abstract_date}")
+                    except Exception as e:
+                        print(f"DEBUG: Error inferring issue date from abstract: {e}")
     
     # Status - extract license status
     status_patterns = [

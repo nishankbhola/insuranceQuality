@@ -129,6 +129,9 @@ def validate_documents():
     if 'quote' not in request.files and 'mvr' not in request.files and 'dash' not in request.files:
         return jsonify({"error": "No files provided"}), 400
     
+    # Check if noDashReport flag is set
+    no_dash_report = request.form.get('noDashReport', 'false').lower() == 'true'
+    
     files = request.files
     results = {
         "mvrs": [],
@@ -136,42 +139,75 @@ def validate_documents():
         "quotes": []
     }
     
-    print(f"Processing files for validation...")
+    print(f"Processing files for validation... (noDashReport: {no_dash_report})")
     
-    # Process each field name (quote, mvr, dash)
+    # First pass: Extract MVR and DASH data (these don't depend on other data)
+    print("=== FIRST PASS: Processing MVR and DASH files ===")
     for field_name in request.files.keys():
-        # Get all files for this field name
-        files_for_field = request.files.getlist(field_name)
-        
-        for file in files_for_field:
-            if file and file.filename and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(path)
-                
-                print(f"Processing file: {filename} (field: {field_name})")
-                
-                # Determine file type
-                file_type = field_name  # Use the field name as primary indicator
-                
-                try:
-                    if file_type == 'quote' or (file_type in ['quote', 'mvr', 'dash'] and 'quote' in filename.lower()):
+        if field_name in ['mvr', 'dash']:
+            files_for_field = request.files.getlist(field_name)
+            
+            for file in files_for_field:
+                if file and file.filename and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(path)
+                    
+                    print(f"Processing {field_name} file: {filename}")
+                    
+                    try:
+                        if field_name == 'mvr':
+                            mvr_data = extract_mvr_data(path)
+                            print(f"MVR extracted: {mvr_data.get('licence_number', 'No license')} - {mvr_data.get('name', 'No name')}")
+                            results["mvrs"].append(mvr_data)
+                        elif field_name == 'dash':
+                            dash_data = extract_dash_data(path)
+                            print(f"DASH extracted: {len(dash_data.get('claims', []))} claims")
+                            results["dashes"].append(dash_data)
+                    except Exception as e:
+                        print(f"Error processing {filename}: {e}")
+                        import traceback
+                        traceback.print_exc()
+    
+    print(f"=== FIRST PASS COMPLETE: {len(results['mvrs'])} MVRs and {len(results['dashes'])} DASH reports extracted ===")
+    
+    # Second pass: Extract quote data with complete MVR data available
+    print("=== SECOND PASS: Processing Quote files with MVR data available ===")
+    for field_name in request.files.keys():
+        if field_name == 'quote':
+            files_for_field = request.files.getlist(field_name)
+            
+            for file in files_for_field:
+                if file and file.filename and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(path)
+                    
+                    print(f"Processing quote file: {filename} with {len(results['mvrs'])} MVRs available")
+                    
+                    try:
                         quote_data = extract_quote_data(path, results["mvrs"])
                         print(f"Quote extracted: {len(quote_data.get('drivers', []))} drivers")
                         results["quotes"].append(quote_data)
-                        
-                    elif file_type == 'mvr' or (file_type in ['quote', 'mvr', 'dash'] and 'mvr' in filename.lower()):
-                        mvr_data = extract_mvr_data(path)
-                        print(f"MVR extracted: {mvr_data.get('licence_number', 'No license')} - {mvr_data.get('name', 'No name')}")
-                        results["mvrs"].append(mvr_data)
-                        
-                    elif file_type == 'dash' or (file_type in ['quote', 'mvr', 'dash'] and 'dash' in filename.lower()):
-                        dash_data = extract_dash_data(path)
-                        print(f"DASH extracted: {len(dash_data.get('claims', []))} claims")
-                        results["dashes"].append(dash_data)
-                        
-                    else:
-                        # Auto-detect based on content
+                    except Exception as e:
+                        print(f"Error processing {filename}: {e}")
+                        import traceback
+                        traceback.print_exc()
+    
+    # Handle auto-detection for any remaining files
+    for field_name in request.files.keys():
+        if field_name not in ['quote', 'mvr', 'dash']:
+            files_for_field = request.files.getlist(field_name)
+            
+            for file in files_for_field:
+                if file and file.filename and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(path)
+                    
+                    print(f"Auto-detecting file type for: {filename}")
+                    
+                    try:
                         detected_type = analyze_file_content(path)
                         if detected_type == 'quote':
                             quote_data = extract_quote_data(path, results["mvrs"])
@@ -185,11 +221,10 @@ def validate_documents():
                             results["dashes"].append(dash_data)
                         else:
                             print(f"Could not determine type for {filename}")
-                            
-                except Exception as e:
-                    print(f"Error processing {filename}: {e}")
-                    import traceback
-                    traceback.print_exc()
+                    except Exception as e:
+                        print(f"Error processing {filename}: {e}")
+                        import traceback
+                        traceback.print_exc()
     
     print(f"Extraction complete. MVRs: {len(results['mvrs'])}, DASHes: {len(results['dashes'])}, Quotes: {len(results['quotes'])}")
     
@@ -198,11 +233,14 @@ def validate_documents():
         return jsonify({"error": "No valid quote document found"}), 400
     if not results["mvrs"]:
         return jsonify({"error": "No valid MVR document found"}), 400
-    if not results["dashes"]:
+    
+    # Only require DASH if noDashReport is not set
+    if not no_dash_report and not results["dashes"]:
         return jsonify({"error": "No valid DASH document found"}), 400
     
     try:
-        validation_report = validate_quote(results)
+        # Pass the noDashReport flag to the validation engine
+        validation_report = validate_quote(results, no_dash_report=no_dash_report)
         print("Validation completed successfully")
         
     except Exception as e:
@@ -218,7 +256,8 @@ def validate_documents():
     
     return jsonify({
         "extracted": results,
-        "validation_report": validation_report
+        "validation_report": validation_report,
+        "no_dash_report": no_dash_report
     })
 
 @app.route('/api/validate-compact', methods=['POST'])
@@ -227,6 +266,9 @@ def validate_documents_compact():
     if 'quote' not in request.files and 'mvr' not in request.files and 'dash' not in request.files:
         return jsonify({"error": "No files provided"}), 400
     
+    # Check if noDashReport flag is set
+    no_dash_report = request.form.get('noDashReport', 'false').lower() == 'true'
+    
     files = request.files
     results = {
         "mvrs": [],
@@ -234,42 +276,75 @@ def validate_documents_compact():
         "quotes": []
     }
     
-    print(f"Processing files for compact validation...")
+    print(f"Processing files for compact validation... (noDashReport: {no_dash_report})")
     
-    # Process each field name (quote, mvr, dash)
+    # First pass: Extract MVR and DASH data (these don't depend on other data)
+    print("=== FIRST PASS: Processing MVR and DASH files ===")
     for field_name in request.files.keys():
-        # Get all files for this field name
-        files_for_field = request.files.getlist(field_name)
-        
-        for file in files_for_field:
-            if file and file.filename and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(path)
-                
-                print(f"Processing file: {filename} (field: {field_name})")
-                
-                # Determine file type
-                file_type = field_name  # Use the field name as primary indicator
-                
-                try:
-                    if file_type == 'quote' or (file_type in ['quote', 'mvr', 'dash'] and 'quote' in filename.lower()):
+        if field_name in ['mvr', 'dash']:
+            files_for_field = request.files.getlist(field_name)
+            
+            for file in files_for_field:
+                if file and file.filename and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(path)
+                    
+                    print(f"Processing {field_name} file: {filename}")
+                    
+                    try:
+                        if field_name == 'mvr':
+                            mvr_data = extract_mvr_data(path)
+                            print(f"MVR extracted: {mvr_data.get('licence_number', 'No license')} - {mvr_data.get('name', 'No name')}")
+                            results["mvrs"].append(mvr_data)
+                        elif field_name == 'dash':
+                            dash_data = extract_dash_data(path)
+                            print(f"DASH extracted: {len(dash_data.get('claims', []))} claims")
+                            results["dashes"].append(dash_data)
+                    except Exception as e:
+                        print(f"Error processing {filename}: {e}")
+                        import traceback
+                        traceback.print_exc()
+    
+    print(f"=== FIRST PASS COMPLETE: {len(results['mvrs'])} MVRs and {len(results['dashes'])} DASH reports extracted ===")
+    
+    # Second pass: Extract quote data with complete MVR data available
+    print("=== SECOND PASS: Processing Quote files with MVR data available ===")
+    for field_name in request.files.keys():
+        if field_name == 'quote':
+            files_for_field = request.files.getlist(field_name)
+            
+            for file in files_for_field:
+                if file and file.filename and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(path)
+                    
+                    print(f"Processing quote file: {filename} with {len(results['mvrs'])} MVRs available")
+                    
+                    try:
                         quote_data = extract_quote_data(path, results["mvrs"])
                         print(f"Quote extracted: {len(quote_data.get('drivers', []))} drivers")
                         results["quotes"].append(quote_data)
-                        
-                    elif file_type == 'mvr' or (file_type in ['quote', 'mvr', 'dash'] and 'mvr' in filename.lower()):
-                        mvr_data = extract_mvr_data(path)
-                        print(f"MVR extracted: {mvr_data.get('licence_number', 'No license')} - {mvr_data.get('name', 'No name')}")
-                        results["mvrs"].append(mvr_data)
-                        
-                    elif file_type == 'dash' or (file_type in ['quote', 'mvr', 'dash'] and 'dash' in filename.lower()):
-                        dash_data = extract_dash_data(path)
-                        print(f"DASH extracted: {len(dash_data.get('claims', []))} claims")
-                        results["dashes"].append(dash_data)
-                        
-                    else:
-                        # Auto-detect based on content
+                    except Exception as e:
+                        print(f"Error processing {filename}: {e}")
+                        import traceback
+                        traceback.print_exc()
+    
+    # Handle auto-detection for any remaining files
+    for field_name in request.files.keys():
+        if field_name not in ['quote', 'mvr', 'dash']:
+            files_for_field = request.files.getlist(field_name)
+            
+            for file in files_for_field:
+                if file and file.filename and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(path)
+                    
+                    print(f"Auto-detecting file type for: {filename}")
+                    
+                    try:
                         detected_type = analyze_file_content(path)
                         if detected_type == 'quote':
                             quote_data = extract_quote_data(path, results["mvrs"])
@@ -283,11 +358,10 @@ def validate_documents_compact():
                             results["dashes"].append(dash_data)
                         else:
                             print(f"Could not determine type for {filename}")
-                            
-                except Exception as e:
-                    print(f"Error processing {filename}: {e}")
-                    import traceback
-                    traceback.print_exc()
+                    except Exception as e:
+                        print(f"Error processing {filename}: {e}")
+                        import traceback
+                        traceback.print_exc()
     
     print(f"Extraction complete. MVRs: {len(results['mvrs'])}, DASHes: {len(results['dashes'])}, Quotes: {len(results['quotes'])}")
     
@@ -296,13 +370,15 @@ def validate_documents_compact():
         return jsonify({"error": "No valid quote document found"}), 400
     if not results["mvrs"]:
         return jsonify({"error": "No valid MVR document found"}), 400
-    if not results["dashes"]:
+    
+    # Only require DASH if noDashReport is not set
+    if not no_dash_report and not results["dashes"]:
         return jsonify({"error": "No valid DASH document found"}), 400
     
     try:
-        # Generate compact report
+        # Generate compact report with noDashReport flag
         engine = ValidationEngine()
-        compact_report = engine.generate_compact_report(results)
+        compact_report = engine.generate_compact_report(results, no_dash_report=no_dash_report)
         print("Compact validation report generated successfully")
         
     except Exception as e:
@@ -317,7 +393,8 @@ def validate_documents_compact():
     cleanup_upload_folder()
     
     return jsonify({
-        "compact_report": compact_report
+        "compact_report": compact_report,
+        "no_dash_report": no_dash_report
     })
 
 

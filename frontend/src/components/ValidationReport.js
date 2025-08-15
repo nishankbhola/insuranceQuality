@@ -24,6 +24,9 @@ function ValidationReport({ data }) {
 
   // Handle the correct data structure
   const validationData = data.validation_report || data;
+  
+  // Check if DASH validation was skipped
+  const noDashReport = data.no_dash_report || false;
 
   // Calculate overall match score
   const calculateOverallScore = () => {
@@ -40,17 +43,22 @@ function ValidationReport({ data }) {
       const mvrScore = calculateMVRScore(driver);
       const licenseScore = calculateLicenseProgressionScore(driver);
       const convictionsScore = calculateConvictionsScore(driver);
-      const dashScore = calculateDASHScore(driver);
+      const dashScore = noDashReport ? 100 : calculateDASHScore(driver); // Give full score if DASH was skipped
       const driverTrainingScore = calculateDriverTrainingScore(driver);
       
-      // Calculate average for this driver
-      const driverScore = Math.round((mvrScore + licenseScore + convictionsScore + dashScore + driverTrainingScore) / 5);
-      totalScore += driverScore;
+      // Calculate average for this driver (adjust divisor based on whether DASH was skipped)
+      const divisor = noDashReport ? 4 : 5;
+      const driverScore = Math.round((mvrScore + licenseScore + convictionsScore + dashScore + driverTrainingScore) / divisor);
+      
+      // Ensure individual driver score doesn't exceed 100%
+      const cappedDriverScore = Math.min(driverScore, 100);
+      totalScore += cappedDriverScore;
       driverCount++;
     });
     
-    // Return average across all drivers
-    return driverCount > 0 ? Math.round(totalScore / driverCount) : 0;
+    // Return average across all drivers, capped at 100%
+    const averageScore = driverCount > 0 ? Math.round(totalScore / driverCount) : 0;
+    return Math.min(averageScore, 100);
   };
 
   // Calculate MVR match score
@@ -70,6 +78,9 @@ function ValidationReport({ data }) {
 
   // Calculate DASH match score
   const calculateDASHScore = (driver) => {
+    // If DASH validation was skipped, return full score
+    if (noDashReport) return 100;
+    
     const dashValidation = driver.dash_validation;
     if (!dashValidation || dashValidation.status === 'NOT_FOUND') return 0;
     
@@ -380,10 +391,13 @@ function ValidationReport({ data }) {
                 <h5 className="font-semibold text-gray-900">DASH vs Quote</h5>
               </div>
               <div className="text-2xl font-bold text-green-600">
-                {validationData.drivers?.length > 0 ? 
-                  Math.round(validationData.drivers.reduce((sum, driver) => sum + calculateDASHScore(driver), 0) / validationData.drivers.length) : 0}%
+                {noDashReport ? 100 : 
+                  validationData.drivers?.length > 0 ? 
+                    Math.round(validationData.drivers.reduce((sum, driver) => sum + calculateDASHScore(driver), 0) / validationData.drivers.length) : 0}%
               </div>
-              <div className="text-sm text-gray-600 mt-1">Claims and policy validation</div>
+              <div className="text-sm text-gray-600 mt-1">
+                {noDashReport ? 'Validation skipped' : 'Claims and policy validation'}
+              </div>
             </div>
 
             <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
@@ -418,7 +432,17 @@ function ValidationReport({ data }) {
                     <div className="text-right">
                       <div className="text-sm text-gray-600">Driver Score</div>
                       <div className="text-lg font-bold text-blue-600">
-                        {Math.round((calculateMVRScore(driver) + calculateLicenseProgressionScore(driver) + calculateConvictionsScore(driver) + calculateDASHScore(driver) + calculateDriverTrainingScore(driver)) / 5)}%
+                        {(() => {
+                          const mvrScore = calculateMVRScore(driver);
+                          const licenseScore = calculateLicenseProgressionScore(driver);
+                          const convictionsScore = calculateConvictionsScore(driver);
+                          const dashScore = noDashReport ? 100 : calculateDASHScore(driver);
+                          const driverTrainingScore = calculateDriverTrainingScore(driver);
+                          
+                          const divisor = noDashReport ? 4 : 5;
+                          const driverScore = Math.round((mvrScore + licenseScore + convictionsScore + dashScore + driverTrainingScore) / divisor);
+                          return Math.min(driverScore, 100);
+                        })()}%
                       </div>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -526,19 +550,21 @@ function ValidationReport({ data }) {
                   </div>
                 ) : (
                   <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                    {/* Check if this is a pre-April 1994 license */}
-                    {driver.license_progression_validation.matches.some(m => m.includes('Pre-April 1994 license detected')) ? (
-                      <div className="bg-blue-50 border-b border-blue-200 p-4">
-                        <div className="flex items-center">
-                          <AlertTriangle className="w-5 h-5 text-blue-600 mr-2" />
-                          <span className="text-blue-800 font-medium">Pre-April 1994 License Detected</span>
-                        </div>
-                        <p className="text-blue-600 text-sm mt-1">
-                          This driver's license was issued before April 1994. G1 and G2 license classes did not exist at that time. 
-                          The issue date becomes the G date, and G1/G2 dates are not required.
-                        </p>
-                      </div>
-                    ) : null}
+                                         {/* Check if this is a pre-April 1, 1994 license */}
+                     {driver.license_progression_validation.matches.some(m => m.includes('Pre-April 1, 1994 license detected')) ? (
+                       <div className="bg-blue-50 border-b border-blue-200 p-4">
+                         <div className="flex items-center">
+                           <AlertTriangle className="w-5 h-5 text-blue-600 mr-2" />
+                           <span className="text-blue-800 font-medium">Pre-April 1, 1994 License Detected</span>
+                         </div>
+                         <p className="text-blue-600 text-sm mt-1">
+                           This driver's license was issued before April 1, 1994. G1 and G2 license classes did not exist at that time. 
+                           The issue date becomes the G date, and G1/G2 dates are not required.
+                         </p>
+                       </div>
+                     ) : null}
+                     
+
                     
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-0">
                       <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">License Stage</div>
@@ -547,43 +573,43 @@ function ValidationReport({ data }) {
                       <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">Status</div>
                     </div>
                     
-                    {/* G1 Date Check - Only show for post-April 1994 licenses */}
-                    {!driver.license_progression_validation.matches.some(m => m.includes('Pre-April 1994 license detected')) && (
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
-                        <div className="px-4 py-3 text-gray-700 font-medium">G1 Date</div>
-                        <div className="px-4 py-3 text-gray-600">
-                          {driver.license_progression_validation.matches.find(m => m.includes('G1 date matches'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 
-                           driver.license_progression_validation.critical_errors.find(e => e.includes('G1 date mismatch'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 'N/A'}
-                        </div>
-                        <div className="px-4 py-3 text-gray-600">
-                          {driver.license_progression_validation.matches.find(m => m.includes('G1 date matches'))?.split('Quote \'')[1]?.split('\'')[0] || 
-                           driver.license_progression_validation.critical_errors.find(e => e.includes('G1 date mismatch'))?.split('Quote \'')[1]?.split('\'')[0] || 'N/A'}
-                        </div>
-                        <div className="px-4 py-3">
-                          {driver.license_progression_validation.matches.some(m => m.includes('G1 date matches')) ? 
-                            getSeverityBadge('match') : getSeverityBadge('critical')}
-                        </div>
-                      </div>
-                    )}
+                                         {/* G1 Date Check - Only show for post-April 1, 1994 licenses */}
+                     {!driver.license_progression_validation.matches.some(m => m.includes('Pre-April 1, 1994 license detected')) && (
+                       <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
+                         <div className="px-4 py-3 text-gray-700 font-medium">G1 Date</div>
+                         <div className="px-4 py-3 text-gray-600">
+                           {driver.license_progression_validation.matches.find(m => m.includes('G1 date matches'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 
+                            driver.license_progression_validation.critical_errors.find(e => e.includes('G1 date mismatch'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 'N/A'}
+                         </div>
+                         <div className="px-4 py-3 text-gray-600">
+                           {driver.license_progression_validation.matches.find(m => m.includes('G1 date matches'))?.split('Quote \'')[1]?.split('\'')[0] || 
+                            driver.license_progression_validation.critical_errors.find(e => e.includes('G1 date mismatch'))?.split('Quote \'')[1]?.split('\'')[0] || 'N/A'}
+                         </div>
+                         <div className="px-4 py-3">
+                           {driver.license_progression_validation.matches.some(m => m.includes('G1 date matches')) ? 
+                             getSeverityBadge('match') : getSeverityBadge('critical')}
+                         </div>
+                       </div>
+                     )}
 
-                    {/* G2 Date Check - Only show for post-April 1994 licenses */}
-                    {!driver.license_progression_validation.matches.some(m => m.includes('Pre-April 1994 license detected')) && (
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
-                        <div className="px-4 py-3 text-gray-700 font-medium">G2 Date</div>
-                        <div className="px-4 py-3 text-gray-600">
-                          {driver.license_progression_validation.matches.find(m => m.includes('G2 date matches'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 
-                           driver.license_progression_validation.critical_errors.find(e => e.includes('G2 date mismatch'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 'N/A'}
-                        </div>
-                        <div className="px-4 py-3 text-gray-600">
-                          {driver.license_progression_validation.matches.find(m => m.includes('G2 date matches'))?.split('Quote \'')[1]?.split('\'')[0] || 
-                           driver.license_progression_validation.critical_errors.find(e => e.includes('G2 date mismatch'))?.split('Quote \'')[1]?.split('\'')[0] || 'N/A'}
-                        </div>
-                        <div className="px-4 py-3">
-                          {driver.license_progression_validation.matches.some(m => m.includes('G2 date matches')) ? 
-                            getSeverityBadge('match') : getSeverityBadge('critical')}
-                        </div>
-                      </div>
-                    )}
+                                         {/* G2 Date Check - Only show for post-April 1, 1994 licenses */}
+                     {!driver.license_progression_validation.matches.some(m => m.includes('Pre-April 1, 1994 license detected')) && (
+                       <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
+                         <div className="px-4 py-3 text-gray-700 font-medium">G2 Date</div>
+                         <div className="px-4 py-3 text-gray-600">
+                           {driver.license_progression_validation.matches.find(m => m.includes('G2 date matches'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 
+                            driver.license_progression_validation.critical_errors.find(e => e.includes('G2 date mismatch'))?.split('Calculated \'')[1]?.split('\' vs')[0] || 'N/A'}
+                         </div>
+                         <div className="px-4 py-3 text-gray-600">
+                           {driver.license_progression_validation.matches.find(m => m.includes('G2 date matches'))?.split('Quote \'')[1]?.split('\'')[0] || 
+                            driver.license_progression_validation.critical_errors.find(e => e.includes('G2 date mismatch'))?.split('Quote \'')[1]?.split('\'')[0] || 'N/A'}
+                         </div>
+                         <div className="px-4 py-3">
+                           {driver.license_progression_validation.matches.some(m => m.includes('G2 date matches')) ? 
+                             getSeverityBadge('match') : getSeverityBadge('critical')}
+                         </div>
+                       </div>
+                     )}
 
                     {/* G Date Check - Show for all licenses */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-gray-200">
@@ -604,22 +630,22 @@ function ValidationReport({ data }) {
                       </div>
                     </div>
 
-                    {/* Show warnings for pre-April 1994 licenses if G1/G2 dates were provided */}
-                    {driver.license_progression_validation.warnings.some(w => w.includes('not required for pre-April 1994 licenses')) && (
-                      <div className="bg-yellow-50 border-t border-yellow-200 p-4">
-                        <div className="flex items-center">
-                          <AlertTriangle className="w-5 h-5 text-yellow-600 mr-2" />
-                          <span className="text-yellow-800 font-medium">Optional Information Provided</span>
-                        </div>
-                        <div className="text-yellow-600 text-sm mt-1">
-                          {driver.license_progression_validation.warnings
-                            .filter(w => w.includes('not required for pre-April 1994 licenses'))
-                            .map((warning, index) => (
-                              <div key={index}>{warning}</div>
-                            ))}
-                        </div>
-                      </div>
-                    )}
+                                         {/* Show warnings for pre-April 1, 1994 licenses if G1/G2 dates were provided */}
+                     {driver.license_progression_validation.warnings.some(w => w.includes('not required for pre-April 1, 1994 licenses')) && (
+                       <div className="bg-yellow-50 border-t border-yellow-200 p-4">
+                         <div className="flex items-center">
+                           <AlertTriangle className="w-5 h-5 text-yellow-600 mr-2" />
+                           <span className="text-yellow-800 font-medium">Optional Information Provided</span>
+                         </div>
+                         <div className="text-yellow-600 text-sm mt-1">
+                           {driver.license_progression_validation.warnings
+                             .filter(w => w.includes('not required for pre-April 1, 1994 licenses'))
+                             .map((warning, index) => (
+                               <div key={index}>{warning}</div>
+                             ))}
+                         </div>
+                       </div>
+                     )}
                   </div>
                 )}
               </div>
@@ -750,7 +776,7 @@ function ValidationReport({ data }) {
               </div>
 
                   {/* DASH Validation Section */}
-                  {driver.dash_validation && (
+                  {!noDashReport && driver.dash_validation && (
                     <div className="mb-6">
                       <h3 className="text-lg font-semibold text-gray-800 mb-3">DASH Validation</h3>
                       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
@@ -848,6 +874,23 @@ function ValidationReport({ data }) {
                             {driver.dash_validation.matches.some(m => m.includes('claim') || m.includes('Claim')) || 
                              driver.dash_validation.matches.some(m => m.includes('No claims found in DASH')) ? 
                               getSeverityBadge('match') : getSeverityBadge('critical')}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* DASH Validation Skipped Message */}
+                  {noDashReport && (
+                    <div className="mb-6">
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                        <div className="flex items-start space-x-3">
+                          <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                          <div>
+                            <h3 className="text-lg font-semibold text-yellow-900 mb-2">DASH Validation Skipped</h3>
+                            <p className="text-yellow-700">
+                              DASH report validation was skipped for this application as indicated by the user. Only MVR and quote information was validated.
+                            </p>
                           </div>
                         </div>
                       </div>

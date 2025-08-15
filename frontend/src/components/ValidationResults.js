@@ -15,6 +15,9 @@ import {
 function ValidationResults({ data }) {
   const [expandedDrivers, setExpandedDrivers] = useState(new Set());
 
+  // Check if DASH validation was skipped
+  const noDashReport = data.no_dash_report || false;
+
   const toggleDriver = (driverName) => {
     const newExpanded = new Set(expandedDrivers);
     if (newExpanded.has(driverName)) {
@@ -230,19 +233,36 @@ function ValidationResults({ data }) {
               </div>
             </div>
             
-            <div>
-              <h4 className="font-medium text-gray-900 mb-3 flex items-center">
-                <Shield className="w-5 h-5 mr-2" />
-                DASH Reports ({data.extracted?.dashes?.length || 0})
-              </h4>
-              <div className="space-y-2">
-                {data.extracted?.dashes?.map((dash, index) => (
-                  <div key={index} className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
-                    DLN: {dash.dln} | Name: {dash.name}
-                  </div>
-                ))}
+            {!noDashReport && (
+              <div>
+                <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                  <Shield className="w-5 h-5 mr-2" />
+                  DASH Reports ({data.extracted?.dashes?.length || 0})
+                </h4>
+                <div className="space-y-2">
+                  {data.extracted?.dashes?.map((dash, index) => (
+                    <div key={index} className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                      DLN: {dash.dln} | Name: {dash.name}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* DASH Validation Skipped Message */}
+            {noDashReport && (
+              <div>
+                <h4 className="font-medium text-yellow-900 mb-3 flex items-center">
+                  <Shield className="w-5 h-5 mr-2 text-yellow-600" />
+                  DASH Validation Skipped
+                </h4>
+                <div className="space-y-2">
+                  <div className="text-sm text-yellow-700 bg-yellow-50 p-2 rounded border border-yellow-200">
+                    DASH report validation was skipped for this application. Only MVR and quote information was validated.
+                  </div>
+                </div>
+              </div>
+            )}
             
             <div>
               <h4 className="font-medium text-gray-900 mb-3 flex items-center">

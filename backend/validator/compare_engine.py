@@ -20,7 +20,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             "drivers": []
         }
     
-    def validate_quote(self, data):
+    def validate_quote(self, data, no_dash_report=False):
         """
         Main validation function that compares MVR, DASH, and Quote data
         """
@@ -82,7 +82,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             for driver in quote.get("drivers", []):
                 self.report["summary"]["total_drivers"] += 1
                 
-                driver_report = self._validate_driver(driver, quote, mvrs, dashes)
+                driver_report = self._validate_driver(driver, quote, mvrs, dashes, no_dash_report)
                 self.report["drivers"].append(driver_report)
                 
                 if driver_report["validation_status"] == "PASS":
@@ -97,12 +97,12 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
 
         return self.report
 
-    def generate_compact_report(self, data):
+    def generate_compact_report(self, data, no_dash_report=False):
         """
         Generate a compact, one-page professional validation report with charts and analytics
         """
         # First get the full validation report
-        full_report = self.validate_quote(data)
+        full_report = self.validate_quote(data, no_dash_report=no_dash_report)
         
         # Extract summary statistics
         summary = full_report.get("summary", {})
@@ -325,7 +325,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         
         return recommendations
 
-    def _validate_driver(self, driver, quote, mvrs, dashes):
+    def _validate_driver(self, driver, quote, mvrs, dashes, no_dash_report=False):
         """
         Validate a single driver against MVR and DASH data with enhanced rules
         """
@@ -391,7 +391,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             
             # Find matching MVR and DASH records
             matched_mvr = self._find_matching_mvr(quote_license, mvrs)
-            matched_dash = self._find_matching_dash(quote_license, dashes)
+            matched_dash = self._find_matching_dash(quote_license, dashes) if not no_dash_report else None
             
             # Enhanced MVR validation with new rules
             if matched_mvr:
@@ -417,13 +417,21 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
                 driver_report["warnings"].extend(convictions_validation["warnings"])
                 driver_report["matches"].extend(convictions_validation["matches"])
                 
-            # Validate DASH data  
-            if matched_dash:
+            # Validate DASH data only if noDashReport is false
+            if not no_dash_report and matched_dash:
                 dash_validation = self._validate_dash_data(driver, matched_dash, quote)
                 driver_report["dash_validation"] = dash_validation
                 driver_report["critical_errors"].extend(dash_validation.get("critical_errors", []))
                 driver_report["warnings"].extend(dash_validation.get("warnings", []))
                 driver_report["matches"].extend(dash_validation.get("matches", []))
+            elif no_dash_report:
+                # Set DASH validation status to indicate it was skipped
+                driver_report["dash_validation"] = {
+                    "status": "SKIPPED",
+                    "critical_errors": [],
+                    "warnings": ["DASH validation skipped - no DASH report available"],
+                    "matches": []
+                }
             
             # Validate driver training
             if matched_mvr:
@@ -747,7 +755,7 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         Implements the business rules:
         - If DD/MM of MVR expiry date and birth date match: g1_date = issue_date, g2_date = g1_date + 1 year, g_date = g2_date + 1 year
         - If DD/MM don't match: g1_date = expiry_date - 5 years, g2_date = g1_date + 1 year, g_date = g2_date + 1 year
-        - SPECIAL RULE: If MVR issue date is before April 1994, issue_date becomes G date and G1/G2 dates are not required
+        - SPECIAL RULE: If MVR issue date is before April 1, 1994, issue_date becomes G date and G1/G2 dates are not required
         """
         validation = {
             "status": "PASS",
@@ -767,6 +775,12 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         mvr_birth_date = mvr.get("birth_date", "")
         mvr_issue_date = mvr.get("issue_date", "")
         
+        # If no issue date found, try to infer it from available dates
+        if not mvr_issue_date:
+            mvr_issue_date = self._infer_license_issue_date(mvr)
+            if mvr_issue_date:
+                print(f"DEBUG: Using inferred issue date: {mvr_issue_date}")
+        
         # Debug: Print the comparison details
         print(f"DEBUG: License progression validation:")
         print(f"  MVR expiry: {mvr_expiry_date}")
@@ -775,21 +789,46 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         print(f"  Quote G1: {quote_g1_date}")
         print(f"  Quote G2: {quote_g2_date}")
         print(f"  Quote G: {quote_g_date}")
+        print(f"  License Class: {license_class}")
         
-        # Check if MVR issue date is before April 1994
+        # Additional debugging for date parsing
+        if mvr_expiry_date:
+            parsed_expiry = self._parse_date(mvr_expiry_date, "mvr")
+            print(f"  Parsed expiry: {parsed_expiry}")
+        
+        if mvr_birth_date:
+            parsed_birth = self._parse_date(mvr_birth_date, "mvr")
+            print(f"  Parsed birth: {parsed_birth}")
+        
+        if mvr_issue_date:
+            parsed_issue = self._parse_date(mvr_issue_date, "mvr")
+            print(f"  Parsed issue: {parsed_issue}")
+            if parsed_issue:
+                april_1994 = datetime(1994, 4, 1)
+                is_pre_1994 = parsed_issue < april_1994
+                print(f"  Issue date {mvr_issue_date} is before April 1, 1994: {is_pre_1994}")
+        
+        # Note: Higher-level license classes (A, C, D, etc.) still require G1 → G2 → G progression
+        # They don't skip the G1/G2 stages - they just mean the driver can already drive G vehicles
+        # Only pre-April 1, 1994 licenses skip G1/G2 progression
+        if license_class:
+            print(f"DEBUG: License class '{license_class}' detected - will validate G1/G2/G progression as normal")
+        
+        # Check if MVR issue date is before April 1, 1994
+        april_1994 = datetime(1994, 4, 1)
+        
         if mvr_issue_date:
             issue_date_parsed = self._parse_date(mvr_issue_date, "mvr")
-            april_1994 = datetime(1994, 4, 1)
             
             if issue_date_parsed and issue_date_parsed < april_1994:
-                print(f"DEBUG: MVR issue date {mvr_issue_date} is before April 1994 - applying special rules")
+                print(f"DEBUG: MVR issue date {mvr_issue_date} is before April 1, 1994 - applying special rules")
                 
                 # Special rule: Issue date becomes G date, G1/G2 not required
                 # Convert MVR date format (DD/MM/YYYY) to Quote format (MM/DD/YYYY) for comparison
                 expected_g_date = self._convert_mvr_date_to_quote_format(mvr_issue_date)
                 
-                validation["matches"].append(f"Pre-April 1994 license detected - issue date {mvr_issue_date} becomes G date")
-                validation["matches"].append("G1 and G2 dates not required for licenses issued before April 1994")
+                validation["matches"].append(f"Pre-April 1, 1994 license detected - issue date {mvr_issue_date} becomes G date")
+                validation["matches"].append("G1 and G2 dates not required for licenses issued before April 1, 1994")
                 
                 # Validate G date only
                 if quote_g_date:
@@ -802,16 +841,80 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
                     validation["critical_errors"].append(f"Quote missing G date, expected: '{expected_g_date}'")
                     validation["status"] = "FAIL"
                 
-                # Don't validate G1/G2 dates for pre-April 1994 licenses
+                # Don't validate G1/G2 dates for pre-April 1, 1994 licenses
                 if quote_g1_date:
-                    validation["warnings"].append(f"G1 date '{quote_g1_date}' provided but not required for pre-April 1994 licenses")
+                    validation["warnings"].append(f"G1 date '{quote_g1_date}' provided but not required for pre-April 1, 1994 licenses")
                 
                 if quote_g2_date:
-                    validation["warnings"].append(f"G2 date '{quote_g2_date}' provided but not required for pre-April 1994 licenses")
+                    validation["warnings"].append(f"G2 date '{quote_g2_date}' provided but not required for pre-April 1, 1994 licenses")
                 
                 return validation
+        else:
+            # No issue date found - try to infer from other available dates
+            print(f"DEBUG: No MVR issue date found - attempting to infer from available dates")
+            
+            # Try to use the earliest available date as a potential issue date
+            available_dates = []
+            if mvr_expiry_date:
+                available_dates.append(("expiry", mvr_expiry_date))
+            if mvr_birth_date:
+                available_dates.append(("birth", mvr_birth_date))
+            
+            if available_dates:
+                # Parse all available dates and find the earliest
+                parsed_dates = []
+                for date_type, date_str in available_dates:
+                    try:
+                        parsed_date = self._parse_date(date_str, "mvr")
+                        if parsed_date:
+                            parsed_dates.append((parsed_date, date_str, date_type))
+                    except:
+                        continue
+                
+                if parsed_dates:
+                    # Sort by date and take the earliest
+                    parsed_dates.sort(key=lambda x: x[0])
+                    earliest_date = parsed_dates[0][1]
+                    earliest_type = parsed_dates[0][2]
+                    
+                    print(f"DEBUG: Using earliest available date as potential issue date: {earliest_date} (from {earliest_type})")
+                    
+                    # Check if this earliest date is before April 1, 1994
+                    earliest_parsed = parsed_dates[0][0]
+                    if earliest_parsed < april_1994:
+                        print(f"DEBUG: Earliest date {earliest_date} is before April 1, 1994 - applying special rules")
+                        
+                        # Use this as the G date
+                        expected_g_date = self._convert_mvr_date_to_quote_format(earliest_date)
+                        
+                        validation["matches"].append(f"Pre-April 1, 1994 license inferred - earliest date {earliest_date} becomes G date")
+                        validation["matches"].append("G1 and G2 dates not required for licenses issued before April 1, 1994")
+                        
+                        # Validate G date only
+                        if quote_g_date:
+                            if self._dates_match(expected_g_date, quote_g_date, "quote", "quote"):
+                                validation["matches"].append(f"G date matches: Expected '{expected_g_date}' vs Quote '{quote_g_date}'")
+                            else:
+                                validation["critical_errors"].append(f"G date mismatch: Expected '{expected_g_date}' vs Quote '{quote_g_date}'")
+                                validation["status"] = "FAIL"
+                        else:
+                            validation["critical_errors"].append(f"Quote missing G date, expected: '{expected_g_date}'")
+                            validation["status"] = "FAIL"
+                        
+                        # Don't validate G1/G2 dates for pre-April 1, 1994 licenses
+                        if quote_g1_date:
+                            validation["warnings"].append(f"G1 date '{quote_g1_date}' provided but not required for pre-April 1, 1994 licenses")
+                        
+                        if quote_g2_date:
+                            validation["warnings"].append(f"G2 date '{quote_g2_date}' provided but not required for pre-April 1, 1994 licenses")
+                        
+                        return validation
+            
+            # If we still can't determine, add a helpful warning
+            validation["warnings"].append("Unable to determine if license is pre or post-April 1, 1994 - issue date not found")
+            validation["warnings"].append("License progression validation may be incomplete without the license issue date")
         
-        # Standard logic for post-April 1994 licenses
+        # Standard logic for post-April 1, 1994 licenses
         # Calculate expected G1/G2/G dates from MVR data using business rules
         calculated_dates = self._calculate_license_dates_from_mvr(mvr_expiry_date, mvr_birth_date, mvr_issue_date)
         
@@ -821,6 +924,52 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             print(f"  Calculated G2: {calculated_g2}")
             print(f"  Calculated G: {calculated_g}")
             
+            # Check for special case: If quote G date matches issue date AND this is a pre-April 1994 license
+            # This can happen when someone got their G license before the graduated system was fully enforced
+            if quote_g_date and mvr_issue_date:
+                quote_g_parsed = self._parse_date(quote_g_date, "quote")
+                issue_parsed = self._parse_date(mvr_issue_date, "mvr")
+                
+                # Only apply special case if the issue date is before April 1, 1994
+                if quote_g_parsed and issue_parsed and issue_parsed < april_1994:
+                    if self._dates_match(quote_g_date, mvr_issue_date, "quote", "mvr"):
+                        print(f"DEBUG: Special case detected - Pre-April 1994 license with G date matching issue date")
+                        print(f"DEBUG: This suggests the driver got their G license directly without G1/G2 progression")
+                        
+                        # Add special case handling
+                        validation["matches"].append(f"Special case detected: Pre-April 1994 license with G date '{quote_g_date}' matching issue date '{mvr_issue_date}'")
+                        validation["matches"].append("This suggests the driver obtained their G license directly (before graduated licensing was fully enforced)")
+                        
+                        # Validate G date
+                        validation["matches"].append(f"G date matches: Quote '{quote_g_date}' vs MVR issue date '{mvr_issue_date}'")
+                        
+                        # For pre-April 1994 licenses, G1/G2 dates are not required
+                        if quote_g1_date:
+                            validation["warnings"].append(f"G1 date '{quote_g1_date}' provided but not required for pre-April 1994 licenses")
+                        else:
+                            validation["matches"].append("G1 date not required for pre-April 1994 licenses")
+                        
+                        if quote_g2_date:
+                            validation["warnings"].append(f"G2 date '{quote_g2_date}' provided but not required for pre-April 1994 licenses")
+                        else:
+                            validation["matches"].append("G2 date not required for pre-April 1994 licenses")
+                        
+                        # Set status to PASS since this is a valid special case
+                        validation["status"] = "PASS"
+                        return validation
+                else:
+                    # Post-April 1994 license with G date matching issue date - this is suspicious
+                    if self._dates_match(quote_g_date, mvr_issue_date, "quote", "mvr"):
+                        print(f"DEBUG: Suspicious case detected - Post-April 1994 license with G date matching issue date")
+                        print(f"DEBUG: This suggests the driver got their G license directly, but G1/G2 progression is still required")
+                        
+                        # Add warning about suspicious case
+                        validation["warnings"].append(f"Suspicious case: Post-April 1994 license with G date '{quote_g_date}' matching issue date '{mvr_issue_date}'")
+                        validation["warnings"].append("This suggests the driver got their G license directly, but G1/G2 progression is still required for post-April 1994 licenses")
+                        
+                        # Continue with normal validation (G1/G2 dates are still required)
+            
+            # Standard validation for normal G1/G2/G progression
             # Compare calculated dates with quote dates
             if quote_g1_date:
                 if self._dates_match(calculated_g1, quote_g1_date, "calculated", "quote"):
@@ -852,10 +1001,34 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
                 validation["critical_errors"].append(f"Quote missing G date, expected: '{calculated_g}'")
                 validation["status"] = "FAIL"
         else:
-            validation["critical_errors"].append("Could not calculate expected license dates from MVR data")
+            # Provide more helpful error message
+            missing_fields = []
+            if not mvr_expiry_date:
+                missing_fields.append("expiry date")
+            if not mvr_birth_date:
+                missing_fields.append("birth date")
+            if not mvr_issue_date:
+                missing_fields.append("issue date")
+            
+            error_msg = f"Could not calculate expected license dates from MVR data. Missing: {', '.join(missing_fields)}"
+            validation["critical_errors"].append(error_msg)
             validation["status"] = "FAIL"
+            
+            # Add helpful guidance
+            if not mvr_issue_date:
+                validation["warnings"].append("MVR issue date not found - this is required for license progression validation")
+                validation["warnings"].append("Consider checking if the MVR document contains the license issue date in a different format")
+                validation["warnings"].append("The system will attempt to infer the issue date from other available dates")
+            
+            if not mvr_expiry_date or not mvr_birth_date:
+                validation["warnings"].append("MVR expiry date and birth date are required for calculating G1/G2/G progression")
+            
+            # Try to provide specific guidance based on what's available
+            if mvr_expiry_date and mvr_birth_date and not mvr_issue_date:
+                validation["warnings"].append("Have expiry and birth dates but missing issue date - this prevents accurate G1/G2/G calculation")
+                validation["warnings"].append("Consider manually reviewing the MVR document for the license issue date")
         
-        # Validate that the progression makes sense (additional check) - only for post-April 1994
+        # Validate that the progression makes sense (additional check) - only for post-April 1, 1994
         if quote_g1_date and quote_g2_date:
             if not self._is_date_before(quote_g1_date, quote_g2_date, "quote", "quote"):
                 validation["critical_errors"].append(f"G1 date '{quote_g1_date}' should be before G2 date '{quote_g2_date}'")
@@ -884,6 +1057,45 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
             pass
         
         return mvr_date
+    
+    def _infer_license_issue_date(self, mvr_data):
+        """
+        Try to infer the license issue date from available MVR data
+        This is a fallback when the explicit issue date is not found
+        """
+        available_dates = []
+        
+        # Collect all available dates from MVR
+        if mvr_data.get("expiry_date"):
+            available_dates.append(("expiry", mvr_data.get("expiry_date")))
+        if mvr_data.get("birth_date"):
+            available_dates.append(("birth", mvr_data.get("birth_date")))
+        if mvr_data.get("release_date"):
+            available_dates.append(("release", mvr_data.get("release_date")))
+        
+        if not available_dates:
+            return None
+        
+        # Parse all available dates and find the earliest one
+        parsed_dates = []
+        for date_type, date_str in available_dates:
+            try:
+                parsed_date = self._parse_date(date_str, "mvr")
+                if parsed_date:
+                    parsed_dates.append((parsed_date, date_str, date_type))
+            except:
+                continue
+        
+        if parsed_dates:
+            # Sort by date and take the earliest
+            parsed_dates.sort(key=lambda x: x[0])
+            earliest_date = parsed_dates[0][1]
+            earliest_type = parsed_dates[0][2]
+            
+            print(f"DEBUG: Inferred license issue date from {earliest_type}: {earliest_date}")
+            return earliest_date
+        
+        return None
 
     def _is_date_before(self, date1_str, date2_str, source1_type=None, source2_type=None):
         """
@@ -1969,10 +2181,10 @@ Comprehensive validation engine for comparing MVR, DASH, and Quote data with enh
         return "FAIL"
 
 # Legacy function for backward compatibility
-def validate_quote(data):
+def validate_quote(data, no_dash_report=False):
     """
     Legacy validation function - now uses the new ValidationEngine
     """
     engine = ValidationEngine()
-    return engine.validate_quote(data)
+    return engine.validate_quote(data, no_dash_report=no_dash_report)
         

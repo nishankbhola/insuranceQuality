@@ -1,0 +1,524 @@
+/* Salesforce Design System - Custom CSS Variables and Utilities */
+
+:root {
+  /* Color Palette */
+  --salesforce-blue: #0176d3;
+  --salesforce-blue-dark: #014486;
+  --salesforce-blue-light: #e5f3ff;
+  --salesforce-green: #04844b;
+  --salesforce-green-light: #e7f6e7;
+  --salesforce-orange: #ff9a3c;
+  --salesforce-orange-light: #fff3e0;
+  --salesforce-gray-50: #f8f9fa;
+  --salesforce-gray-100: #f3f4f6;
+  --salesforce-gray-200: #e9ecef;
+  --salesforce-gray-300: #dee2e6;
+  --salesforce-gray-400: #ced4da;
+  --salesforce-gray-500: #adb5bd;
+  --salesforce-gray-600: #6c757d;
+  --salesforce-gray-700: #495057;
+  --salesforce-gray-800: #343a40;
+  --salesforce-gray-900: #212529;
+  
+  /* Typography */
+  --font-family-salesforce: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+}
+
+/* Salesforce Typography Classes */
+.sf-text-xs { font-size: var(--font-size-xs); }
+.sf-text-sm { font-size: var(--font-size-sm); }
+.sf-text-base { font-size: var(--font-size-base); }
+.sf-text-lg { font-size: var(--font-size-lg); }
+.sf-text-xl { font-size: var(--font-size-xl); }
+.sf-text-2xl { font-size: var(--font-size-2xl); }
+.sf-text-3xl { font-size: var(--font-size-3xl); }
+
+.sf-font-light { font-weight: 300; }
+.sf-font-normal { font-weight: 400; }
+.sf-font-medium { font-weight: 500; }
+.sf-font-semibold { font-weight: 600; }
+.sf-font-bold { font-weight: 700; }
+
+.sf-text-primary { color: var(--salesforce-gray-900); }
+.sf-text-secondary { color: var(--salesforce-gray-600); }
+.sf-text-muted { color: var(--salesforce-gray-500); }
+.sf-text-link { color: var(--salesforce-blue); }
+.sf-text-success { color: var(--salesforce-green); }
+.sf-text-warning { color: var(--salesforce-orange); }
+
+/* Salesforce Button Styles */
+.sf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.sf-btn-primary {
+  background-color: var(--salesforce-blue);
+  color: white;
+}
+
+.sf-btn-primary:hover {
+  background-color: var(--salesforce-blue-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.sf-btn-secondary {
+  background-color: var(--salesforce-gray-100);
+  color: var(--salesforce-gray-700);
+  border: 1px solid var(--salesforce-gray-300);
+}
+
+.sf-btn-secondary:hover {
+  background-color: var(--salesforce-gray-200);
+  border-color: var(--salesforce-gray-400);
+}
+
+.sf-btn-ghost {
+  background-color: transparent;
+  color: var(--salesforce-gray-600);
+}
+
+.sf-btn-ghost:hover {
+  background-color: var(--salesforce-gray-100);
+  color: var(--salesforce-gray-800);
+}
+
+/* Salesforce Card Styles */
+.sf-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--salesforce-gray-200);
+  transition: all var(--transition-normal);
+}
+
+.sf-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.sf-card-header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--salesforce-gray-200);
+  background-color: var(--salesforce-gray-50);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.sf-card-body {
+  padding: var(--spacing-lg);
+}
+
+.sf-card-footer {
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--salesforce-gray-200);
+  background-color: var(--salesforce-gray-50);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* Salesforce Form Styles */
+.sf-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--salesforce-gray-300);
+  border-radius: var(--radius-md);
+  background-color: white;
+  transition: all var(--transition-fast);
+}
+
+.sf-input:focus {
+  outline: none;
+  border-color: var(--salesforce-blue);
+  box-shadow: 0 0 0 3px var(--salesforce-blue-light);
+}
+
+.sf-input:disabled {
+  background-color: var(--salesforce-gray-100);
+  color: var(--salesforce-gray-500);
+  cursor: not-allowed;
+}
+
+/* Salesforce Progress Bar */
+.sf-progress {
+  width: 100%;
+  height: 8px;
+  background-color: var(--salesforce-gray-200);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.sf-progress-bar {
+  height: 100%;
+  background-color: var(--salesforce-blue);
+  transition: width var(--transition-normal);
+}
+
+.sf-progress-bar.completed {
+  background-color: var(--salesforce-green);
+}
+
+/* Salesforce Tab Styles */
+.sf-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--salesforce-gray-200);
+  margin-bottom: var(--spacing-lg);
+}
+
+.sf-tab {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--salesforce-gray-600);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.sf-tab:hover {
+  color: var(--salesforce-gray-800);
+  background-color: var(--salesforce-gray-50);
+}
+
+.sf-tab.active {
+  color: var(--salesforce-blue);
+  border-bottom-color: var(--salesforce-blue);
+}
+
+/* Salesforce Sidebar Styles */
+.sf-sidebar {
+  background-color: var(--salesforce-gray-800);
+  color: white;
+  width: 64px;
+  transition: width var(--transition-normal);
+  overflow: hidden;
+}
+
+.sf-sidebar.expanded {
+  width: 240px;
+}
+
+.sf-sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  color: var(--salesforce-gray-300);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-md);
+  margin: var(--spacing-xs) var(--spacing-sm);
+}
+
+.sf-sidebar-item:hover {
+  background-color: var(--salesforce-gray-700);
+  color: white;
+}
+
+.sf-sidebar-item.active {
+  background-color: var(--salesforce-blue);
+  color: white;
+}
+
+.sf-sidebar-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.sf-sidebar-label {
+  margin-left: var(--spacing-md);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.sf-sidebar.expanded .sf-sidebar-label {
+  opacity: 1;
+}
+
+/* Salesforce Header Styles */
+.sf-header {
+  background: white;
+  border-bottom: 1px solid var(--salesforce-gray-200);
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sf-search {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 var(--spacing-xl);
+}
+
+.sf-search-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--salesforce-gray-300);
+  border-radius: var(--radius-lg);
+  background-color: var(--salesforce-gray-50);
+  font-size: var(--font-size-sm);
+}
+
+.sf-search-input:focus {
+  outline: none;
+  border-color: var(--salesforce-blue);
+  background-color: white;
+}
+
+/* Salesforce Data Grid */
+.sf-data-grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sf-data-grid th {
+  background-color: var(--salesforce-gray-50);
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--salesforce-gray-700);
+  border-bottom: 1px solid var(--salesforce-gray-200);
+}
+
+.sf-data-grid td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--salesforce-gray-100);
+  font-size: var(--font-size-sm);
+}
+
+.sf-data-grid tr:hover {
+  background-color: var(--salesforce-gray-50);
+}
+
+/* Salesforce Badge */
+.sf-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  background-color: var(--salesforce-gray-100);
+  color: var(--salesforce-gray-700);
+}
+
+.sf-badge-success {
+  background-color: var(--salesforce-green-light);
+  color: var(--salesforce-green);
+}
+
+.sf-badge-warning {
+  background-color: var(--salesforce-orange-light);
+  color: var(--salesforce-orange);
+}
+
+.sf-badge-primary {
+  background-color: var(--salesforce-blue-light);
+  color: var(--salesforce-blue);
+}
+
+/* Salesforce Popover */
+.sf-popover {
+  position: absolute;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--salesforce-gray-200);
+  z-index: 1000;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.sf-popover-header {
+  background-color: var(--salesforce-blue);
+  color: white;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.sf-popover-body {
+  padding: var(--spacing-lg);
+}
+
+/* Salesforce Collapsible */
+.sf-collapsible {
+  border: 1px solid var(--salesforce-gray-200);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.sf-collapsible-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--salesforce-gray-50);
+  border-bottom: 1px solid var(--salesforce-gray-200);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 500;
+  transition: background-color var(--transition-fast);
+}
+
+.sf-collapsible-header:hover {
+  background-color: var(--salesforce-gray-100);
+}
+
+.sf-collapsible-content {
+  padding: var(--spacing-lg);
+  background-color: white;
+}
+
+.sf-collapsible-icon {
+  transition: transform var(--transition-fast);
+}
+
+.sf-collapsible.expanded .sf-collapsible-icon {
+  transform: rotate(180deg);
+}
+
+/* Salesforce Stage Progress */
+.sf-stage-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-lg) 0;
+}
+
+.sf-stage {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.sf-stage.completed {
+  background-color: var(--salesforce-green-light);
+  color: var(--salesforce-green);
+}
+
+.sf-stage.current {
+  background-color: var(--salesforce-blue-light);
+  color: var(--salesforce-blue);
+}
+
+.sf-stage.pending {
+  background-color: var(--salesforce-gray-100);
+  color: var(--salesforce-gray-600);
+}
+
+.sf-stage-connector {
+  width: 40px;
+  height: 2px;
+  background-color: var(--salesforce-gray-300);
+}
+
+.sf-stage-connector.completed {
+  background-color: var(--salesforce-green);
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .sf-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  
+  .sf-sidebar.expanded {
+    width: 100%;
+  }
+  
+  .sf-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .sf-search {
+    margin: 0;
+    max-width: 100%;
+  }
+}
+
+/* Salesforce-specific animations */
+@keyframes sf-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sf-slide-in {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.sf-fade-in {
+  animation: sf-fade-in var(--transition-normal) ease-out;
+}
+
+.sf-slide-in {
+  animation: sf-slide-in var(--transition-normal) ease-out;
+}

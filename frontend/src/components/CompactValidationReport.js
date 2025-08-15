@@ -24,7 +24,8 @@ const CompactValidationReport = ({ reportData }) => {
     driver_summaries, 
     charts, 
     key_insights, 
-    recommendations 
+    recommendations,
+    no_dash_report = false
   } = report;
 
   // Chart configurations
@@ -186,7 +187,7 @@ const CompactValidationReport = ({ reportData }) => {
                 <th className="px-4 py-2 border">License</th>
                 <th className="px-4 py-2 border">Status</th>
                 <th className="px-4 py-2 border">MVR</th>
-                <th className="px-4 py-2 border">DASH</th>
+                {!no_dash_report && <th className="px-4 py-2 border">DASH</th>}
                 <th className="px-4 py-2 border">Errors</th>
                 <th className="px-4 py-2 border">Warnings</th>
                 <th className="px-4 py-2 border">Matches</th>
@@ -205,9 +206,11 @@ const CompactValidationReport = ({ reportData }) => {
                   <td className="px-4 py-2 border text-center">
                     {driver.mvr_found ? '✓' : '✗'}
                   </td>
-                  <td className="px-4 py-2 border text-center">
-                    {driver.dash_found ? '✓' : '✗'}
-                  </td>
+                  {!no_dash_report && (
+                    <td className="px-4 py-2 border text-center">
+                      {driver.dash_found ? '✓' : '✗'}
+                    </td>
+                  )}
                   <td className="px-4 py-2 border text-center">
                     <span className="text-red-600 font-semibold">{driver.critical_errors}</span>
                   </td>

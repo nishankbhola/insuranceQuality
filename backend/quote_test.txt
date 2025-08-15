@@ -5,8 +5,9 @@ Aurora, ON L4G 6T5
 Phone: (905)727-0700    Fax: (416)531-1146
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-10 Sturton Rd
-Etobicoke, ON M9P 2C6
+Mobile: (416)473-8171
+7 Torino Place
+Concord, ON L4K 2L4
 Policy Information
  
 Property Policy Type
@@ -19,9 +20,9 @@ Property Policy
 Date
  
 Occupied Since
-Disable
+Combined Policy / Multi-Line
 Policy Discount
-No
+Yes
 All Carriers
  
 Company Name
@@ -30,11 +31,11 @@ Term Length
 Applicant Information
  
 Salutation
-Navid
+Mina
 First Name
  
 Middle
-Tahmasebian-Malayeri
+Elahi
 Last Name
  
 Suffix
@@ -49,36 +50,36 @@ Middle
 Last Name
  
 Suffix
-Navid Tahmasebian-Malayeri
+Mina Elahi
 Drivers
 Coverages
-Vehicle 1 of 1 | Private Passenger - 2024 LEXUS NX350h 4DR AWD (853800)
+Vehicle 1 of 1 | Private Passenger - 2024 NISSAN ROGUE S 4DR AWD (147800)
 Private Passenger
 Vehicle Type
-2T2GKCEZ6RC021516
+JN8BT3AB2RW286448
 VIN
 SUV - Small and Medium (Hard
 Top)
 Body Style
 Gasoline
 Fuel Type
-Yes
+No
 Hybrid
-Business
+Pleasure
 Primary Use
-10000
+11000
 Annual km
-3000
+ 
 Business km
-5
+4
 Daily km
-ETOBICOKE M9P2C6
+CONCORD L4K2L4
 Garaging Location
 No
 Single Vehicle MVD
-No
+Yes
 Leased
-4
+3
 Cylinders
  
 Anti-Theft - Device Type
@@ -89,42 +90,46 @@ Anti-Theft - Engraving
 New
 Purchase
 Condition
-08/16/2023
+08/19/2024
 Purchase Date
  
 km at Purchase
-58204
+35330
 List Price New
-70000
+31000
 Purchase Price
-Yes
+No
 Winter Tires
-Private Garage
+ 
 Parking at Night
-Navid Tahmasebian-Malayeri (Prn)
-Noushin Kherad-Bakhsh (Occ)
+Mina Elahi (Prn)
 Bodily Injury (1,000,000)
 Property Damage (1,000,000)
 Direct Compensation (0)
 Accident Benefits (Standard)
 All Perils (1,000)
 Uninsured Automobile
-#20 Loss of Use (1,500)
+#5a Rent or Lease
+#20 Loss of Use (3,000)
 #27 Liab to Unowned Veh. (75,000)
-#43 Limited Waiver (60 Months)
+Waiver of Deductible - Claim Specific
+#43RL Limited Waiver
+#43a Limited Waiver (48 Months)
 #44 Family Protection (1,000,000)
 Accident Waiver
 Minor Conviction Protection
-Prepared 08/03/2025 by Saman Razavi
-Effective Date: 08/15/2025
+Prepared 08/01/2025 by Reza Komeili
+Effective Date: 08/19/2025
+Provided by Applied Rating Services®,
+© 2025 Applied Systems® Canada Inc.
 Lapses
 Disclaimer: Coverages shown reflect user entry. For details on the coverages quoted please refer to the Carrier Detail printout.
-Driver 1 of 2 | Navid Tahmasebian-Malayeri
-06/18/1965
+Driver 1 of 1 | Mina Elahi
+09/11/1984
 Birth Date
-Married
+Single
 Marital Status
-Male
+Female
 Gender
 Applicant
 Relationship to Applicant
@@ -137,28 +142,28 @@ No
 Out of Province / Country Driver
 G
 Licence Class
-03/30/1985
+10/09/2005
 Date G
- 
+10/09/2004
 Date G2
- 
+10/09/2003
 Date G1
-T01685830650618
+E50385550845911
 Licence Number
 ON
 Licence Province
  
 Occupation
-05/27/2004
+06/01/2021
 Date Insured
-Desjardins Assurances
+Aviva
 Current Carrier
-08/16/2023
+08/19/2024
 Date with
 Company
- 
+07/22/2025
 Brokerage Insured
- 
+07/22/2025
 Date
 Owner/Principal
 No
@@ -173,78 +178,14 @@ Class
  
 Other Licence
 Date
-No Vehicle Hence No Insurance Required
+Other
 Description
-05/27/2005
+11/02/2023
 Date
-12
+0
 Duration months
-05/27/2006
+11/02/2023
 Re-Instate Date
-No Vehicle Hence No Insurance Required
-Description
-08/22/2012
-Date
-73
-Duration months
-10/02/2018
-Re-Instate Date
-Driver 2 of 2 | Noushin Kherad-Bakhsh
-09/11/1969
-Birth Date
-Married
-Marital Status
-Female
-Gender
-Spouse
-Relationship to Applicant
-No
-Driver Training
- 
-Driver Training
-Date
-No
-Out of Province / Country Driver
-G
-Licence Class
-08/19/1989
-Date G
- 
-Date G2
- 
-Date G1
-K33646000695911
-Licence Number
-ON
-Licence Province
- 
-Occupation
-07/28/2014
-Date Insured
-Desjardins Assurances
-Current Carrier
-08/16/2023
-Date with
-Company
- 
-Brokerage Insured
- 
-Date
-Owner/Principal
-No
-Applicant lives with Parents
- 
-Student Away at School (km)
-No
-Retired
- 
-Other Licence
-Class
- 
-Other Licence
-Date
-Provided by Applied Rating Services®,
-© 2025 Applied Systems® Canada Inc.
 Vieira & Associates Insurance Brokers Ltd
 (A)
 Unit 18 - 2 Orchard Heights Blvd
@@ -252,54 +193,55 @@ Aurora, ON L4G 6T5
 Phone: (905)727-0700    Fax: (416)531-1146
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-Prepared 08/03/2025 by Saman Razavi
-Applied Ref. # RWS 1016186202, CWS 347472039,
-RBWS 445007851
+Prepared 08/01/2025 by Reza Komeili
+Applied Ref. # RWS 1015951254, CWS 347416142,
+RBWS 444839441
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
-10 Sturton Rd
-Etobicoke, ON M9P 2C6
+Mobile: (416)473-8171
+7 Torino Place
+Concord, ON L4K 2L4
 Company
 12 Months
-SGI CANADA
-2,291
-CAA Insurance Company (Future Member)
-2,611
-CAA MyPace
-2,698
-CAA Insurance Company
-2,746
-Intact Insurance - my Drive
-3,663
 Aviva - Aviva Journey
-3,952
-Intact Insurance
-4,040
-Wawanesa Drive Change
-4,301
-Aviva
-4,353
+2,748
 Definity Insurance Company
-4,472
+2,954
+Aviva
+3,013
+Wawanesa Drive Change
+3,572
 Wawanesa Mutual
-4,727
+3,924
+SGI CANADA
+4,002
+CAA Insurance Company (Future Member)
+4,751
+CAA MyPace
+4,934
+CAA Insurance Company
+4,998
 Facility Association
-5,628
+5,056
 Dominion of Canada - Single Pay and DPD
-6,619
+5,551
+Intact Insurance - my Drive
+5,641
 Dominion of Canada - IntelliDrive
-8,236
+5,694
 Dominion of Canada
-8,444
+5,840
+Intact Insurance
+6,316
 Echelon
-9,198
+7,819
 Coachman
 0
 JEVCO
 0
 Summary
-Navid Tahmasebian-Malayeri
-1 Vehicle, 2 Drivers  |  Effective Date: 08/15/2025
+Mina Elahi
+1 Vehicle, 1 Driver  |  Effective Date: 08/19/2025
 Vieira & Associates Insurance Brokers Ltd
 (A)
 Unit 18 - 2 Orchard Heights Blvd
@@ -307,110 +249,138 @@ Aurora, ON L4G 6T5
 Phone: (905)727-0700    Fax: (416)531-1146
 Email: info@vieirainsurance.com
 Website: www.vieirainsurance.com
-CAA Insurance Company (Future Member)
-1234  |  New Business  |  Effective Date: 08/15/2025
-10 Sturton Rd
-Etobicoke, ON M9P 2C6
+Definity Insurance Company
+9248  |  New Business  |  Effective Date: 08/19/2025
+Mobile: (416)473-8171
+7 Torino Place
+Concord, ON L4K 2L4
 Vehicles
 TOTALS
-Private Passenger - 2024 LEXUS NX350h 4DR AWD  (853800)
-$2,611
+Private Passenger - 2024 NISSAN ROGUE S 4DR AWD  (147800)
+$2,954
 Annual Premium
-$2,611.00
+$2,954.00
 0% Tax Applied
 $0.00
 Total Premium
-$2,611.00
+$2,954.00
 Totals
-04/2025
+■ Here is your quote number: Q17540696428781941
+■ Account match not found.
+■ https://extranet.id.economical.com/gwpcweb/BrokerQuote.do?JobNumber=m7O8np9NYFrlQM8wdhPQjzoDcigIWJyRsVWPL2cQ8DE%3D
+■ 2024 NISSAN ROGUE S 4DR AWD : To confirm eligibility, all modifications must be declared in Guidewire prior to binding
+■ 2024 NISSAN ROGUE S 4DR AWD : Vehicles with prior Unrepaired Damage may be ineligible. Please confirm eligibility in Guidewire.
+MSG
+RB
 Effective Date
-6
 Book
-ETOBICOKE M9P 2C6 / Territory 
+CONCORD L4K 2L4 / Territory 143
 Territory
-10/2024
+RB
 VRG eff. date
-45
+40
 DCPD
-27
+31
 AB
-45
+40
 Coll
-57
+43
 Comp
 Rates
 MSG
-■ Territories: TP 41, DC 49, AB 52, COL 50 , CMP 52
-■ Veh. must be equipped with 4 winter tires from Nov thru Apr.
-■ Additional discounts may apply; see User Initiated Discounts
+■ Accident Rating Waiver: Accident waiver is included if driver is eligible for 6, 8 or 9 driving record.
+■ Transportation Replacement has been selected as 60 days.
+■ Legal Liability for Damage to Non-Owned Automobile has been selected as 30 days
 DIS
-● Winter Tire = 5% - Prn
-● Hybrid and Electric Vehicle = 5% - Prn
-● Conviction Free = 11% - Prn
-● CAA Loyalty = 5% - Prn
+● Conviction Free included - Prn
+● Multi-Policy included - Prn
 Operator
 PRIN.
 TOTALS
 Class/Liability/Collision
-07/20/20
+/9/9
 Bodily Injury
 1 M
-215
-215
+406
+406
 Property Damage
 1 M
-10
-10
+ 
+0
 Direct Compensation
 0
-561
-561
+740
+740
 Accident Benefits
-313
-313
-All Perils
-1,000
-998
-998
-Uninsured Automobile
-15
-15
-#20 Loss of Use
-1,500
-43
-43
-#27 Liab to Unowned Veh.
-75K
-48
-48
-#43 Limited Waiver (Months)
-60
-271
-271
-#44 Family Protection
-1 M
-16
-16
-Forgive & Forget
-81
-81
-Minor Conviction Protection
-40
-40
+456
+456
 Annual Premium
-$2,611
-$2,611
+$2,954
+$2,954
 0% Tax Applied
 $0.00
 $0.00
 Total Premium
-$2,611.00
-$2,611.00
+$2,954.00
+$2,954.00
 Breakdown
-Navid Tahmasebian-Malayeri
-1 of 1  |  2024 LEXUS NX350h 4DR AWD  (853800)
-$2,611.00
-Prepared 08/03/2025 by Saman Razavi
-Applied Ref. # RBWS 445007851
+Mina Elahi
+Policy
+1 of 1  |  2024 NISSAN ROGUE S 4DR AWD  (147800)
+$2,954.00
+Prepared 08/01/2025 by Reza Komeili
+Applied Ref. # RBWS 444839441
 Provided by Applied Rating Services®,
 © 2025 Applied Systems® Canada Inc.
+Operator
+PRIN.
+TOTALS
+All Perils
+1,000
+995
+995
+Uninsured Automobile
+14
+14
+#5 Rent or Lease
+Inc.
+0
+#20 Loss of Use
+3,000
+105
+105
+#27 Liab to Unowned Veh.
+75K
+45
+45
+Waiver of Deductible - Claim Specific
+10
+10
+#43a Limited Waiver (Months)
+ 
+0
+#43RL Limited Waiver
+130
+130
+#44 Family Protection
+1 M
+13
+13
+Accident Waiver
+ 
+0
+Minor Conviction Protection
+40
+40
+Service Fee
+ 
+0
+Annual Premium
+$2,954
+$2,954
+0% Tax Applied
+$0.00
+$0.00
+Total Premium
+$2,954.00
+$2,954.00

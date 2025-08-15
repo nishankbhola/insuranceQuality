@@ -6,7 +6,9 @@ import {
   AlertTriangle, 
   CheckCircle, 
   Loader2,
-  X
+  X,
+  ChevronRight,
+  Info
 } from 'lucide-react';
 
 function FileUpload({ onFileUpload, onCompactValidation, isLoading }) {
@@ -14,6 +16,7 @@ function FileUpload({ onFileUpload, onCompactValidation, isLoading }) {
   const [errors, setErrors] = useState({ quote: '', mvr: '', dash: '' });
   const [dragActive, setDragActive] = useState(false);
   const [validationType, setValidationType] = useState('standard'); // 'standard' or 'compact'
+  const [noDashReport, setNoDashReport] = useState(false); // New state for no DASH report option
   const fileInputRef = useRef(null);
 
   // Auto-detect file type based on filename and content
@@ -31,6 +34,16 @@ function FileUpload({ onFileUpload, onCompactValidation, isLoading }) {
     
     // If filename doesn't give clear indication, we'll let the backend handle it
     return 'auto';
+  };
+
+  // Handle noDashReport checkbox change
+  const handleNoDashReportChange = (checked) => {
+    setNoDashReport(checked);
+    if (checked) {
+      // Clear DASH files when checkbox is checked
+      setFiles(prev => ({ ...prev, dash: [] }));
+      setErrors(prev => ({ ...prev, dash: '' }));
+    }
   };
 
   const handleDrag = (e) => {
@@ -132,14 +145,17 @@ function FileUpload({ onFileUpload, onCompactValidation, isLoading }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Check if we have at least 3 files total
-    const totalFiles = (files.quote ? 1 : 0) + files.mvr.length + files.dash.length;
-    if (totalFiles < 3) {
-      alert('Please upload all three required documents: Quote, MVR, and DASH report.');
+    // Check if we have at least 2 files total (Quote + MVR) when no DASH report is selected
+    const totalFiles = (files.quote ? 1 : 0) + files.mvr.length + (noDashReport ? 0 : files.dash.length);
+    const minRequiredFiles = noDashReport ? 2 : 3;
+    
+    if (totalFiles < minRequiredFiles) {
+      const requiredDocs = noDashReport ? 'Quote and MVR' : 'Quote, MVR, and DASH report';
+      alert(`Please upload all required documents: ${requiredDocs}.`);
       return;
     }
     
-    // Check if we have at least one of each type
+    // Check if we have at least one of each required type
     if (!files.quote) {
       alert('Please upload a Quote document.');
       return;
@@ -148,7 +164,7 @@ function FileUpload({ onFileUpload, onCompactValidation, isLoading }) {
       alert('Please upload at least one MVR document.');
       return;
     }
-    if (files.dash.length === 0) {
+    if (!noDashReport && files.dash.length === 0) {
       alert('Please upload at least one DASH document.');
       return;
     }
@@ -164,10 +180,15 @@ function FileUpload({ onFileUpload, onCompactValidation, isLoading }) {
       formData.append('mvr', file);
     });
     
-    // Add all DASH files
-    files.dash.forEach((file, index) => {
-      formData.append('dash', file);
-    });
+    // Add all DASH files only if noDashReport is false
+    if (!noDashReport) {
+      files.dash.forEach((file, index) => {
+        formData.append('dash', file);
+      });
+    }
+    
+    // Add the noDashReport flag
+    formData.append('noDashReport', noDashReport);
     
     // Call appropriate handler based on validation type
     if (validationType === 'compact' && onCompactValidation) {
@@ -197,113 +218,221 @@ function FileUpload({ onFileUpload, onCompactValidation, isLoading }) {
 
   const getFileTypeColor = (fileType) => {
     switch (fileType) {
-      case 'quote': return 'border-blue-200 bg-blue-50';
-      case 'mvr': return 'border-green-200 bg-green-50';
-      case 'dash': return 'border-orange-200 bg-orange-50';
-      default: return 'border-gray-200 bg-gray-50';
+      case 'quote': return 'border-blue-200 bg-blue-50/50';
+      case 'mvr': return 'border-green-200 bg-green-50/50';
+      case 'dash': return 'border-orange-200 bg-orange-50/50';
+      default: return 'border-gray-200 bg-gray-50/50';
     }
   };
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center">
-            <Upload className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Document Upload</h1>
-            <p className="text-gray-600">Upload your insurance documents for validation</p>
-          </div>
-        </div>
-        
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-start space-x-3">
-            <CheckCircle className="w-5 h-5 text-blue-600 mt-0.5" />
-            <div>
-              <h3 className="font-medium text-blue-900">Smart Document Detection</h3>
-              <p className="text-sm text-blue-700 mt-1">
-                Simply upload your Quote, MVR, and DASH documents. Our system will automatically detect and categorize them based on their content and filename patterns. Multiple MVR and DASH files are supported for multi-driver scenarios.
-              </p>
-            </div>
-          </div>
+    <div className="w-full p-4">
+
+
+      {/* Compact Info Card */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+        <div className="flex items-center space-x-2">
+          <Info className="w-4 h-4 text-blue-600 flex-shrink-0" />
+          <p className="text-blue-800 text-xs">
+            <strong>Smart Detection:</strong> System automatically categorizes Quote, MVR, and DASH documents. Multiple files supported.
+          </p>
         </div>
       </div>
 
-      {/* Single Upload Area */}
-      <div className="mb-8">
-        <div
-          className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
-            dragActive 
-              ? 'border-blue-400 bg-blue-50' 
-              : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
-          }`}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept=".pdf"
-            onChange={handleFileInputChange}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          />
-          
-          <div className="space-y-4">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-              <Upload className="w-8 h-8 text-blue-600" />
-            </div>
+      {/* Two Column Layout */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-4">
+        {/* Left Column - Upload Area */}
+        <div>
+          <div
+            className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${
+              dragActive 
+                ? 'border-blue-500 bg-blue-50/50' 
+                : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50/30'
+            }`}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept=".pdf"
+              onChange={handleFileInputChange}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
             
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Drop your documents here or click to browse
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Upload your Insurance Quote, MVR Report(s), and DASH Report(s) (PDF files only, max 10MB each). 
-                You can upload multiple MVR and DASH files for different drivers.
-              </p>
+            <div className="space-y-3">
+              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                <Upload className="w-7 h-7 text-blue-600" />
+              </div>
               
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                Choose Files
-              </button>
+              <div>
+                <h3 className="text-base font-semibold text-gray-900 mb-1">
+                  Drop documents here or click to browse
+                </h3>
+                <p className="text-gray-600 text-sm mb-3">PDF files only, max 10MB each</p>
+                
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
+                >
+                  Choose Files
+                </button>
+              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Right Column - Features and Options */}
+        <div className="space-y-4">
+          {/* No DASH Report Option */}
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <div className="flex items-start space-x-3">
+              <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <AlertTriangle className="w-3 h-3 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <label className="flex items-start space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={noDashReport}
+                    onChange={(e) => handleNoDashReportChange(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5"
+                  />
+                  <div>
+                    <span className="font-medium text-gray-900 text-sm">Skip DASH Report</span>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Check this if DASH report is not available for this validation
+                    </p>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* Validation Type Selector */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">Report Type</h3>
+            <div className="grid grid-cols-2 gap-2">
+              <label className={`cursor-pointer ${
+                validationType === 'standard' ? 'ring-2 ring-blue-500 ring-offset-1' : ''
+              }`}>
+                <input
+                  type="radio"
+                  name="validationType"
+                  value="standard"
+                  checked={validationType === 'standard'}
+                  onChange={(e) => setValidationType(e.target.value)}
+                  className="sr-only"
+                />
+                <div className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+                  validationType === 'standard' 
+                    ? 'border-blue-500 bg-blue-50/50' 
+                    : 'border-gray-200 bg-white hover:border-blue-300'
+                }`}>
+                  <div className="flex items-center space-x-2">
+                    <FileText className={`w-4 h-4 ${validationType === 'standard' ? 'text-blue-600' : 'text-gray-600'}`} />
+                    <div>
+                      <span className={`font-medium block text-xs ${validationType === 'standard' ? 'text-blue-900' : 'text-gray-900'}`}>
+                        Standard
+                      </span>
+                      <p className={`text-xs ${validationType === 'standard' ? 'text-blue-700' : 'text-gray-600'}`}>
+                        Detailed
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </label>
+              
+              <label className={`cursor-pointer ${
+                validationType === 'compact' ? 'ring-2 ring-blue-500 ring-offset-1' : ''
+              }`}>
+                <input
+                  type="radio"
+                  name="validationType"
+                  value="compact"
+                  checked={validationType === 'compact'}
+                  onChange={(e) => setValidationType(e.target.value)}
+                  className="sr-only"
+                />
+                <div className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+                  validationType === 'compact' 
+                    ? 'border-blue-500 bg-blue-50/50' 
+                    : 'border-gray-200 bg-white hover:border-blue-300'
+                }`}>
+                  <div className="flex items-center space-x-2">
+                    <Shield className={`w-4 h-4 ${validationType === 'compact' ? 'text-blue-600' : 'text-gray-600'}`} />
+                    <div>
+                      <span className={`font-medium block text-xs ${validationType === 'compact' ? 'text-blue-900' : 'text-gray-900'}`}>
+                        Compact
+                      </span>
+                      <p className={`text-xs ${validationType === 'compact' ? 'text-blue-700' : 'text-gray-600'}`}>
+                        Summary
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Submit Button - Now in the right column */}
+          <div className="pt-2">
+            <button
+              onClick={handleSubmit}
+              disabled={isLoading || !files.quote || files.mvr.length === 0 || (!noDashReport && files.dash.length === 0)}
+              className={`w-full flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors ${
+                isLoading || !files.quote || files.mvr.length === 0 || (!noDashReport && files.dash.length === 0)
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <>
+                  <Shield className="w-5 h-5" />
+                  <span>Start {validationType === 'compact' ? 'Compact ' : ''}Validation</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
       </div>
 
       {/* Uploaded Files Display */}
       {(files.quote || files.mvr.length > 0 || files.dash.length > 0) && (
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Uploaded Documents</h3>
-          <div className="space-y-4">
+        <div className="mb-4">
+          <h3 className="text-base font-semibold text-gray-900 mb-3">Uploaded Documents</h3>
+          <div className="space-y-2">
             {/* Quote File */}
             {files.quote && (
-              <div className={`flex items-center justify-between p-4 rounded-lg border ${getFileTypeColor('quote')}`}>
+              <div className={`flex items-center justify-between p-3 rounded-lg border ${getFileTypeColor('quote')}`}>
                 <div className="flex items-center space-x-3">
-                  {getFileTypeIcon('quote')}
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    {getFileTypeIcon('quote')}
+                  </div>
                   <div>
-                    <p className="font-medium text-gray-900">{files.quote.name}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-medium text-gray-900 text-sm">{files.quote.name}</p>
+                    <p className="text-xs text-gray-600">
                       {getFileTypeLabel('quote')} • {(files.quote.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-2">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <CheckCircle className="w-4 h-4 text-green-600" />
                   <button
                     onClick={() => removeFile('quote')}
                     className="p-1 hover:bg-gray-200 rounded"
                   >
-                    <X className="w-4 h-4 text-gray-500" />
+                    <X className="w-3 h-3 text-gray-500" />
                   </button>
                 </div>
               </div>
@@ -313,160 +442,82 @@ function FileUpload({ onFileUpload, onCompactValidation, isLoading }) {
             {files.mvr.map((file, index) => (
               <div
                 key={`mvr-${index}`}
-                className={`flex items-center justify-between p-4 rounded-lg border ${getFileTypeColor('mvr')}`}
+                className={`flex items-center justify-between p-3 rounded-lg border ${getFileTypeColor('mvr')}`}
               >
                 <div className="flex items-center space-x-3">
-                  {getFileTypeIcon('mvr')}
+                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                    {getFileTypeIcon('mvr')}
+                  </div>
                   <div>
-                    <p className="font-medium text-gray-900">{file.name}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-medium text-gray-900 text-sm">{file.name}</p>
+                    <p className="text-xs text-gray-600">
                       {getFileTypeLabel('mvr')} • {(file.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-2">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <CheckCircle className="w-4 h-4 text-green-600" />
                   <button
                     onClick={() => removeFile('mvr', index)}
                     className="p-1 hover:bg-gray-200 rounded"
                   >
-                    <X className="w-4 h-4 text-gray-500" />
+                    <X className="w-3 h-3 text-gray-500" />
                   </button>
                 </div>
               </div>
             ))}
             
             {/* DASH Files */}
-            {files.dash.map((file, index) => (
+            {!noDashReport && files.dash.map((file, index) => (
               <div
                 key={`dash-${index}`}
-                className={`flex items-center justify-between p-4 rounded-lg border ${getFileTypeColor('dash')}`}
+                className={`flex items-center justify-between p-3 rounded-lg border ${getFileTypeColor('dash')}`}
               >
                 <div className="flex items-center space-x-3">
-                  {getFileTypeIcon('dash')}
+                  <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                    {getFileTypeIcon('dash')}
+                  </div>
                   <div>
-                    <p className="font-medium text-gray-900">{file.name}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-medium text-gray-900 text-sm">{file.name}</p>
+                    <p className="text-xs text-gray-600">
                       {getFileTypeLabel('dash')} • {(file.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-2">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <CheckCircle className="w-4 h-4 text-green-600" />
                   <button
                     onClick={() => removeFile('dash', index)}
                     className="p-1 hover:bg-gray-200 rounded"
                   >
-                    <X className="w-4 h-4 text-gray-500" />
+                    <X className="w-3 h-3 text-gray-500" />
                   </button>
                 </div>
               </div>
             ))}
+            
+            {/* No DASH Report Message */}
+            {noDashReport && (
+              <div className="flex items-center justify-between p-3 rounded-lg border border-yellow-200 bg-yellow-50/50">
+                <div className="flex items-center space-x-2">
+                  <AlertTriangle className="w-4 h-4 text-yellow-600" />
+                  <div>
+                    <p className="font-medium text-yellow-900 text-sm">No DASH Report</p>
+                    <p className="text-xs text-yellow-700">DASH validation will be skipped</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-2 px-2 py-1 bg-yellow-100 rounded-full">
+                  <CheckCircle className="w-3 h-3 text-yellow-600" />
+                  <span className="text-xs font-medium text-yellow-700">Set</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
-
-      {/* Information Cards */}
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-5 h-5 text-blue-600" />
-            </div>
-            <h4 className="font-semibold text-gray-900">Document Processing</h4>
-          </div>
-          <p className="text-gray-600 text-sm">
-            Our advanced OCR technology extracts and validates information from your PDF documents with high accuracy.
-          </p>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-            </div>
-            <h4 className="font-semibold text-gray-900">Data Validation</h4>
-          </div>
-          <p className="text-gray-600 text-sm">
-            Cross-reference information across all documents to ensure consistency and identify any discrepancies.
-          </p>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-orange-600" />
-            </div>
-            <h4 className="font-semibold text-gray-900">Issue Detection</h4>
-          </div>
-          <p className="text-gray-600 text-sm">
-            Automatically identify missing information, inconsistencies, and potential issues that require attention.
-          </p>
-        </div>
-      </div>
-
-      {/* Validation Type Selector */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Validation Report Type</h3>
-        <div className="flex space-x-4">
-          <label className="flex items-center space-x-3 cursor-pointer">
-            <input
-              type="radio"
-              name="validationType"
-              value="standard"
-              checked={validationType === 'standard'}
-              onChange={(e) => setValidationType(e.target.value)}
-              className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-            />
-            <div>
-              <span className="font-medium text-gray-900">Standard Report</span>
-              <p className="text-sm text-gray-600">Detailed validation report with comprehensive analysis</p>
-            </div>
-          </label>
-          
-          <label className="flex items-center space-x-3 cursor-pointer">
-            <input
-              type="radio"
-              name="validationType"
-              value="compact"
-              checked={validationType === 'compact'}
-              onChange={(e) => setValidationType(e.target.value)}
-              className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-            />
-            <div>
-              <span className="font-medium text-gray-900">Compact Report</span>
-              <p className="text-sm text-gray-600">One-page professional report with charts and analytics</p>
-            </div>
-          </label>
-        </div>
-      </div>
-
-      {/* Submit Button */}
-      <div className="flex justify-center">
-        <button
-          onClick={handleSubmit}
-          disabled={isLoading || !files.quote || files.mvr.length === 0 || files.dash.length === 0}
-          className={`flex items-center space-x-2 px-8 py-3 rounded-lg font-medium transition-colors ${
-            isLoading || !files.quote || files.mvr.length === 0 || files.dash.length === 0
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-          }`}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Processing...</span>
-            </>
-          ) : (
-            <>
-              <Shield className="w-5 h-5" />
-              <span>Start {validationType === 'compact' ? 'Compact ' : ''}Validation</span>
-            </>
-          )}
-        </button>
-      </div>
     </div>
   );
 }
