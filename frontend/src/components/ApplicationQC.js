@@ -61,8 +61,8 @@ function ApplicationQC() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!applicationFile || !quoteFile) {
-      setError('Please select both application and quote PDF files');
+    if (!applicationFile) {
+      setError('Please select an application PDF file');
       return;
     }
 
@@ -73,7 +73,9 @@ function ApplicationQC() {
     try {
       const formData = new FormData();
       formData.append('application', applicationFile);
-      formData.append('quote', quoteFile);
+      if (quoteFile) {
+        formData.append('quote', quoteFile);
+      }
 
       const response = await fetch(API_ENDPOINTS.applicationQC, {
         method: 'POST',
@@ -272,6 +274,19 @@ function ApplicationQC() {
     URL.revokeObjectURL(url);
   };
 
+  const downloadQCReport = (filename) => {
+    if (!filename) return;
+    
+    // Create download link to the backend endpoint
+    const downloadUrl = `${API_ENDPOINTS.baseURL}/api/download-qc-report/${filename}`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const formatJSON = (data) => {
     try {
       return JSON.stringify(data, null, 2);
@@ -369,30 +384,118 @@ function ApplicationQC() {
 
     return (
       <div className="space-y-6">
-        {/* Summary */}
+        {/* Executive Summary */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">QC Summary</h3>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">{summary.total_checks}</div>
-              <div className="text-sm text-gray-600">Total Checks</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-red-600">{summary.failed_checks}</div>
-              <div className="text-sm text-gray-600">Failed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{summary.passed_checks}</div>
-              <div className="text-sm text-gray-600">Passed</div>
+          <div className="border-b border-gray-200 pb-4 mb-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Executive Summary</h3>
+            <div className="flex items-center space-x-4">
+              <div className={`px-4 py-2 rounded-lg text-lg font-semibold ${
+                (result.qc_validation_results?.critical_errors?.length || 0) === 0 
+                  ? (result.qc_validation_results?.warnings?.length || 0) === 0 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-yellow-100 text-yellow-800'
+                  : 'bg-red-100 text-red-800'
+              }`}>
+                {(result.qc_validation_results?.critical_errors?.length || 0) === 0 
+                  ? (result.qc_validation_results?.warnings?.length || 0) === 0 
+                    ? '✅ APPROVED' 
+                    : '⚠️ CONDITIONAL PASS'
+                  : '❌ FAILED'}
+              </div>
+              <div className="text-gray-600">
+                <strong>Recommendation:</strong> {
+                  (result.qc_validation_results?.critical_errors?.length || 0) === 0 
+                    ? (result.qc_validation_results?.warnings?.length || 0) === 0 
+                      ? 'APPROVED FOR PROCESSING' 
+                      : 'REVIEW REQUIRED'
+                    : 'IMMEDIATE ACTION REQUIRED'
+                }
+              </div>
             </div>
           </div>
-          <div className="mt-4 flex justify-between items-center">
-            <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-              summary.overall_status === 'FAIL' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-            }`}>
-              Overall Status: {summary.overall_status}
+          
+          <div className="grid grid-cols-5 gap-4 mb-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-900">
+                {result.qc_validation_results?.summary?.total_validations || 0}
+              </div>
+              <div className="text-sm text-gray-600">Total Validations</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-red-600">
+                {result.qc_validation_results?.critical_errors?.length || 0}
+              </div>
+              <div className="text-sm text-gray-600">Critical Errors</div>
+              <div className="text-xs text-gray-500">
+                {result.qc_validation_results?.summary?.total_validations > 0 ? 
+                  `${((result.qc_validation_results?.critical_errors?.length || 0) / result.qc_validation_results.summary.total_validations * 100).toFixed(1)}%` : '0%'}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-yellow-600">
+                {result.qc_validation_results?.warnings?.length || 0}
+              </div>
+              <div className="text-sm text-gray-600">Warnings</div>
+              <div className="text-xs text-gray-500">
+                {result.qc_validation_results?.summary?.total_validations > 0 ? 
+                  `${((result.qc_validation_results?.warnings?.length || 0) / result.qc_validation_results.summary.total_validations * 100).toFixed(1)}%` : '0%'}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">
+                {result.qc_validation_results?.passed_validations?.length || 0}
+              </div>
+              <div className="text-sm text-gray-600">Passed</div>
+              <div className="text-xs text-gray-500">
+                {result.qc_validation_results?.summary?.total_validations > 0 ? 
+                  `${((result.qc_validation_results?.passed_validations?.length || 0) / result.qc_validation_results.summary.total_validations * 100).toFixed(1)}%` : '0%'}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-900">
+                {result.qc_validation_results?.summary?.total_vehicles || 0}
+              </div>
+              <div className="text-sm text-gray-600">Total Vehicles</div>
+            </div>
+          </div>
+          
+          {/* API Usage Information */}
+          {result.qc_validation_results?.api_usage && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <h4 className="font-medium text-blue-900 mb-2">🤖 AI Analysis Information</h4>
+              <div className="grid grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="text-blue-700">AI Analysis:</span> {
+                    result.qc_validation_results.api_usage.gemini_analysis_enabled ? 'Enabled' : 'Disabled'
+                  }
+                </div>
+                <div>
+                  <span className="text-blue-700">API Calls Used:</span> {
+                    result.qc_validation_results.api_usage.calls_made_this_session || 0
+                  }/{result.qc_validation_results.api_usage.daily_limit || 50}
+                </div>
+                <div>
+                  <span className="text-blue-700">Remaining:</span> {
+                    result.qc_validation_results.api_usage.remaining_calls || 0
+                  } calls
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex justify-between items-center">
+            <div className="text-sm text-gray-500">
+              Report ID: QC-{new Date().toISOString().slice(0,10).replace(/-/g,'')}-{new Date().toISOString().slice(11,19).replace(/:/g,'')}
             </div>
             <div className="space-x-2">
+              {result.files?.qc_report && (
+                <button
+                  onClick={() => downloadQCReport(result.files.qc_report)}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  📄 Download Professional Report
+                </button>
+              )}
               <button
                 onClick={exportToCSV}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -409,58 +512,284 @@ function ApplicationQC() {
           </div>
         </div>
 
-        {/* Simple QC Results List */}
+        {/* Comprehensive QC Validation Results */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">QC Validation Results</h3>
-          <div className="space-y-3">
-            {/* Failed Checks */}
-            {failed_checks && failed_checks.map((item, index) => (
-              <div key={`fail-${index}`} className={`p-4 rounded-lg border ${getStatusColor(item.status)}`}>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center mb-2">
-                      {getStatusIcon(item.status)}
-                      <span className="ml-3 font-medium text-gray-900">{item.check_description}: </span>
-                      <span className="font-bold text-red-600">FAIL</span>
-                    </div>
-                    <textarea
-                      value={editableRemarks[index] || item.remarks || ''}
-                      onChange={(e) => updateRemarks(index, e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded text-sm"
-                      rows="2"
-                      placeholder="Add remarks..."
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-            
-            {/* Passed Checks */}
-            {passed_checks && passed_checks.map((item, index) => (
-              <div key={`pass-${index}`} className={`p-4 rounded-lg border ${getStatusColor(item.status)}`}>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center mb-2">
-                      {getStatusIcon(item.status)}
-                      <span className="ml-3 font-medium text-gray-900">{item.check_description}: </span>
-                      <span className="font-bold text-green-600">PASS</span>
-                    </div>
-                    {item.remarks && (
-                      <div className="ml-9 text-sm text-gray-700 bg-green-50 p-3 rounded border border-green-200 mb-3">
-                        <strong>Details:</strong> {item.remarks}
+          
+          {/* Critical Errors Section */}
+          {result.qc_validation_results?.critical_errors && result.qc_validation_results.critical_errors.length > 0 && (
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold text-red-700 mb-3 flex items-center">
+                <AlertCircle className="w-5 h-5 mr-2" />
+                Critical Errors ({result.qc_validation_results.critical_errors.length})
+              </h4>
+              <div className="space-y-3">
+                {result.qc_validation_results.critical_errors.map((error, index) => (
+                  <div key={`critical-${index}`} className="p-4 rounded-lg border border-red-200 bg-red-50">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center mb-2">
+                          <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
+                          <span className="font-medium text-red-800">{error.type}: </span>
+                          <span className="font-bold text-red-600">CRITICAL</span>
+                        </div>
+                        <div className="ml-7 text-red-700 mb-3 space-y-2">
+                          <div>
+                            <strong>Issue:</strong> {error.message}
+                          </div>
+                          {error.vehicle && error.vehicle !== 'General' && (
+                            <div>
+                              <strong>Vehicle:</strong> {error.vehicle}
+                            </div>
+                          )}
+                          {error.business_rule && (
+                            <div className="text-sm bg-red-100 p-2 rounded">
+                              <strong>Business Rule:</strong> {error.business_rule}
+                            </div>
+                          )}
+                          {error.explanation && (
+                            <div className="text-sm">
+                              <strong>Impact:</strong> {error.explanation}
+                            </div>
+                          )}
+                          {error.data_checked && (
+                            <div className="text-xs text-red-600">
+                              <strong>Data Checked:</strong> {error.data_checked}
+                            </div>
+                          )}
+                        </div>
+                        <textarea
+                          value={editableRemarks[`critical-${index}`] || ''}
+                          onChange={(e) => updateRemarks(`critical-${index}`, e.target.value)}
+                          className="w-full p-2 border border-red-300 rounded text-sm"
+                          rows="2"
+                          placeholder="Add remarks for this critical error..."
+                        />
                       </div>
-                    )}
-                    <textarea
-                      value={editableRemarks[`pass-${index}`] || item.remarks || ''}
-                      onChange={(e) => updateRemarks(`pass-${index}`, e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded text-sm"
-                      rows="2"
-                      placeholder="Add or edit remarks..."
-                    />
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+            </div>
+          )}
+
+          {/* Warnings Section */}
+          {result.qc_validation_results?.warnings && result.qc_validation_results.warnings.length > 0 && (
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold text-yellow-700 mb-3 flex items-center">
+                <AlertTriangle className="w-5 h-5 mr-2" />
+                Warnings ({result.qc_validation_results.warnings.length})
+              </h4>
+              <div className="space-y-3">
+                {result.qc_validation_results.warnings.map((warning, index) => (
+                  <div key={`warning-${index}`} className="p-4 rounded-lg border border-yellow-200 bg-yellow-50">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center mb-2">
+                          <AlertTriangle className="w-5 h-5 text-yellow-600 mr-2" />
+                          <span className="font-medium text-yellow-800">{warning.type}: </span>
+                          <span className="font-bold text-yellow-600">WARNING</span>
+                        </div>
+                        <div className="ml-7 text-yellow-700 mb-3 space-y-2">
+                          <div>
+                            <strong>Issue:</strong> {warning.message}
+                          </div>
+                          {warning.vehicle && warning.vehicle !== 'General' && (
+                            <div>
+                              <strong>Vehicle:</strong> {warning.vehicle}
+                            </div>
+                          )}
+                          {warning.business_rule && (
+                            <div className="text-sm bg-yellow-100 p-2 rounded">
+                              <strong>Business Rule:</strong> {warning.business_rule}
+                            </div>
+                          )}
+                          {warning.explanation && (
+                            <div className="text-sm">
+                              <strong>Context:</strong> {warning.explanation}
+                            </div>
+                          )}
+                          {warning.data_checked && (
+                            <div className="text-xs text-yellow-600">
+                              <strong>Data Checked:</strong> {warning.data_checked}
+                            </div>
+                          )}
+                          {warning.remarks_verification && (
+                            <div className="text-sm bg-blue-50 p-2 rounded border border-blue-200">
+                              <div className="flex items-center mb-1">
+                                <span className="text-blue-700 font-medium">🤖 AI Analysis:</span>
+                                <span className={`ml-2 px-2 py-1 rounded text-xs font-medium ${
+                                  warning.remarks_verification.verification_result === 'PASS' 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                  {warning.remarks_verification.verification_result === 'PASS' ? '✅ RESOLVED' : '⚠️ NEEDS ATTENTION'}
+                                </span>
+                              </div>
+                              <div className="text-blue-700 text-xs">
+                                {warning.remarks_verification.gemini_analysis}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <textarea
+                          value={editableRemarks[`warning-${index}`] || ''}
+                          onChange={(e) => updateRemarks(`warning-${index}`, e.target.value)}
+                          className="w-full p-2 border border-yellow-300 rounded text-sm"
+                          rows="2"
+                          placeholder="Add remarks for this warning..."
+                        />
+                  </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Passed Validations Section */}
+          {result.qc_validation_results?.passed_validations && result.qc_validation_results.passed_validations.length > 0 && (
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold text-green-700 mb-3 flex items-center">
+                <CheckCircle className="w-5 h-5 mr-2" />
+                Passed Validations ({result.qc_validation_results.passed_validations.length})
+              </h4>
+              <div className="space-y-3">
+                {result.qc_validation_results.passed_validations.map((validation, index) => (
+                  <div key={`passed-${index}`} className="p-4 rounded-lg border border-green-200 bg-green-50">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center mb-2">
+                          <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+                          <span className="font-medium text-green-800">{validation.type}: </span>
+                          <span className="font-bold text-green-600">PASSED</span>
+                        </div>
+                        <div className="ml-7 text-green-700 mb-3 space-y-2">
+                          <div>
+                            <strong>Result:</strong> {validation.message}
+                          </div>
+                          {validation.vehicle && validation.vehicle !== 'General' && (
+                            <div>
+                              <strong>Vehicle:</strong> {validation.vehicle}
+                            </div>
+                          )}
+                          {validation.business_rule && (
+                            <div className="text-sm bg-green-100 p-2 rounded">
+                              <strong>Business Rule:</strong> {validation.business_rule}
+                            </div>
+                          )}
+                          {validation.explanation && (
+                            <div className="text-sm text-green-600">
+                              <strong>Details:</strong> {validation.explanation}
+                            </div>
+                          )}
+                          {validation.data_checked && (
+                            <div className="text-xs text-green-600">
+                              <strong>Data Verified:</strong> {validation.data_checked}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* All Validations Summary Section */}
+          {result.qc_validation_results?.all_validations && result.qc_validation_results.all_validations.length > 0 && (
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold text-blue-700 mb-3 flex items-center">
+                <Code className="w-5 h-5 mr-2" />
+                All Validations Summary ({result.qc_validation_results.all_validations.length})
+              </h4>
+              <div className="space-y-3">
+                {result.qc_validation_results.all_validations.map((validation, index) => (
+                  <div key={`all-${index}`} className={`p-3 rounded-lg border ${
+                    validation.status === 'passed' ? 'border-green-200 bg-green-50' :
+                    validation.status === 'warning' ? 'border-yellow-200 bg-yellow-50' :
+                    'border-red-200 bg-red-50'
+                  }`}>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center mb-2">
+                          {validation.status === 'passed' ? (
+                            <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                          ) : validation.status === 'warning' ? (
+                            <AlertTriangle className="w-4 h-4 text-yellow-600 mr-2" />
+                          ) : (
+                            <AlertCircle className="w-4 h-4 text-red-600 mr-2" />
+                          )}
+                          <span className="font-medium text-gray-800">{validation.type}: </span>
+                          <span className={`font-bold ml-2 ${
+                            validation.status === 'passed' ? 'text-green-600' :
+                            validation.status === 'warning' ? 'text-yellow-600' :
+                            'text-red-600'
+                          }`}>
+                            {validation.status.toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="ml-6 text-gray-700">
+                          {validation.message}
+                          {validation.vehicle && validation.vehicle !== 'General' && (
+                            <div className="mt-1 text-sm text-gray-600">
+                              <strong>Vehicle:</strong> {validation.vehicle}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* No Issues Found - Only show if no critical errors and no warnings */}
+          {(!result.qc_validation_results?.critical_errors || result.qc_validation_results.critical_errors.length === 0) &&
+           (!result.qc_validation_results?.warnings || result.qc_validation_results.warnings.length === 0) && (
+            <div className="p-6 text-center">
+              <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+              <h4 className="text-xl font-semibold text-green-700 mb-2">No Issues Found!</h4>
+              <p className="text-green-600">All validation checks have passed successfully.</p>
+            </div>
+          )}
+          
+          {/* Recommendations Section */}
+          <div className="mt-6 bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h4 className="font-semibold text-gray-900 mb-3">📋 Final Recommendations</h4>
+            {(result.qc_validation_results?.critical_errors?.length || 0) > 0 ? (
+              <div className="bg-red-50 border border-red-200 rounded p-3">
+                <h5 className="font-medium text-red-800 mb-2">🚨 IMMEDIATE ACTIONS REQUIRED:</h5>
+                <ul className="text-red-700 text-sm space-y-1">
+                  <li>1. Resolve all critical errors listed above before proceeding with policy issuance</li>
+                  <li>2. Obtain and verify all missing mandatory documentation</li>
+                  <li>3. Re-submit application after corrections are completed</li>
+                  <li>4. Conduct follow-up QC validation to confirm resolution</li>
+                </ul>
+              </div>
+            ) : (result.qc_validation_results?.warnings?.length || 0) > 0 ? (
+              <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
+                <h5 className="font-medium text-yellow-800 mb-2">⚠️ RECOMMENDED ACTIONS:</h5>
+                <ul className="text-yellow-700 text-sm space-y-1">
+                  <li>1. Review and address all warnings listed above</li>
+                  <li>2. Verify remarks section adequately explains any identified concerns</li>
+                  <li>3. Consider additional documentation where recommended</li>
+                  <li>4. Policy issuance may proceed with management approval</li>
+                </ul>
+              </div>
+            ) : (
+              <div className="bg-green-50 border border-green-200 rounded p-3">
+                <h5 className="font-medium text-green-800 mb-2">✅ APPROVAL STATUS:</h5>
+                <ul className="text-green-700 text-sm space-y-1">
+                  <li>✅ Application meets all quality control requirements</li>
+                  <li>✅ All mandatory validations have passed successfully</li>
+                  <li>✅ Application is approved for policy issuance</li>
+                  <li>✅ No further action required</li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -638,9 +967,9 @@ function ApplicationQC() {
             <div>
               <h3 className="font-medium text-purple-900">How it works</h3>
               <p className="text-sm text-purple-700 mt-1">
-                Upload both the insurance application PDF and the corresponding quote PDF to perform automated 
-                quality control checks. The system will validate the application against a comprehensive QC checklist, 
-                highlighting critical errors, warnings, and passes for easy review.
+                Upload the insurance application PDF to perform automated quality control checks using Gemini AI. 
+                The system will validate the application against a comprehensive QC checklist, highlighting critical errors, 
+                warnings, and passes for easy review. Quote PDF is optional.
               </p>
             </div>
           </div>
@@ -649,8 +978,8 @@ function ApplicationQC() {
 
       {/* File Upload Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        {renderFileUpload('application', applicationFile, 'Upload Application PDF')}
-        {renderFileUpload('quote', quoteFile, 'Upload Quote PDF')}
+        {renderFileUpload('application', applicationFile, 'Upload Application PDF (Required)')}
+        {renderFileUpload('quote', quoteFile, 'Upload Quote PDF (Optional)')}
             </div>
 
       {/* Submit Button */}
@@ -666,9 +995,9 @@ function ApplicationQC() {
 
             <button
           onClick={handleSubmit}
-          disabled={!applicationFile || !quoteFile || isLoading}
+          disabled={!applicationFile || isLoading}
           className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
-            !applicationFile || !quoteFile || isLoading
+            !applicationFile || isLoading
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-purple-600 text-white hover:bg-purple-700'
               }`}
